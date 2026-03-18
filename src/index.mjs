@@ -14,6 +14,8 @@ const model = new ChatOpenAI({
   },
 })
 
+export { model }
+
 export async function runAgentWithTools(query, maxIterations = 30) {
   const messages = [
     new SystemMessage(`你是一个项目管理助手，使用工具完成任务。

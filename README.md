@@ -7,28 +7,56 @@
 
 这个仓库不是生产级框架，更像一个方便拆开阅读、动手实验、逐步扩展的最小示例集合。
 
-## 本次新增的学习内容
+## 📚 学习目录
 
-这次仓库里新加了一个 `MCP Server` 示例文件：`src/mcp-server.mjs`。
+本仓库按章节逐步添加学习内容，每个章节聚焦一个主题：
 
-如果前面的 Agent 示例更偏向“让模型自己调用本地工具完成任务”，那这次新增的内容更适合学习另一条常见路线：把能力暴露成标准 MCP 服务，再交给 Cursor 这类客户端去发现和调用。
+### 第 1 章：Agent 基础示例
 
-这部分新增内容适合重点关注：
+- **文件**：`src/index.mjs`, `src/tool-runner.mjs`, `src/tools/*`
+- **内容**：模型调用本地工具（读/写文件、执行命令）完成任务
+- **产物**：自动生成 React Todo 应用
 
-- 什么是 `Tool`，什么是 `Resource`
-- 为什么 MCP Server 常用 `stdio` 作为通信方式
-- `zod` 是怎么参与输入参数描述和约束的
-- Client 看到的不是你的源码，而是你暴露出来的协议能力
-- 同样是“给模型能力”，Agent 和 MCP 的接入方式有什么区别
+### 第 2 章：MCP Server 基础
 
-这轮继续补充了几个更贴近真实使用的学习样例：
+- **文件**：`src/mcp-server.mjs`
+- **内容**：Tool、Resource 定义，stdio 通信，zod 参数校验
+- **重点**：理解 MCP 协议的基本组成
 
-- `src/mcp-amap.mjs`：把 `MultiServerMCPClient`、高德地图 MCP 和 filesystem MCP 组合起来
-- `src/mco-amap-flow.md`：把 Agent 与 MCP 工具协作过程画成流程图和时序图
-- `src/loader-and-spliter2.mjs`：演示网页加载、文本切分、检索增强生成（RAG）的完整最小流程
-- `src/rag-demo.mjs`：补充 embedding 配置回退、健康检查和错误提示的写法
+### 第 3 章：多 MCP Server 集成
 
-## 这个仓库适合学什么
+- **文件**：`src/mcp-amap.mjs`
+- **内容**：MultiServerMCPClient、高德地图 MCP、filesystem MCP
+- **流程图**：`src/mco-amap-flow.md`
+
+### 第 4 章：RAG 检索增强生成
+
+- **文件**：`src/loader-and-spliter2.mjs`, `src/rag-demo.mjs`
+- **内容**：网页加载 → 文本切分 → 向量索引 → 检索回答
+- **重点**：chunkSize/chunkOverlap、embeddings 降级兜底
+
+### 第 5 章：动态网站内容提取
+
+- **文件**：`src/loader-and-spliter.mjs`
+- **内容**：Puppeteer 抓取掘金文章、Document 转换、文本分割
+- **重点**：处理 JavaScript 动态渲染的内容
+
+### 第 6 章：兼容性加载方案
+
+- **文件**：`src/loader-and-spliter2.mjs`
+- **内容**：Cheerio + Puppeteer 渐进式降级策略
+- **重点**：性能与稳定性的平衡设计
+
+### 第 7 章：文本分割器详解
+
+- **文件**：`src/splitters/` 目录下的示例代码
+- **内容**：CharacterTextSplitter、RecursiveCharacterTextSplitter、TokenTextSplitter 以及面向特定格式的代码/Markdown/LaTeX 分割器
+- **重点**：不同分割策略的适用场景、chunkSize/chunkOverlap 调优、Token 计数控制
+- **补充**：语言特定的分割器配置（fromLanguage）
+
+---
+
+## 🎯 这个仓库适合学什么
 
 你可以用它快速理解下面几件事：
 
@@ -38,84 +66,53 @@
 - MCP Server 的基础写法是什么样
 - 如何把多个 MCP Server 挂到同一个 Agent 上
 - filesystem MCP 的允许目录该怎么配置
-- RAG 里“加载 -> 切分 -> 向量检索 -> 回答”的链路怎么串起来
+- RAG 里"加载 -> 切分 -> 向量检索 -> 回答"的链路怎么串起来
 - 当 embeddings 不可用时，怎么给示例代码做降级兜底
+- 如何使用 Puppeteer 抓取动态渲染网站的内容
+- 如何实现 Cheerio + Puppeteer 的兼容性降级方案
+- 如何用 RecursiveCharacterTextSplitter 分割长文档为适合检索的片段
 - Agent 和 MCP 这两种集成方式分别适合什么场景
 
-## 仓库里有什么
+## 📁 仓库里有什么
 
-### 1. Agent 示例
+详细说明请参考上方的 **📚 学习目录**，这里列出关键文件：
 
-Agent 部分会把一个真实任务交给模型，让模型自己决定何时调用工具。当前内置的示例任务是：自动创建并完善一个 React Todo 应用。
+### Agent 示例
 
-相关文件：
+- `src/index.mjs`：模型与系统提示词初始化
+- `src/tool-runner.mjs`：工具调用循环处理
+- `src/tools/*`：本地工具实现（读/写文件、列目录、执行命令）
+- `src/agent-react-todo.mjs`：示例任务描述
 
-- `src/index.mjs`：创建模型实例，注入系统提示词和工具集
-- `src/tool-runner.mjs`：处理模型返回的 `tool_calls`，并把工具结果继续喂回模型
-- `src/tools/*`：本地工具实现，包括读文件、写文件、列目录、执行命令
-- `src/agent-react-todo.mjs`：示例任务内容
-- `agent-react-todo.mjs`：根目录启动入口
+### MCP Server 示例
 
-仓库中的 `react-todo-app/` 是一次示例运行后生成的结果，方便直接查看 Agent 最终产物。
+- `src/mcp-server.mjs`：MCP Server 基础示例（query_user 工具 + docs://guide 资源）
 
-### 2. MCP Server 示例
+### MCP Client 示例
 
-`src/mcp-server.mjs` 提供了一个非常轻量的 MCP Server，用来演示 MCP 的基本组成：
+- `src/mcp-amap.mjs`：MultiServerMCPClient 集成高德地图和 filesystem
 
-- 一个工具 `query_user`
-- 一个资源 `docs://guide`
-- 基于 `stdio` 的服务启动方式
+### RAG 示例
 
-这个示例里内置了一份简单“数据库”，可以根据用户 ID 查询用户信息，适合拿来理解：
+- `src/loader-and-spliter2.mjs`：网页加载 + 文本切分 + RAG 完整流程
+- `src/rag-demo.mjs`：Embedding 配置与健康检查
 
-- `registerTool(...)` 怎么定义输入参数和描述
-- `registerResource(...)` 怎么暴露资源
-- `z.string().describe(...)` 怎么给输入补充语义说明
-- `StdioServerTransport` 怎么把服务接到 MCP Client
-- MCP Client 是如何通过标准协议发现并调用这些能力的
+### 动态内容提取
 
-如果你把它当成学习样例，可以把这个文件拆成 5 个部分来看：
+- `src/loader-and-spliter.mjs`：Puppeteer 抓取掘金文章
 
-1. 准备数据：用一个内存对象模拟数据库
-2. 创建服务：`new McpServer(...)`
-3. 注册工具：`query_user`
-4. 注册资源：`docs://guide`
-5. 启动传输层：`server.connect(new StdioServerTransport())`
+### 文本分割器示例
 
-### 3. MCP Client + 地图 Agent 示例
+- `src/splitters/CharacterTextSplitter-test.mjs`：基于字符的分割器示例
+- `src/splitters/RecursiveCharacterTextSplitter-test.mjs`：递归字符分割器（支持自定义分隔符）
+- `src/splitters/TokenTextSplitter-test.mjs`：基于 Token 计数的分割器
+- `src/splitters/recursive-splitter-code.mjs`：代码专用分割器（支持 JS 等语言）
+- `src/splitters/recursive-splitter-markdown.mjs`：Markdown 文档专用分割器
+- `src/splitters/recursive-splitter-latex.mjs`：LaTeX 数学公式专用分割器
 
-`src/mcp-amap.mjs` 不是一个 MCP Server，而是一个 MCP Client 示例。它会启动并连接多个 MCP Server，然后把这些工具交给模型使用。
+### 流程图
 
-当前它组合了两类能力：
-
-- `amap-maps`：高德地图相关查询
-- `filesystem`：受限目录下的本地文件读写、列目录、搜索
-
-这部分很适合学习：
-
-- `MultiServerMCPClient` 怎么同时挂多个 MCP Server
-- 为什么 filesystem MCP 需要显式传入允许访问的目录
-- Agent 如何通过 `runToolAgent(...)` 驱动“模型调用工具 -> 工具结果回填 -> 模型继续回答”
-- 为什么系统提示词里要明确告诉模型“什么时候优先使用地图工具，什么时候优先使用文件工具”
-
-配套的调用流程图见：`src/mco-amap-flow.md`
-
-### 4. RAG 学习示例
-
-`src/loader-and-spliter2.mjs` 和 `src/rag-demo.mjs` 展示了一个很适合入门的 RAG 最小链路：
-
-1. 从网页加载文章内容
-2. 把长文本切成多个片段
-3. 用 embeddings 建向量索引
-4. 根据问题检索相关片段
-5. 把片段交给模型回答
-
-这里也专门保留了几个很值得学习的点：
-
-- `chunkSize` / `chunkOverlap` 会直接影响检索效果
-- embeddings 模型和聊天模型不是一回事
-- 如果 embeddings 服务不可用，可以先降级成关键词检索继续学习主流程
-- 向量检索更适合效果验证，关键词检索更适合做本地兜底
+- `src/mco-amap-flow.md`：MCP Agent 调用流程图和时序图
 
 ## 项目结构
 
@@ -125,11 +122,19 @@ Agent 部分会把一个真实任务交给模型，让模型自己决定何时�
 ├── src/
 │   ├── agent-react-todo.mjs    # Agent 示例任务
 │   ├── index.mjs               # 模型与系统提示词初始化
-│   ├── loader-and-spliter2.mjs # RAG 学习示例
+│   ├── loader-and-spliter.mjs  # Puppeteer 抓取掘金文章
+│   ├── loader-and-spliter2.mjs # RAG + 兼容性加载方案
 │   ├── mcp-amap.mjs            # 地图 + filesystem MCP Client 示例
 │   ├── mcp-server.mjs          # MCP Server 示例
 │   ├── mco-amap-flow.md        # MCP Agent 调用流程图
 │   ├── rag-demo.mjs            # RAG 配置与健康检查示例
+│   ├── splitters/              # 文本分割器示例目录
+│   │   ├── CharacterTextSplitter-test.mjs           # 基于字符的分割
+│   │   ├── RecursiveCharacterTextSplitter-test.mjs  # 递归字符分割（自定义分隔符）
+│   │   ├── TokenTextSplitter-test.mjs               # 基于 Token 计数的分割
+│   │   ├── recursive-splitter-code.mjs              # 代码专用分割器
+│   │   ├── recursive-splitter-markdown.mjs          # Markdown 文档分割
+│   │   └── recursive-splitter-latex.mjs             # LaTeX 公式分割
 │   ├── tool-runner.mjs         # 工具调用循环
 │   └── tools/                  # 本地工具实现
 └── react-todo-app/             # Agent 生成的 React Todo 示例项目
@@ -382,7 +387,9 @@ process.env.ALLOWED_PATHS.split(',').join(' ')
 正确思路是把它展开成多个参数：
 
 ```js
-const allowedPaths = process.env.ALLOWED_PATHS.split(',').map(v => v.trim()).filter(Boolean)
+const allowedPaths = process.env.ALLOWED_PATHS.split(',')
+  .map(v => v.trim())
+  .filter(Boolean)
 args: ['-y', '@modelcontextprotocol/server-filesystem', ...allowedPaths]
 ```
 

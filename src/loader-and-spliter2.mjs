@@ -1,5 +1,6 @@
 import 'dotenv/config'
 import 'cheerio'
+import puppeteer from 'puppeteer'
 import { ChatOpenAI, OpenAIEmbeddings } from '@langchain/openai'
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters'
 import { MemoryVectorStore } from '@langchain/classic/vectorstores/memory'
@@ -7,6 +8,7 @@ import { CheerioWebBaseLoader } from '@langchain/community/document_loaders/web/
 import { tool } from '@langchain/core/tools'
 import { HumanMessage, SystemMessage } from '@langchain/core/messages'
 import { z } from 'zod'
+import { Document } from '@langchain/core/documents'
 
 import { runToolAgent } from './tool-runner.mjs'
 
@@ -89,7 +91,10 @@ async function createRetrievalBackend(documentsToRetrieve) {
       async retrieve(query, k) {
         const retriever = vectorStore.asRetriever({ k })
         const retrievedDocs = await retriever.invoke(query)
-        const scoredResults = await vectorStore.similaritySearchWithScore(query, k)
+        const scoredResults = await vectorStore.similaritySearchWithScore(
+          query,
+          k,
+        )
 
         return retrievedDocs.map(doc => {
           const scoredResult = scoredResults.find(
@@ -133,17 +138,97 @@ async function createRetrievalBackend(documentsToRetrieve) {
   }
 }
 
-const cheerioLoader = new CheerioWebBaseLoader(
-  'https://juejin.cn/post/7233327509919547452',
-  {
-    selector: '.main-area p',
-  },
-)
+// 尝试使用 Cheerio 加载，如果失败或内容为空则降级使用 Puppeteer
+let documents = []
 
-const documents = await cheerioLoader.load()
+try {
+  console.log('尝试使用 Cheerio 加载网页内容...')
+  const cheerioLoader = new CheerioWebBaseLoader(
+    'https://juejin.cn/post/7233327509919547452',
+    {
+      selector: '.main-area p',
+    },
+  )
+
+  documents = await cheerioLoader.load()
+
+  // 检查是否成功提取到内容
+  if (
+    documents.length === 0 ||
+    !documents[0].pageContent ||
+    documents[0].pageContent.length === 0
+  ) {
+    throw new Error('Cheerio 提取到的内容为空')
+  }
+
+  console.log(
+    `✅ Cheerio 加载成功，共 ${documents.length} 个文档，${documents[0].pageContent.length} 字符`,
+  )
+} catch (cheerioError) {
+  console.warn(
+    '⚠️  Cheerio 加载失败，降级使用 Puppeteer:',
+    cheerioError.message,
+  )
+
+  try {
+    console.log('启动 Puppeteer 浏览器...')
+    const browser = await puppeteer.launch({
+      headless: true,
+      executablePath:
+        '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    })
+
+    const page = await browser.newPage()
+    await page.setUserAgent(
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    )
+
+    console.log('访问掘金文章...')
+    await page.goto('https://juejin.cn/post/7233327509919547452', {
+      waitUntil: 'networkidle2',
+      timeout: 60000,
+    })
+
+    // 等待内容加载
+    await new Promise(resolve => setTimeout(resolve, 3000))
+
+    // 提取 .main-area 下所有 p 标签内容
+    const content = await page.evaluate(() => {
+      const mainArea = document.querySelector('.main-area')
+      if (!mainArea) return ''
+
+      const paragraphs = mainArea.querySelectorAll('p')
+      return Array.from(paragraphs)
+        .map(p => p.innerText.trim())
+        .filter(text => text.length > 0)
+        .join('\n\n')
+    })
+
+    await browser.close()
+
+    if (content) {
+      documents = [
+        new Document({
+          pageContent: content,
+          metadata: {
+            source: 'https://juejin.cn/post/7233327509919547452',
+            loader: 'puppeteer',
+          },
+        }),
+      ]
+      console.log('✅ Puppeteer 加载成功，提取到', content.length, '字符')
+    } else {
+      throw new Error('Puppeteer 也未能提取到内容')
+    }
+  } catch (puppeteerError) {
+    console.error('❌ Puppeteer 也失败了:', puppeteerError.message)
+    throw puppeteerError
+  }
+}
 
 console.assert(documents.length === 1)
-console.log(`Total characters: ${documents[0].pageContent.length}`)
+console.log(`Total characters: ${documents[0].pageContent.length}`)
 
 const textSplitter = new RecursiveCharacterTextSplitter({
   chunkSize: 500, // 每个分块的字符数

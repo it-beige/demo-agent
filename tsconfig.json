@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ESNext",
+    "allowJs": true,
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*.js", "src/**/*.mjs"],
+  "exclude": ["node_modules", "react-todo-app"]
+}

@@ -133,19 +133,23 @@
 ### 对话记忆管理示例
 
 **基础存储**
+
 - `src/memory/history-test.mjs`：InMemoryChatMessageHistory 基础用法（内存存储）
 - `src/memory/history-test2.mjs`：FileSystemChatMessageHistory 持久化存储（写入文件）
 - `src/memory/history-test3.mjs`：从文件恢复历史对话（读取已保存的会话）
 - `src/memory/chat_history.json`：FileSystemChatMessageHistory 的存储文件示例
 
 **截断策略**
+
 - `src/memory/truncation-memory.mjs`：消息截断策略（按消息数、按 token 数）
 
 **总结策略**
+
 - `src/memory/summarization-memory.mjs`：基于消息数量的对话总结策略
 - `src/memory/summarization-memory2.mjs`：基于 token 数量的对话总结策略（更精确）
 
 **检索策略（RAG）**
+
 - `src/memory/constant.mjs`：集合名称常量定义
 - `src/memory/insert-conversations.mjs`：批量插入对话数据到 Milvus 向量数据库
 - `src/memory/retrieval-memory.mjs`：完整的 RAG 检索增强生成流程演示
@@ -536,22 +540,16 @@ pnpm dev
 如果是第一次学习记忆管理，建议按这个顺序：
 
 **基础存储（3 个文件）**
+
 1. **内存存储**：`src/memory/history-test.mjs` - 理解 InMemoryChatMessageHistory
 2. **文件持久化**：`src/memory/history-test2.mjs` - 学习 FileSystemChatMessageHistory
 3. **历史恢复**：`src/memory/history-test3.mjs` - 理解会话恢复机制
 
-**截断策略（1 个文件）**
-4. **消息截断**：`src/memory/truncation-memory.mjs` - 掌握按消息数/token 数截断
+**截断策略（1 个文件）** 4. **消息截断**：`src/memory/truncation-memory.mjs` - 掌握按消息数/token 数截断
 
-**总结策略（2 个文件）**
-5. **消息数总结**：`src/memory/summarization-memory.mjs` - 学习基于消息数量的总结
-6. **Token 级总结**：`src/memory/summarization-memory2.mjs` - 理解更精确的 token 级别管理
+**总结策略（2 个文件）** 5. **消息数总结**：`src/memory/summarization-memory.mjs` - 学习基于消息数量的总结 6. **Token 级总结**：`src/memory/summarization-memory2.mjs` - 理解更精确的 token 级别管理
 
-**检索策略 - RAG（4 个文件，需先启动 Milvus）**
-7. **常量定义**：`src/memory/constant.mjs` - 了解集合名称配置
-8. **数据插入**：`src/memory/insert-conversations.mjs` - 批量导入对话到向量数据库
-9. **RAG 流程**：`src/memory/retrieval-memory.mjs` - 完整的检索-增强-生成-入库闭环
-10. **数据查询**：`src/memory/query-conversations.mjs` - 查看向量数据库中的所有记录
+**检索策略 - RAG（4 个文件，需先启动 Milvus）** 7. **常量定义**：`src/memory/constant.mjs` - 了解集合名称配置 8. **数据插入**：`src/memory/insert-conversations.mjs` - 批量导入对话到向量数据库 9. **RAG 流程**：`src/memory/retrieval-memory.mjs` - 完整的检索-增强-生成-入库闭环10. **数据查询**：`src/memory/query-conversations.mjs` - 查看向量数据库中的所有记录
 
 ## 建议动手练习
 
@@ -568,6 +566,7 @@ pnpm dev
 ### 对话记忆管理练习
 
 **基础存储与截断**
+
 1. 修改 `summarization-memory2.mjs`，将生成的摘要也添加回历史记录（目前只计算但未保存）
 2. 实现分级总结策略：旧消息总结多次，每次越来越精简
 3. 给 `truncation-memory.mjs` 增加系统提示词保留功能（SystemMessage 始终不被截断）
@@ -575,13 +574,7 @@ pnpm dev
 5. 尝试使用 `ConversationSummaryMemory`（LangChain 内置）对比自定义实现
 6. 给 FileSystemChatMessageHistory 增加多会话管理（不同 sessionId 的切换）
 
-**检索策略 - RAG**
-7. 修改 `insert-conversations.mjs`，批量插入 100 条对话数据，观察性能变化
-8. 调整 `retrieval-memory.mjs` 中的 k 值（检索数量），对比 k=1、k=3、k=5 的回答质量
-9. 给检索增加过滤条件，如只检索最近 3 轮的对话（`filter: 'round >= 3'`）
-10. 实现动态 k 值：根据问题类型自动调整检索数量
-11. 添加检索结果的缓存层（Redis），避免重复查询相同问题
-12. 对比不同相似度度量方式（COSINE vs L2 vs IP）的检索效果差异
+**检索策略 - RAG** 7. 修改 `insert-conversations.mjs`，批量插入 100 条对话数据，观察性能变化 8. 调整 `retrieval-memory.mjs` 中的 k 值（检索数量），对比 k=1、k=3、k=5 的回答质量 9. 给检索增加过滤条件，如只检索最近 3 轮的对话（`filter: 'round >= 3'`）10. 实现动态 k 值：根据问题类型自动调整检索数量 11. 添加检索结果的缓存层（Redis），避免重复查询相同问题 12. 对比不同相似度度量方式（COSINE vs L2 vs IP）的检索效果差异
 
 这几个练习都不大，但非常适合建立对 MCP 和 Agent 的直觉。
 
@@ -639,6 +632,7 @@ args: ['-y', '@modelcontextprotocol/server-filesystem', ...allowedPaths]
 ## 可以继续扩展的方向
 
 **通用扩展**
+
 - 给根项目补充 `npm scripts`，减少手动输入命令
 - 为工具增加更严格的参数校验和错误处理
 - 增加文件搜索、HTTP 请求、Git 操作等更多工具
@@ -647,6 +641,7 @@ args: ['-y', '@modelcontextprotocol/server-filesystem', ...allowedPaths]
 - 增加日志记录，方便观察每轮模型决策和工具调用
 
 **对话记忆管理扩展**
+
 - 为对话记忆管理增加数据库后端（如 Redis、MongoDB）
 - 实现更智能的记忆压缩策略（关键信息提取、实体保留）
 - 增加记忆管理的可视化调试工具

@@ -1,5 +1,5 @@
 import { HumanMessage, SystemMessage } from '@langchain/core/messages'
-import { ChatOpenAI } from '@langchain/openai'
+import { ChatOpenAI, OpenAIEmbeddings } from '@langchain/openai'
 import chalk from 'chalk'
 import 'dotenv/config'
 import { runToolAgent } from './tool-runner.mjs'
@@ -13,8 +13,15 @@ const model = new ChatOpenAI({
     baseURL: process.env.BASE_URL,
   },
 })
+const embeddings = new OpenAIEmbeddings({
+  apiKey: process.env.EMBEDDING_API_KEY,
+  model: process.env.EMBEDDING_MODEL,
+  configuration: {
+    baseURL: process.env.EMBEDDING_BASE_URL,
+  },
+})
 
-export { model }
+export { model, embeddings }
 
 export async function runAgentWithTools(query, maxIterations = 30) {
   const messages = [

@@ -54,6 +54,17 @@
 - **重点**：不同分割策略的适用场景、chunkSize/chunkOverlap 调优、Token 计数控制
 - **补充**：语言特定的分割器配置（fromLanguage）
 
+### 第 8 章：对话记忆管理
+
+- **文件**：`src/memory/` 目录下的示例代码
+- **内容**：三大记忆管理策略（截断、总结、检索）
+  - **基础存储**：InMemoryChatMessageHistory、FileSystemChatMessageHistory
+  - **截断策略**：按消息数量截断、按 token 数量截断（trimMessages API）
+  - **总结策略**：基于消息数量的总结、基于 token 数量的精确总结
+  - **检索策略**：Milvus 向量数据库存储、语义检索、RAG 完整流程
+- **重点**：记忆存储策略对比、token 级别的消息管理、向量检索实现、RAG 数据流
+- **核心问题**：如何在对话历史过长时智能管理记忆，避免超出模型上下文窗口
+
 ---
 
 ## 🎯 这个仓库适合学什么
@@ -71,6 +82,15 @@
 - 如何使用 Puppeteer 抓取动态渲染网站的内容
 - 如何实现 Cheerio + Puppeteer 的兼容性降级方案
 - 如何用 RecursiveCharacterTextSplitter 分割长文档为适合检索的片段
+- 如何使用 InMemoryChatMessageHistory 管理内存中的对话历史
+- 如何使用 FileSystemChatMessageHistory 持久化对话到本地文件
+- 如何通过 trimMessages API 按消息数或 token 数截断历史
+- 如何基于消息数量触发对话总结策略
+- 如何基于 token 数量实现更精确的对话总结与保留策略
+- 如何使用 Milvus 向量数据库存储对话数据
+- 如何通过语义相似度检索相关历史对话
+- 如何构建 RAG（检索增强生成）完整流程
+- 如何实现对话记忆的检索-增强-生成-入库闭环
 - Agent 和 MCP 这两种集成方式分别适合什么场景
 
 ## 📁 仓库里有什么
@@ -110,6 +130,27 @@
 - `src/splitters/recursive-splitter-markdown.mjs`：Markdown 文档专用分割器
 - `src/splitters/recursive-splitter-latex.mjs`：LaTeX 数学公式专用分割器
 
+### 对话记忆管理示例
+
+**基础存储**
+- `src/memory/history-test.mjs`：InMemoryChatMessageHistory 基础用法（内存存储）
+- `src/memory/history-test2.mjs`：FileSystemChatMessageHistory 持久化存储（写入文件）
+- `src/memory/history-test3.mjs`：从文件恢复历史对话（读取已保存的会话）
+- `src/memory/chat_history.json`：FileSystemChatMessageHistory 的存储文件示例
+
+**截断策略**
+- `src/memory/truncation-memory.mjs`：消息截断策略（按消息数、按 token 数）
+
+**总结策略**
+- `src/memory/summarization-memory.mjs`：基于消息数量的对话总结策略
+- `src/memory/summarization-memory2.mjs`：基于 token 数量的对话总结策略（更精确）
+
+**检索策略（RAG）**
+- `src/memory/constant.mjs`：集合名称常量定义
+- `src/memory/insert-conversations.mjs`：批量插入对话数据到 Milvus 向量数据库
+- `src/memory/retrieval-memory.mjs`：完整的 RAG 检索增强生成流程演示
+- `src/memory/query-conversations.mjs`：查询 Milvus 中的所有对话记录
+
 ### 流程图
 
 - `src/mco-amap-flow.md`：MCP Agent 调用流程图和时序图
@@ -128,6 +169,18 @@
 │   ├── mcp-server.mjs          # MCP Server 示例
 │   ├── mco-amap-flow.md        # MCP Agent 调用流程图
 │   ├── rag-demo.mjs            # RAG 配置与健康检查示例
+│   ├── memory/                 # 对话记忆管理示例目录
+│   │   ├── history-test.mjs               # InMemoryChatMessageHistory 基础用法
+│   │   ├── history-test2.mjs              # FileSystemChatMessageHistory 持久化存储
+│   │   ├── history-test3.mjs              # 从文件恢复历史对话
+│   │   ├── truncation-memory.mjs          # 消息截断策略（按消息数/token数）
+│   │   ├── summarization-memory.mjs       # 基于消息数量的对话总结
+│   │   ├── summarization-memory2.mjs      # 基于 token 数量的对话总结
+│   │   ├── constant.mjs                   # 集合名称常量定义
+│   │   ├── insert-conversations.mjs       # 批量插入对话到 Milvus
+│   │   ├── retrieval-memory.mjs           # RAG 检索增强生成流程
+│   │   ├── query-conversations.mjs        # 查询 Milvus 中的所有记录
+│   │   └── chat_history.json              # 文件存储示例
 │   ├── splitters/              # 文本分割器示例目录
 │   │   ├── CharacterTextSplitter-test.mjs           # 基于字符的分割
 │   │   ├── RecursiveCharacterTextSplitter-test.mjs  # 递归字符分割（自定义分隔符）
@@ -293,6 +346,126 @@ node src/loader-and-spliter2.mjs
 
 如果你只想测试 embeddings 配置是否可用，也可以看 `src/rag-demo.mjs`。
 
+### 运行对话记忆管理示例
+
+**1. 测试内存存储（InMemoryChatMessageHistory）**
+
+```bash
+node src/memory/history-test.mjs
+```
+
+这个示例会：
+
+- 在内存中创建对话历史
+- 演示两轮对话的完整流程
+- 展示所有历史消息的保存情况
+- 适合理解 LangChain 消息管理的基础概念
+
+**2. 测试文件持久化（FileSystemChatMessageHistory）**
+
+```bash
+node src/memory/history-test2.mjs
+```
+
+这个示例会：
+
+- 将对话历史保存到 `src/memory/chat_history.json`
+- 演示多轮对话的持久化存储
+- 可以在运行后查看 JSON 文件了解存储格式
+
+**3. 测试历史恢复**
+
+```bash
+node src/memory/history-test3.mjs
+```
+
+这个示例会：
+
+- 从 `chat_history.json` 文件加载之前的对话
+- 展示恢复后的历史消息
+- 继续在恢复的对话基础上进行新对话
+
+**4. 测试消息截断策略**
+
+```bash
+node src/memory/truncation-memory.mjs
+```
+
+这个示例会：
+
+- 演示按消息数量截断（保留最近 N 条消息）
+- 演示按 token 数量截断（使用 `trimMessages` API）
+- 使用 `js-tiktoken` 精确计算 token 数
+
+**5. 测试基于消息数量的总结**
+
+```bash
+node src/memory/summarization-memory.mjs
+```
+
+这个示例会：
+
+- 当消息数量超过阈值时触发总结
+- 保留最近的 2 条消息
+- 调用 AI 模型总结旧对话的核心内容
+
+**6. 测试基于 token 数量的总结（更精确）**
+
+```bash
+node src/memory/summarization-memory2.mjs
+```
+
+这个示例会：
+
+- 使用 `cl100k_base` 编码器计算 token 数
+- 当总 token 数超过 200 时触发总结
+- 保留最近约 80 个 token 的消息（约占 40%）
+- 逆向遍历算法：从最新消息开始保留，确保上下文连贯
+
+**7. 测试检索策略 - 数据准备（Milvus 向量数据库）**
+
+⚠️ **前置条件**：需要先启动 Milvus 服务
+
+```bash
+node src/memory/insert-conversations.mjs
+```
+
+这个示例会：
+
+- 连接到本地 Milvus 向量数据库（localhost:19530）
+- 创建 `conversations` 集合（包含 id、vector、content、round、timestamp 字段）
+- 创建 IVF_FLAT 索引，使用 COSINE 相似度度量
+- 批量插入 5 条测试对话数据
+- 使用 Embeddings 模型将对话文本转换为 1024 维向量
+
+**8. 测试检索策略 - RAG 完整流程**
+
+```bash
+node src/memory/retrieval-memory.mjs
+```
+
+这个示例会：
+
+- 演示完整的 RAG（检索增强生成）流程
+- 针对 3 个测试问题，依次执行：
+  1. **检索**：将问题向量化，从 Milvus 检索最相似的 2 条历史对话
+  2. **增强**：将检索到的历史对话作为上下文构建 prompt
+  3. **生成**：调用 AI 模型生成回答
+  4. **入库**：将新对话向量化后存入 Milvus，形成闭环
+- 显示每条检索结果的相似度分数（score）
+
+**9. 测试检索策略 - 查询所有记录**
+
+```bash
+node src/memory/query-conversations.mjs
+```
+
+这个示例会：
+
+- 查询 Milvus 集合中的所有对话记录
+- 显示每条记录的完整信息（ID、轮次、时间、内容）
+- 适合验证数据插入和检索结果
+
 ## Agent 内置工具说明
 
 当前 Agent 示例挂载了 4 个本地工具：
@@ -358,15 +531,57 @@ pnpm dev
 3. 然后看 `src/tool-runner.mjs`，理解工具调用循环
 4. 最后看 `src/index.mjs` 和 `src/agent-react-todo.mjs`，理解 Agent 如何接任务并驱动整个流程
 
+**对话记忆管理学习路径**：
+
+如果是第一次学习记忆管理，建议按这个顺序：
+
+**基础存储（3 个文件）**
+1. **内存存储**：`src/memory/history-test.mjs` - 理解 InMemoryChatMessageHistory
+2. **文件持久化**：`src/memory/history-test2.mjs` - 学习 FileSystemChatMessageHistory
+3. **历史恢复**：`src/memory/history-test3.mjs` - 理解会话恢复机制
+
+**截断策略（1 个文件）**
+4. **消息截断**：`src/memory/truncation-memory.mjs` - 掌握按消息数/token 数截断
+
+**总结策略（2 个文件）**
+5. **消息数总结**：`src/memory/summarization-memory.mjs` - 学习基于消息数量的总结
+6. **Token 级总结**：`src/memory/summarization-memory2.mjs` - 理解更精确的 token 级别管理
+
+**检索策略 - RAG（4 个文件，需先启动 Milvus）**
+7. **常量定义**：`src/memory/constant.mjs` - 了解集合名称配置
+8. **数据插入**：`src/memory/insert-conversations.mjs` - 批量导入对话到向量数据库
+9. **RAG 流程**：`src/memory/retrieval-memory.mjs` - 完整的检索-增强-生成-入库闭环
+10. **数据查询**：`src/memory/query-conversations.mjs` - 查看向量数据库中的所有记录
+
 ## 建议动手练习
 
 如果你想把这次新增内容真正学进去，可以直接做下面这些小练习：
+
+### MCP 相关练习
 
 1. 在 `src/mcp-server.mjs` 里新增一个 `list_users` 工具，返回所有用户 ID 和姓名
 2. 给 `query_user` 增加更多字段，比如部门、手机号或创建时间
 3. 新增一个资源，比如 `docs://users`，专门说明当前有哪些用户数据
 4. 把内存数据库拆到单独文件里，感受代码组织方式的变化
 5. 对照 `src/tool-runner.mjs`，思考 Agent 的工具调用循环和 MCP 的调用方式有什么本质差异
+
+### 对话记忆管理练习
+
+**基础存储与截断**
+1. 修改 `summarization-memory2.mjs`，将生成的摘要也添加回历史记录（目前只计算但未保存）
+2. 实现分级总结策略：旧消息总结多次，每次越来越精简
+3. 给 `truncation-memory.mjs` 增加系统提示词保留功能（SystemMessage 始终不被截断）
+4. 实现一个混合策略：优先按 token 数，但最少保留 N 条消息
+5. 尝试使用 `ConversationSummaryMemory`（LangChain 内置）对比自定义实现
+6. 给 FileSystemChatMessageHistory 增加多会话管理（不同 sessionId 的切换）
+
+**检索策略 - RAG**
+7. 修改 `insert-conversations.mjs`，批量插入 100 条对话数据，观察性能变化
+8. 调整 `retrieval-memory.mjs` 中的 k 值（检索数量），对比 k=1、k=3、k=5 的回答质量
+9. 给检索增加过滤条件，如只检索最近 3 轮的对话（`filter: 'round >= 3'`）
+10. 实现动态 k 值：根据问题类型自动调整检索数量
+11. 添加检索结果的缓存层（Redis），避免重复查询相同问题
+12. 对比不同相似度度量方式（COSINE vs L2 vs IP）的检索效果差异
 
 这几个练习都不大，但非常适合建立对 MCP 和 Agent 的直觉。
 
@@ -423,6 +638,7 @@ args: ['-y', '@modelcontextprotocol/server-filesystem', ...allowedPaths]
 
 ## 可以继续扩展的方向
 
+**通用扩展**
 - 给根项目补充 `npm scripts`，减少手动输入命令
 - 为工具增加更严格的参数校验和错误处理
 - 增加文件搜索、HTTP 请求、Git 操作等更多工具
@@ -430,9 +646,19 @@ args: ['-y', '@modelcontextprotocol/server-filesystem', ...allowedPaths]
 - 把 MCP Server 里的内存数据换成真实数据库或外部接口
 - 增加日志记录，方便观察每轮模型决策和工具调用
 
+**对话记忆管理扩展**
+- 为对话记忆管理增加数据库后端（如 Redis、MongoDB）
+- 实现更智能的记忆压缩策略（关键信息提取、实体保留）
+- 增加记忆管理的可视化调试工具
+- 实现记忆的自动过期清理机制（TTL）
+- 支持多用户会话隔离与权限控制
+- 增加检索结果的反馈学习（记录哪些检索结果被有效使用）
+
 ## 注意事项
 
 - 这是一个学习仓库，重点是帮助理解思路，不是生产环境最佳实践
 - `command-execute` 直接执行 shell 命令，真实场景需要更严格的权限和安全限制
 - 当前根项目没有自动化测试
 - 如果你准备继续扩展，建议优先补上脚本、日志和错误处理
+- 运行检索策略示例前，需要先启动 Milvus 服务（参考 Docker Compose 配置）
+- Milvus 向量数据库占用内存较大，建议至少分配 4GB 以上内存

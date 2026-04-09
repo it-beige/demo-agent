@@ -12,6 +12,10 @@ const model = new ChatOpenAI({
   configuration: {
     baseURL: process.env.BASE_URL,
   },
+  // 强制使用聊天补全 API 而不是 Responses API
+  modelKwargs: {
+    stream: false,
+  },
 })
 const embeddings = new OpenAIEmbeddings({
   apiKey: process.env.EMBEDDING_API_KEY,
@@ -19,6 +23,7 @@ const embeddings = new OpenAIEmbeddings({
   configuration: {
     baseURL: process.env.EMBEDDING_BASE_URL,
   },
+  dimensions: 1024
 })
 
 export { model, embeddings }

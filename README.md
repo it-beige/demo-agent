@@ -65,6 +65,29 @@
 - **重点**：记忆存储策略对比、token 级别的消息管理、向量检索实现、RAG 数据流
 - **核心问题**：如何在对话历史过长时智能管理记忆，避免超出模型上下文窗口
 
+### 第 9 章：Milvus 向量数据库基础
+
+- **文件**：`src/mivlus/insert.mjs`
+- **内容**：Milvus 集合创建、索引构建、数据插入
+  - **集合管理**：创建集合、定义字段（主键、向量、元数据）
+  - **索引创建**：IVF_FLAT 索引、COSINE 相似度度量
+  - **数据插入**：批量插入、向量生成
+- **重点**：Milvus 基础操作、向量维度配置、索引类型选择
+- **核心问题**：如何为不同类型的向量数据设计合适的集合结构
+
+### 第 10 章：电子书 RAG 系统
+
+- **文件**：`src/mivlus/book-test/` 目录下的示例代码
+- **内容**：完整电子书 RAG 流程（EPUB 解析 → 文本切分 → 向量存储 → 智能问答）
+  - **电子书解析**：使用 EPubLoader 加载 EPUB 格式电子书
+  - **文本处理**：RecursiveCharacterTextSplitter 按章节切分内容
+  - **向量化存储**：将章节内容转换为向量并存入 Milvus
+  - **语义检索**：基于问题相似度检索最相关章节
+  - **RAG 问答**：检索增强生成，让 AI 基于电子书内容回答问题
+- **重点**：非结构化文档处理、章节级检索、多字段元数据管理
+- **核心问题**：如何对长文档（如小说）进行智能切分和精准检索
+- **示例数据**：`天龙八部.epub`（金庸武侠小说）
+
 ---
 
 ## 🎯 这个仓库适合学什么
@@ -91,6 +114,12 @@
 - 如何通过语义相似度检索相关历史对话
 - 如何构建 RAG（检索增强生成）完整流程
 - 如何实现对话记忆的检索-增强-生成-入库闭环
+- 如何使用 Milvus 进行基础向量数据管理（集合、索引、插入）
+- 如何解析 EPUB 格式电子书并提取章节内容
+- 如何将长文档按章节切分为适合向量检索的片段
+- 如何为电子书内容构建带元数据（书名、章节号）的向量索引
+- 如何实现基于语义相似度的电子书内容检索
+- 如何构建电子书智能问答系统（RAG 流程）
 - Agent 和 MCP 这两种集成方式分别适合什么场景
 
 ## 📁 仓库里有什么
@@ -155,6 +184,17 @@
 - `src/memory/retrieval-memory.mjs`：完整的 RAG 检索增强生成流程演示
 - `src/memory/query-conversations.mjs`：查询 Milvus 中的所有对话记录
 
+### Milvus 向量数据库示例
+
+- `src/mivlus/insert.mjs`：AI 日记向量数据库示例（集合创建、索引、数据插入）
+
+### 电子书 RAG 示例
+
+- `src/mivlus/book-test/ebook-writer.mjs`：电子书解析与向量化存储（EPUB → Milvus）
+- `src/mivlus/book-test/ebook-query.mjs`：电子书内容向量检索测试
+- `src/mivlus/book-test/ebook-reader-rag.mjs`：完整的电子书 RAG 问答系统
+- `src/mivlus/book-test/天龙八部.epub`：示例电子书文件
+
 ### 流程图
 
 - `src/mco-amap-flow.md`：MCP Agent 调用流程图和时序图
@@ -186,12 +226,19 @@
 │   │   ├── query-conversations.mjs        # 查询 Milvus 中的所有记录
 │   │   └── chat_history.json              # 文件存储示例
 │   ├── splitters/              # 文本分割器示例目录
-│   │   ├── CharacterTextSplitter-test.mjs           # 基于字符的分割
-│   │   ├── RecursiveCharacterTextSplitter-test.mjs  # 递归字符分割（自定义分隔符）
-│   │   ├── TokenTextSplitter-test.mjs               # 基于 Token 计数的分割
-│   │   ├── recursive-splitter-code.mjs              # 代码专用分割器
-│   │   ├── recursive-splitter-markdown.mjs          # Markdown 文档分割
-│   │   └── recursive-splitter-latex.mjs             # LaTeX 公式分割
+│   │   ├── RecursiveCharacterTextSplitter.mjs  # 递归字符分割（自定义分隔符）
+│   │   ├── RecursiveSplitterCode.mjs         # 代码专用分割器
+│   │   ├── RecursiveSplitterMarkdown.mjs     # Markdown 文档分割
+│   │   ├── RecursiveSplitterLatex.mjs        # LaTeX 公式分割
+│   │   └── TokenTextSplitter.mjs             # 基于 Token 计数的分割
+│   ├── mivlus/                 # Milvus 向量数据库示例目录
+│   │   ├── insert.mjs                     # AI 日记向量数据库（基础操作）
+│   │   ├── book-test/                     # 电子书 RAG 示例
+│   │   │   ├── ebook-writer.mjs           # 电子书解析与向量化存储
+│   │   │   ├── ebook-query.mjs            # 电子书内容检索测试
+│   │   │   ├── ebook-reader-rag.mjs       # 完整电子书 RAG 问答系统
+│   │   │   └── 天龙八部.epub              # 示例电子书
+│   │   └── volumes/                       # Milvus Docker 数据卷
 │   ├── tool-runner.mjs         # 工具调用循环
 │   └── tools/                  # 本地工具实现
 └── react-todo-app/             # Agent 生成的 React Todo 示例项目
@@ -470,6 +517,74 @@ node src/memory/query-conversations.mjs
 - 显示每条记录的完整信息（ID、轮次、时间、内容）
 - 适合验证数据插入和检索结果
 
+### 运行 Milvus 向量数据库基础示例
+
+**10. 测试 Milvus 基础操作（AI 日记）**
+
+```bash
+node src/mivlus/insert.mjs
+```
+
+这个示例会：
+
+- 连接到本地 Milvus 向量数据库（localhost:19530）
+- 创建 `ai_diary` 集合（包含 id、vector、content、date、mood、tags 字段）
+- 创建 IVF_FLAT 索引，使用 COSINE 相似度度量
+- 批量插入 5 条 AI 日记数据（包含文本向量化）
+- 演示 Array 类型字段的使用（tags 标签数组）
+- 适合理解 Milvus 集合设计、数据类型和索引配置
+
+### 运行电子书 RAG 示例
+
+⚠️ **前置条件**：需要先启动 Milvus 服务，并准备 EPUB 电子书文件
+
+**11. 电子书解析与向量化存储**
+
+```bash
+node src/mivlus/book-test/ebook-writer.mjs
+```
+
+这个示例会：
+
+- 使用 EPubLoader 加载 `天龙八部.epub` 电子书
+- 提取书名（自动从文件名解析）
+- 按章节切分文本（RecursiveCharacterTextSplitter，chunkSize=500）
+- 创建 `ebook_collection` 集合（包含 id、book_id、book_name、chapter_num、index、content、vector 字段）
+- 批量插入所有章节片段到 Milvus（包含章节号等元数据）
+- 生成 1024 维向量嵌入
+- 演示长文档的完整处理流程
+
+**12. 电子书内容向量检索测试**
+
+```bash
+node src/mivlus/book-test/ebook-query.mjs
+```
+
+这个示例会：
+
+- 连接到 Milvus 并加载 `ebook_collection` 集合
+- 将查询问题（如"鸠摩智会什么武功？"）向量化
+- 检索最相似的 5 个章节片段
+- 显示每条结果的相似度分数、章节号、内容
+- 适合验证电子书向量化质量和检索准确性
+
+**13. 电子书 RAG 问答系统**
+
+```bash
+node src/mivlus/book-test/ebook-reader-rag.mjs
+```
+
+这个示例会：
+
+- 演示完整的电子书 RAG（检索增强生成）流程
+- 针对测试问题，依次执行：
+  1. **检索**：将问题向量化，从 Milvus 检索最相似的 3 个章节片段
+  2. **增强**：将检索到的章节内容作为上下文构建 prompt
+  3. **生成**：调用 AI 模型基于电子书内容生成回答
+- 显示检索结果的相似度分数和章节信息
+- 展示 AI 如何基于小说原文回答角色相关问题
+- 形成"提问→检索→增强→回答"的完整闭环
+
 ## Agent 内置工具说明
 
 当前 Agent 示例挂载了 4 个本地工具：
@@ -551,6 +666,10 @@ pnpm dev
 
 **检索策略 - RAG（4 个文件，需先启动 Milvus）** 7. **常量定义**：`src/memory/constant.mjs` - 了解集合名称配置 8. **数据插入**：`src/memory/insert-conversations.mjs` - 批量导入对话到向量数据库 9. **RAG 流程**：`src/memory/retrieval-memory.mjs` - 完整的检索-增强-生成-入库闭环10. **数据查询**：`src/memory/query-conversations.mjs` - 查看向量数据库中的所有记录
 
+**Milvus 基础操作（1 个文件）** 11. **基础示例**：`src/mivlus/insert.mjs` - 理解集合创建、索引配置、数据插入全流程
+
+**电子书 RAG 系统（3 个文件，需先启动 Milvus）** 12. **电子书解析**：`src/mivlus/book-test/ebook-writer.mjs` - 学习 EPUB 解析、章节切分、向量化存储 13. **检索测试**：`src/mivlus/book-test/ebook-query.mjs` - 验证向量检索准确性和元数据过滤 14. **RAG 问答**：`src/mivlus/book-test/ebook-reader-rag.mjs` - 完整电子书智能问答系统
+
 ## 建议动手练习
 
 如果你想把这次新增内容真正学进去，可以直接做下面这些小练习：
@@ -575,6 +694,16 @@ pnpm dev
 6. 给 FileSystemChatMessageHistory 增加多会话管理（不同 sessionId 的切换）
 
 **检索策略 - RAG** 7. 修改 `insert-conversations.mjs`，批量插入 100 条对话数据，观察性能变化 8. 调整 `retrieval-memory.mjs` 中的 k 值（检索数量），对比 k=1、k=3、k=5 的回答质量 9. 给检索增加过滤条件，如只检索最近 3 轮的对话（`filter: 'round >= 3'`）10. 实现动态 k 值：根据问题类型自动调整检索数量 11. 添加检索结果的缓存层（Redis），避免重复查询相同问题 12. 对比不同相似度度量方式（COSINE vs L2 vs IP）的检索效果差异
+
+### Milvus 向量数据库练习
+
+**基础操作** 13. 修改 `insert.mjs`，为 AI 日记增加地理位置字段（location），支持基于地点的过滤检索 14. 尝试不同的索引类型（IVF_SQ8、HNSW），对比检索性能和准确率差异 15. 实现日记的更新和删除操作，理解 Milvus 的数据管理 16. 给 `insert.mjs` 增加批量导入功能，从 JSON 文件读取 100 条日记数据
+
+### 电子书 RAG 系统练习
+
+**电子书处理** 17. 修改 `ebook-writer.mjs`，支持 PDF 格式电子书（使用 PDFLoader）18. 优化章节切分策略：尝试不同的 chunkSize（300、800、1000），对比检索效果 19. 为电子书增加段落级别的细粒度切分，实现更精准的引用定位 20. 实现多本书籍的并行导入，通过 book_id 区分不同书籍
+
+**检索与问答** 21. 在 `ebook-reader-rag.mjs` 中增加引用来源标注（回答时标明出自第几章）22. 实现跨章节检索：先定位相关章节，再在该章节内进行二次检索 23. 给问答系统增加对话历史，支持多轮追问（如"他还会什么？"）24. 对比不同 Embeddings 模型的检索质量（尝试不同的 embedding 模型）25. 实现混合检索：向量检索 + 关键词检索（章节号、角色名精确匹配）
 
 这几个练习都不大，但非常适合建立对 MCP 和 Agent 的直觉。
 
@@ -649,6 +778,23 @@ args: ['-y', '@modelcontextprotocol/server-filesystem', ...allowedPaths]
 - 支持多用户会话隔离与权限控制
 - 增加检索结果的反馈学习（记录哪些检索结果被有效使用）
 
+**Milvus 向量数据库扩展**
+
+- 实现向量数据库的性能监控（查询延迟、内存占用）
+- 支持增量更新：只向量化新增内容，避免全量重建
+- 实现向量数据的备份与恢复机制
+- 探索分布式 Milvus 集群部署方案
+- 对比 Milvus 与其他向量数据库（Pinecone、Weaviate、Chroma）
+
+**电子书 RAG 系统扩展**
+
+- 支持更多文档格式（PDF、Markdown、TXT、DOCX）
+- 实现智能目录解析（自动识别章节结构、标题层级）
+- 增加多语言支持（中英文混合书籍、翻译功能）
+- 实现书籍内容摘要生成（自动为每本书生成简介）
+- 构建多书籍知识图谱（角色关系、事件时间线）
+- 增加引用溯源功能（回答时精确到段落和页码）
+
 ## 注意事项
 
 - 这是一个学习仓库，重点是帮助理解思路，不是生产环境最佳实践
@@ -657,3 +803,5 @@ args: ['-y', '@modelcontextprotocol/server-filesystem', ...allowedPaths]
 - 如果你准备继续扩展，建议优先补上脚本、日志和错误处理
 - 运行检索策略示例前，需要先启动 Milvus 服务（参考 Docker Compose 配置）
 - Milvus 向量数据库占用内存较大，建议至少分配 4GB 以上内存
+- 电子书 RAG 示例需要 EPUB 格式的电子书文件，请确保文件路径正确
+- EPUB 文件大小会影响向量化时间，大型书籍可能需要数分钟处理

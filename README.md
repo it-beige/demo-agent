@@ -65,6 +65,19 @@
 - **重点**：记忆存储策略对比、token 级别的消息管理、向量检索实现、RAG 数据流
 - **核心问题**：如何在对话历史过长时智能管理记忆，避免超出模型上下文窗口
 
+### 第 9 章：结构化大模型输出
+
+- **文件**：`src/output-parse/` 目录下的示例代码
+- **内容**：从基础到高级的结构化输出解析技术
+  - **基础解析**：手动 JSON.parse()、JsonOutputParser 智能提取
+  - **结构化定义**：StructuredOutputParser 字段定义、Zod Schema 完整类型系统
+  - **现代 API**：withStructuredOutput() 最简封装、一行搞定结构化输出
+  - **流式输出**：普通文本流式、结构化数据流式、增量 diff 显示算法
+  - **Tool Calls**：原生函数调用、流式工具调用、JsonOutputToolsParser 解析
+  - **XML 格式**：XMLOutputParser XML 格式输出解析
+- **重点**：输出解析器家族对比、流式与结构化组合、Tool Calls 原生能力、生产级最佳实践
+- **核心问题**：如何稳定可靠地让 AI 返回符合预期的结构化数据
+
 ---
 
 ## 🎯 这个仓库适合学什么
@@ -92,6 +105,16 @@
 - 如何构建 RAG（检索增强生成）完整流程
 - 如何实现对话记忆的检索-增强-生成-入库闭环
 - Agent 和 MCP 这两种集成方式分别适合什么场景
+- 如何让 AI 稳定返回 JSON 格式的结构化数据
+- 如何使用 JsonOutputParser 智能提取和解析 JSON
+- 如何用 StructuredOutputParser 定义字段级输出结构
+- 如何使用 Zod Schema 定义复杂嵌套类型和完整类型系统
+- 如何用 withStructuredOutput() 一行代码实现结构化输出
+- 如何实现流式输出并实时显示 AI 生成内容
+- 如何将流式与结构化结合，边接收边解析数据
+- 如何使用 Tool Calls 利用模型原生函数调用能力
+- 如何实现流式 Tool Calls 并智能显示增量数据
+- 如何使用 XMLOutputParser 处理 XML 格式输出
 
 ## 📁 仓库里有什么
 
@@ -155,6 +178,30 @@
 - `src/memory/retrieval-memory.mjs`：完整的 RAG 检索增强生成流程演示
 - `src/memory/query-conversations.mjs`：查询 Milvus 中的所有对话记录
 
+### 结构化大模型输出示例
+
+**基础解析（2 个文件）**
+
+- `src/output-parse/normal.mjs`：手动 JSON.parse() 基础演示
+- `src/output-parse/json-output-parser.mjs`：JsonOutputParser 智能提取与格式指令
+
+**结构化定义（3 个文件）**
+
+- `src/output-parse/structured-output-parser.mjs`：StructuredOutputParser 字段定义
+- `src/output-parse/zod-schema-parser.mjs`：Zod Schema 完整类型系统（嵌套对象、数组、可选字段）
+- `src/output-parse/with-structured-output.mjs`：现代 API 一行搞定结构化输出
+
+**流式输出（4 个文件）**
+
+- `src/output-parse/stream-normal.mjs`：普通文本流式输出演示
+- `src/output-parse/stream-structured-partial.mjs`：流式接收 + 批量解析（两阶段处理）
+- `src/output-parse/stream-tool-calls-raw.mjs`：流式 Tool Calls 原始数据
+- `src/output-parse/stream-tool-calls-parser.mjs`：流式 Tool Calls + JsonOutputToolsParser 智能解析
+
+**XML 格式（1 个文件）**
+
+- `src/output-parse/xml-output-parser.mjs`：XML 格式输出解析
+
 ### 流程图
 
 - `src/mco-amap-flow.md`：MCP Agent 调用流程图和时序图
@@ -192,6 +239,17 @@
 │   │   ├── recursive-splitter-code.mjs              # 代码专用分割器
 │   │   ├── recursive-splitter-markdown.mjs          # Markdown 文档分割
 │   │   └── recursive-splitter-latex.mjs             # LaTeX 公式分割
+│   ├── output-parse/           # 结构化大模型输出示例目录
+│   │   ├── normal.mjs                             # 手动 JSON.parse 基础演示
+│   │   ├── json-output-parser.mjs                 # JsonOutputParser 智能提取
+│   │   ├── structured-output-parser.mjs           # StructuredOutputParser 字段定义
+│   │   ├── zod-schema-parser.mjs                  # Zod Schema 完整类型系统
+│   │   ├── with-structured-output.mjs             # 现代 API 一行搞定
+│   │   ├── stream-normal.mjs                      # 普通文本流式输出
+│   │   ├── stream-structured-partial.mjs          # 流式 + 结构化（两阶段）
+│   │   ├── stream-tool-calls-raw.mjs              # 流式 Tool Calls 原始数据
+│   │   ├── stream-tool-calls-parser.mjs           # 流式 Tool Calls 智能解析
+│   │   └── xml-output-parser.mjs                  # XML 格式输出解析
 │   ├── tool-runner.mjs         # 工具调用循环
 │   └── tools/                  # 本地工具实现
 └── react-todo-app/             # Agent 生成的 React Todo 示例项目
@@ -470,6 +528,128 @@ node src/memory/query-conversations.mjs
 - 显示每条记录的完整信息（ID、轮次、时间、内容）
 - 适合验证数据插入和检索结果
 
+### 运行结构化大模型输出示例
+
+**1. 基础解析**
+
+```bash
+node src/output-parse/normal.mjs
+```
+
+这个示例会：
+
+- 演示最基础的模型调用和 JSON 解析
+- 使用 `JSON.parse()` 手动解析 AI 返回的 JSON 字符串
+- 适合理解结构化输出的基础原理
+
+**2. JsonOutputParser 智能提取**
+
+```bash
+node src/output-parse/json-output-parser.mjs
+```
+
+这个示例会：
+
+- 使用 `JsonOutputParser` 自动提取和解析 JSON
+- 通过 `getFormatInstructions()` 自动生成格式指令
+- 比手动解析更鲁棒，能处理 AI 的额外文字
+
+**3. StructuredOutputParser 字段定义**
+
+```bash
+node src/output-parse/structured-output-parser.mjs
+```
+
+这个示例会：
+
+- 使用 `fromNamesAndDescriptions()` 定义字段名和描述
+- 生成包含字段说明的详细格式指令
+- 保证字段完整性（所有字段必填）
+
+**4. Zod Schema 完整类型系统**
+
+```bash
+node src/output-parse/zod-schema-parser.mjs
+```
+
+这个示例会：
+
+- 使用 Zod 定义复杂嵌套结构（对象、数组、可选字段）
+- 演示完整的类型系统（string、number、array、object）
+- 自动类型校验，失败时抛出 ZodError
+
+**5. withStructuredOutput 现代 API**
+
+```bash
+node src/output-parse/with-structured-output.mjs
+```
+
+这个示例会：
+
+- 使用 `model.withStructuredOutput(schema)` 一行搞定结构化输出
+- 自动完成格式指令注入、解析、验证
+- 生产环境推荐的最佳实践
+
+**6. 普通文本流式输出**
+
+```bash
+node src/output-parse/stream-normal.mjs
+```
+
+这个示例会：
+
+- 演示 `model.stream()` 的流式调用
+- 使用 `for await...of` 遍历异步数据流
+- 实现打字机效果实时显示
+
+**7. 流式 + 结构化（两阶段处理）**
+
+```bash
+node src/output-parse/stream-structured-partial.mjs
+```
+
+这个示例会：
+
+- 流式接收 AI 返回的 JSON 字符串
+- 累积完整内容后批量解析
+- 展示两阶段处理模式
+
+**8. 流式 Tool Calls 原始数据**
+
+```bash
+node src/output-parse/stream-tool-calls-raw.mjs
+```
+
+这个示例会：
+
+- 使用 `bindTools()` 绑定工具定义
+- 流式接收 `tool_call_chunks` 原始数据
+- 直接打印 JSON 参数片段
+
+**9. 流式 Tool Calls 智能解析**
+
+```bash
+node src/output-parse/stream-tool-calls-parser.mjs
+```
+
+这个示例会：
+
+- 使用 `JsonOutputToolsParser` 自动解析工具调用
+- 通过 `.pipe()` 连接模型和解析器
+- 演示增量 diff 显示算法
+
+**10. XML 格式输出**
+
+```bash
+node src/output-parse/xml-output-parser.mjs
+```
+
+这个示例会：
+
+- 使用 `XMLOutputParser` 处理 XML 格式输出
+- 生成 XML 格式指令
+- 解析 XML 为 JavaScript 对象
+
 ## Agent 内置工具说明
 
 当前 Agent 示例挂载了 4 个本地工具：
@@ -551,6 +731,32 @@ pnpm dev
 
 **检索策略 - RAG（4 个文件，需先启动 Milvus）** 7. **常量定义**：`src/memory/constant.mjs` - 了解集合名称配置 8. **数据插入**：`src/memory/insert-conversations.mjs` - 批量导入对话到向量数据库 9. **RAG 流程**：`src/memory/retrieval-memory.mjs` - 完整的检索-增强-生成-入库闭环10. **数据查询**：`src/memory/query-conversations.mjs` - 查看向量数据库中的所有记录
 
+**结构化大模型输出学习路径**：
+
+如果是第一次学习结构化输出，建议按这个顺序：
+
+**基础解析（2 个文件）**
+
+1. **手动解析**：`src/output-parse/normal.mjs` - 理解 JSON.parse() 基础原理
+2. **智能提取**：`src/output-parse/json-output-parser.mjs` - 学习 JsonOutputParser
+
+**结构化定义（3 个文件）**
+
+3. **字段定义**：`src/output-parse/structured-output-parser.mjs` - 理解 StructuredOutputParser
+4. **Zod Schema**：`src/output-parse/zod-schema-parser.mjs` - 掌握完整类型系统
+5. **现代 API**：`src/output-parse/with-structured-output.mjs` - 学习生产级最佳实践
+
+**流式输出（4 个文件）**
+
+6. **普通流式**：`src/output-parse/stream-normal.mjs` - 理解流式调用基础
+7. **流式 + 结构化**：`src/output-parse/stream-structured-partial.mjs` - 学习两阶段处理
+8. **Tool Calls 原始**：`src/output-parse/stream-tool-calls-raw.mjs` - 了解工具调用机制
+9. **Tool Calls 解析**：`src/output-parse/stream-tool-calls-parser.mjs` - 掌握智能解析
+
+**XML 格式（1 个文件）**
+
+10. **XML 解析**：`src/output-parse/xml-output-parser.mjs` - 了解 XML 格式处理
+
 ## 建议动手练习
 
 如果你想把这次新增内容真正学进去，可以直接做下面这些小练习：
@@ -577,6 +783,41 @@ pnpm dev
 **检索策略 - RAG** 7. 修改 `insert-conversations.mjs`，批量插入 100 条对话数据，观察性能变化 8. 调整 `retrieval-memory.mjs` 中的 k 值（检索数量），对比 k=1、k=3、k=5 的回答质量 9. 给检索增加过滤条件，如只检索最近 3 轮的对话（`filter: 'round >= 3'`）10. 实现动态 k 值：根据问题类型自动调整检索数量 11. 添加检索结果的缓存层（Redis），避免重复查询相同问题 12. 对比不同相似度度量方式（COSINE vs L2 vs IP）的检索效果差异
 
 这几个练习都不大，但非常适合建立对 MCP 和 Agent 的直觉。
+
+### 结构化大模型输出练习
+
+**基础解析**
+
+1. 对比 `normal.mjs` 和 `json-output-parser.mjs`，观察 AI 返回格式的稳定性差异
+2. 故意让 AI 返回包含额外文字的 JSON，测试两种解析方式的容错能力
+3. 修改 `json-output-parser.mjs` 的 schema，添加更多字段观察效果
+
+**结构化定义**
+
+4. 在 `zod-schema-parser.mjs` 中定义一个新的复杂 schema（如电影信息、商品信息）
+5. 实现嵌套对象数组（如作者的多本书籍，每本书有多个章节）
+6. 测试 ZodError 错误处理，观察 AI 返回不符合 schema 时的详细错误信息
+7. 对比 `structured-output-parser.mjs` 和 `zod-schema-parser.mjs` 的格式指令差异
+
+**流式输出**
+
+8. 修改 `stream-normal.mjs`，添加进度条显示（如：已接收 X 字符）
+9. 在 `stream-structured-partial.mjs` 中实现实时解析进度显示
+10. 优化 `stream-tool-calls-parser.mjs` 的 diff 算法，支持格式化 JSON 显示
+11. 实现流式输出的暂停/继续功能（模拟网络中断场景）
+
+**Tool Calls**
+
+12. 在 `stream-tool-calls-raw.mjs` 中添加多工具调用支持
+13. 实现 Tool Calls 结果的自动执行（如调用天气 API、搜索 API）
+14. 对比 `bindTools` 和 `withStructuredOutput` 的底层实现差异
+15. 实现 Tool Calls 的并行调用和结果聚合
+
+**XML 格式**
+
+16. 修改 `xml-output-parser.mjs`，定义特定的 XML schema（如果支持）
+17. 对比 XML 和 JSON 在同一任务中的 AI 遵循度
+18. 实现 XML 结果的 XPath 查询和数据提取
 
 ## MCP 配置踩坑记录
 

@@ -18,6 +18,8 @@ function App() {
   const [filter, setFilter] = useState<FilterType>('all')
   const [editingId, setEditingId] = useState<number | null>(null)
   const [editingText, setEditingText] = useState('')
+  const [isAdding, setIsAdding] = useState(false)
+  const [removingIds, setRemovingIds] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     const raw = localStorage.getItem(STORAGE_KEY)
@@ -40,6 +42,7 @@ function App() {
     const text = input.trim()
     if (!text) return
 
+    setIsAdding(true)
     const newTodo: Todo = {
       id: Date.now(),
       text,
@@ -49,10 +52,23 @@ function App() {
 
     setTodos((prev) => [newTodo, ...prev])
     setInput('')
+    
+    // Reset adding animation after transition
+    setTimeout(() => setIsAdding(false), 400)
   }
 
   const handleDeleteTodo = (id: number) => {
-    setTodos((prev) => prev.filter((todo) => todo.id !== id))
+    setRemovingIds(prev => new Set(prev).add(id))
+    
+    // Remove after animation completes
+    setTimeout(() => {
+      setTodos((prev) => prev.filter((todo) => todo.id !== id))
+      setRemovingIds(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(id)
+        return newSet
+      })
+    }, 400)
   }
 
   const handleToggleTodo = (id: number) => {
@@ -137,7 +153,12 @@ function App() {
 
         <ul className="todo-list">
           {filteredTodos.map((todo) => (
-            <li key={todo.id} className={`todo-item ${todo.completed ? 'done' : ''}`}>
+            <li
+              key={todo.id}
+              className={`todo-item ${todo.completed ? 'done' : ''} ${
+                isAdding && todos[0]?.id === todo.id ? 'adding' : ''
+              } ${removingIds.has(todo.id) ? 'removing' : ''}`}
+            >
               <label className="todo-main">
                 <input
                   type="checkbox"

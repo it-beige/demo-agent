@@ -78,6 +78,21 @@
 - **重点**：输出解析器家族对比、流式与结构化组合、Tool Calls 原生能力、生产级最佳实践
 - **核心问题**：如何稳定可靠地让 AI 返回符合预期的结构化数据
 
+### 第 10 章：智能录入与 Mini Cursor Agent
+
+- **文件**：`src/output-parse-demo/` 目录下的实战示例
+- **内容**：两个完整的 AI 应用实战案例
+  - **智能数据录入**：AI 驱动的非结构化文本提取 + MySQL 批量插入
+    - Zod Schema 定义数据结构、withStructuredOutput 自动解析
+    - 批量插入语法、事务处理、环境变量配置
+  - **Mini Cursor Agent**：简化版 AI 编程助手实现
+    - ReAct 模式（推理 → 行动 → 观察循环）
+    - 流式工具调用处理、增量 diff 显示算法
+    - 消息历史管理、多轮自主任务执行
+  - **工程化配置**：数据库常量提取、Docker Compose 服务编排
+- **重点**：从理论到实战的完整链路、Agent 自主决策机制、流式处理优化
+- **核心问题**：如何将 AI 输出解析技术应用到真实业务场景中
+
 ---
 
 ## 🎯 这个仓库适合学什么
@@ -115,6 +130,16 @@
 - 如何使用 Tool Calls 利用模型原生函数调用能力
 - 如何实现流式 Tool Calls 并智能显示增量数据
 - 如何使用 XMLOutputParser 处理 XML 格式输出
+- 如何让 AI 从自然语言文本中智能提取结构化信息
+- 如何将 AI 提取的数据批量插入 MySQL 数据库
+- 如何使用事务保证数据库操作的原子性
+- 如何实现简化版的 AI 编程助手（类似 Cursor）
+- 如何让 AI 自主调用工具完成复杂任务（读文件、写文件、执行命令）
+- 如何实现流式工具调用的增量显示（diff 算法）
+- 如何使用 ReAct 模式让 AI 进行多轮自主决策
+- 如何管理 Agent 的对话历史和上下文
+- 如何配置 Docker Compose 运行 MySQL 服务
+- 如何提取数据库配置到常量文件实现配置解耦
 
 ## 📁 仓库里有什么
 
@@ -202,6 +227,22 @@
 
 - `src/output-parse/xml-output-parser.mjs`：XML 格式输出解析
 
+### 智能录入与 Mini Cursor Agent 实战示例
+
+**智能数据录入（2 个文件）**
+
+- `src/output-parse-demo/smart-import.mjs`：AI 驱动的非结构化文本提取 + MySQL 批量插入
+- `src/output-parse-demo/create-table.mjs`：数据库初始化脚本（建表 + 插入测试数据）
+
+**Mini Cursor Agent（1 个文件）**
+
+- `src/output-parse-demo/mini-cursor.mjs`：简化版 AI 编程助手（ReAct 模式 + 流式工具调用）
+
+**工程化配置（2 个文件）**
+
+- `src/output-parse-demo/constant.mjs`：数据库配置常量提取（连接配置、表结构、SQL 语句）
+- `src/output-parse-demo/docker-compose-mysql.yml`：MySQL Docker 服务编排配置
+
 ### 流程图
 
 - `src/mco-amap-flow.md`：MCP Agent 调用流程图和时序图
@@ -250,6 +291,12 @@
 │   │   ├── stream-tool-calls-raw.mjs              # 流式 Tool Calls 原始数据
 │   │   ├── stream-tool-calls-parser.mjs           # 流式 Tool Calls 智能解析
 │   │   └── xml-output-parser.mjs                  # XML 格式输出解析
+│   ├── output-parse-demo/      # 智能录入与 Mini Cursor Agent 实战示例
+│   │   ├── smart-import.mjs                       # AI 智能数据录入（文本提取 + 数据库插入）
+│   │   ├── mini-cursor.mjs                        # Mini Cursor Agent（ReAct 模式）
+│   │   ├── create-table.mjs                       # 数据库初始化脚本
+│   │   ├── constant.mjs                           # 数据库配置常量
+│   │   └── docker-compose-mysql.yml               # MySQL Docker 配置
 │   ├── tool-runner.mjs         # 工具调用循环
 │   └── tools/                  # 本地工具实现
 └── react-todo-app/             # Agent 生成的 React Todo 示例项目
@@ -313,6 +360,27 @@ EMBEDDINGS_MODEL=text-embedding-3-small
 ```
 
 如果不提供 `EMBEDDINGS_*`，当前示例会优先回退到 `API_KEY / BASE_URL`，再不行就自动降级为关键词检索。
+
+如果你要运行智能录入与 Mini Cursor Agent 示例，还需要配置数据库环境变量：
+
+```bash
+# 在 src/output-parse-demo/.env 中配置
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=root123456
+DB_NAME=hello
+```
+
+说明：
+
+- `DB_HOST`：MySQL 服务器地址（默认 localhost）
+- `DB_PORT`：MySQL 端口（默认 3306）
+- `DB_USER`：数据库用户名
+- `DB_PASSWORD`：数据库密码
+- `DB_NAME`：数据库名称
+
+如果使用 Docker Compose 启动 MySQL，密码应与 `docker-compose-mysql.yml` 中的 `MYSQL_ROOT_PASSWORD` 一致。
 
 ## 如何运行
 
@@ -650,6 +718,64 @@ node src/output-parse/xml-output-parser.mjs
 - 生成 XML 格式指令
 - 解析 XML 为 JavaScript 对象
 
+### 运行智能录入与 Mini Cursor Agent 示例
+
+**前置准备：启动 MySQL 服务**
+
+```bash
+# 使用 Docker Compose 启动 MySQL
+docker-compose -f src/output-parse-demo/docker-compose-mysql.yml up -d
+
+# 查看服务状态
+docker-compose -f src/output-parse-demo/docker-compose-mysql.yml ps
+```
+
+**1. 初始化数据库（建表 + 插入测试数据）**
+
+```bash
+node src/output-parse-demo/create-table.mjs
+```
+
+这个示例会：
+
+- 连接到 MySQL 数据库（使用 `.env` 中的配置）
+- 创建 `friends` 表（包含姓名、性别、出生日期、公司、职位、手机、微信等字段）
+- 批量插入 2 条测试数据（王经理、李总监）
+- 使用事务保证数据一致性
+
+**2. 测试智能数据录入（AI 文本提取 + 数据库插入）**
+
+```bash
+node src/output-parse-demo/smart-import.mjs
+```
+
+这个示例会：
+
+- 读取包含多人信息的自然语言文本
+  - 例如："张总，女的，30 出头，在腾讯做技术总监，手机 13800138000..."
+- 使用 Zod Schema 定义数据结构
+- 调用 `withStructuredOutput()` 让 AI 提取结构化信息
+- 将提取的结果批量插入 MySQL 数据库
+- 显示提取和插入的详细信息
+
+**3. 测试 Mini Cursor Agent（AI 自主完成任务）**
+
+```bash
+node src/output-parse-demo/mini-cursor.mjs
+```
+
+这个示例会：
+
+- 接收复杂的任务描述（如"创建一个 React TodoList 应用"）
+- AI 自主决策并调用工具完成任务：
+  - `command-execute`：执行命令（创建项目、安装依赖、启动服务器）
+  - `file-write`：写入文件（编写 React 组件代码）
+  - `file-read`：读取文件（查看现有代码）
+  - `directory-list`：列出目录（确认项目结构）
+- 流式显示文件写入过程（增量 diff 算法）
+- 最多 30 轮循环自主完成任务
+- 返回最终执行结果
+
 ## Agent 内置工具说明
 
 当前 Agent 示例挂载了 4 个本地工具：
@@ -757,6 +883,34 @@ pnpm dev
 
 10. **XML 解析**：`src/output-parse/xml-output-parser.mjs` - 了解 XML 格式处理
 
+**智能录入与 Mini Cursor Agent（3 个文件，需先启动 MySQL）**
+
+如果是第一次学习实战应用，建议按这个顺序：
+
+**环境准备**
+
+1. **启动 MySQL**：使用 Docker Compose 启动数据库服务
+2. **配置环境变量**：在 `.env` 中配置数据库连接信息
+3. **初始化数据库**：`src/output-parse-demo/create-table.mjs` - 建表并插入测试数据
+
+**智能数据录入**
+
+4. **AI 文本提取**：`src/output-parse-demo/smart-import.mjs` - 学习非结构化文本到结构化数据的完整流程
+5. **理解 Schema**：回顾 `src/output-parse/zod-schema-parser.mjs` - 理解 Zod Schema 的定义方式
+6. **批量插入**：观察 `smart-import.mjs` 中的批量插入语法和事务处理
+
+**Mini Cursor Agent**
+
+7. **Agent 循环**：`src/output-parse-demo/mini-cursor.mjs` - 理解 ReAct 模式的完整实现
+8. **流式处理**：重点学习流式工具调用解析和增量 diff 显示算法
+9. **消息历史**：理解 InMemoryChatMessageHistory 的作用和多轮对话管理
+10. **工具绑定**：对比 `bindTools()` 和第 9 章的工具调用机制
+
+**工程化配置**
+
+11. **配置提取**：`src/output-parse-demo/constant.mjs` - 学习配置解耦的最佳实践
+12. **Docker 编排**：`src/output-parse-demo/docker-compose-mysql.yml` - 理解容器化部署
+
 ## 建议动手练习
 
 如果你想把这次新增内容真正学进去，可以直接做下面这些小练习：
@@ -783,6 +937,35 @@ pnpm dev
 **检索策略 - RAG** 7. 修改 `insert-conversations.mjs`，批量插入 100 条对话数据，观察性能变化 8. 调整 `retrieval-memory.mjs` 中的 k 值（检索数量），对比 k=1、k=3、k=5 的回答质量 9. 给检索增加过滤条件，如只检索最近 3 轮的对话（`filter: 'round >= 3'`）10. 实现动态 k 值：根据问题类型自动调整检索数量 11. 添加检索结果的缓存层（Redis），避免重复查询相同问题 12. 对比不同相似度度量方式（COSINE vs L2 vs IP）的检索效果差异
 
 这几个练习都不大，但非常适合建立对 MCP 和 Agent 的直觉。
+
+### 智能录入与 Mini Cursor Agent 练习
+
+**智能数据录入**
+
+1. 修改 `smart-import.mjs` 的测试文本，尝试提取 5 个人的信息并批量插入
+2. 在 `friendSchema` 中添加新字段（如邮箱、地址、头像 URL），观察 AI 的提取能力
+3. 实现错误重试机制：当 AI 提取失败时自动重试最多 3 次
+4. 添加流式输出：使用 `model.stream()` 实时显示 AI 的提取过程
+5. 实现数据验证：在插入前用 Zod Schema 验证 AI 返回的数据格式
+6. 对比不同模型的提取准确率（qwen-max vs qwen-plus vs qwen-turbo）
+
+**Mini Cursor Agent**
+
+7. 添加新工具：实现 `search-file` 工具（在目录中搜索文件）
+8. 添加工具调用日志：记录每个工具的执行时间和结果
+9. 实现最大循环警告：当接近 30 次循环时打印警告信息
+10. 添加任务超时机制：超过 5 分钟自动终止任务
+11. 实现工具调用并行化：让 AI 可以同时调用多个不依赖的工具
+12. 添加任务进度显示：实时显示当前是第几轮循环、执行了什么工具
+
+**工程化配置**
+
+13. 将 `.env` 配置改为支持多个数据库环境（开发、测试、生产）
+14. 在 `docker-compose-mysql.yml` 中添加数据卷备份策略
+15. 实现数据库迁移脚本：支持表结构的版本管理
+16. 添加健康检查：在脚本启动前自动检测 MySQL 服务是否可用
+17. 实现数据库连接池：支持并发查询场景
+18. 添加性能监控：记录每次数据库操作的耗时
 
 ### 结构化大模型输出练习
 
@@ -898,3 +1081,7 @@ args: ['-y', '@modelcontextprotocol/server-filesystem', ...allowedPaths]
 - 如果你准备继续扩展，建议优先补上脚本、日志和错误处理
 - 运行检索策略示例前，需要先启动 Milvus 服务（参考 Docker Compose 配置）
 - Milvus 向量数据库占用内存较大，建议至少分配 4GB 以上内存
+- 运行智能录入与 Mini Cursor Agent 示例前，需要先启动 MySQL 服务
+- 数据库密码不要硬编码在代码中，务必使用 `.env` 文件管理
+- `mini-cursor.mjs` 会实际执行命令和写入文件，建议在测试目录中运行
+- MySQL Docker 容器会占用约 500MB 磁盘空间，用完后可以用 `docker-compose down -v` 清理

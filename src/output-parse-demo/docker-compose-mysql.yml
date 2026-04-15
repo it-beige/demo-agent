@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: demo-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_DATABASE: demo_db
+      MYSQL_USER: demo_user
+      MYSQL_PASSWORD: demo_pass123
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    command: --default-authentication-plugin=caching_sha2_password
+
+volumes:
+  mysql_data:
+    driver: local

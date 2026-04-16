@@ -93,6 +93,19 @@
 - **重点**：从理论到实战的完整链路、Agent 自主决策机制、流式处理优化
 - **核心问题**：如何将 AI 输出解析技术应用到真实业务场景中
 
+### 第 11 章：PromptTemplate 组件化管理
+
+- **文件**：`src/prompt-template/` 目录下的示例代码
+- **内容**：从基础模板到组件化的完整演进路径
+  - **基础模板**：PromptTemplate 基础用法、占位符替换
+  - **管道模板**：PipelinePromptTemplate 模块化组合、子模板复用
+  - **部分应用**：.partial() 预填充变量、模板工厂模式
+  - **对话模板**：ChatPromptTemplate 多角色消息、system/human/assistant
+  - **少样本模板**：FewShotPromptTemplate 示例指导、FewShotChatMessagePromptTemplate 对话示例
+  - **向量检索**：Milvus 存储示例、动态检索最相关示例
+- **重点**：模板组件化、模块复用、动态示例选择、对话格式标准化
+- **核心问题**：如何管理复杂提示词，让它可维护、可复用、可测试
+
 ---
 
 ## 🎯 这个仓库适合学什么
@@ -140,6 +153,14 @@
 - 如何管理 Agent 的对话历史和上下文
 - 如何配置 Docker Compose 运行 MySQL 服务
 - 如何提取数据库配置到常量文件实现配置解耦
+- 如何使用 PromptTemplate 管理提示词模板
+- 如何用 PipelinePromptTemplate 实现模板组件化
+- 如何使用 .partial() 预填充模板变量
+- 如何使用 ChatPromptTemplate 定义多角色对话
+- 如何用 FewShotPromptTemplate 提供示例指导
+- 如何使用 FewShotChatMessagePromptTemplate 在对话中插入示例
+- 如何将 Few-Shot 示例存储到 Milvus 向量数据库
+- 如何根据用户输入动态检索最相关的示例
 
 ## 📁 仓库里有什么
 
@@ -243,6 +264,39 @@
 - `src/output-parse-demo/constant.mjs`：数据库配置常量提取（连接配置、表结构、SQL 语句）
 - `src/output-parse-demo/docker-compose-mysql.yml`：MySQL Docker 服务编排配置
 
+### PromptTemplate 组件化管理示例
+
+**基础模板（1 个文件）**
+
+- `src/prompt-template/prompt-template1.mjs`：PromptTemplate 基础用法、占位符替换
+
+**管道模板（3 个文件）**
+
+- `src/prompt-template/pipeline-prompt-template.mjs`：PipelinePromptTemplate 模块化组合（人设/背景/任务/格式）
+- `src/prompt-template/pipeline-prompt-template2.mjs`：OKR 评审场景、模块复用演示
+- `src/prompt-template/pipeline-prompt-template3.mjs`：Pipeline + ChatPromptTemplate 组合
+
+**部分应用（1 个文件）**
+
+- `src/prompt-template/partial.mjs`：.partial() 预填充变量、模板工厂模式
+
+**对话模板（2 个文件）**
+
+- `src/prompt-template/chat-prompt-template.mjs`：ChatPromptTemplate 基础用法、system/human 角色
+- `src/prompt-template/chat-prompt-template2.mjs`：多轮对话示例
+
+**少样本模板（4 个文件）**
+
+- `src/prompt-template/fewshot-prompt-template.mjs`：FewShotPromptTemplate 基础用法（字符串格式）
+- `src/prompt-template/fewshot-chat-prompt-template.mjs`：FewShotChatMessagePromptTemplate（对话格式）
+- `src/prompt-template/example-selector1.mjs`：动态选择示例（基础）
+- `src/prompt-template/example-selector2.mjs`：基于相似度选择示例（Milvus 检索）
+
+**向量数据库（2 个文件）**
+
+- `src/prompt-template/weekly-report-examples-writer-milvus.mjs`：将周报示例写入 Milvus
+- `src/prompt-template/weekly-report-examples-reader-milvus.mjs`：从 Milvus 检索示例
+
 ### 流程图
 
 - `src/mco-amap-flow.md`：MCP Agent 调用流程图和时序图
@@ -297,6 +351,20 @@
 │   │   ├── create-table.mjs                       # 数据库初始化脚本
 │   │   ├── constant.mjs                           # 数据库配置常量
 │   │   └── docker-compose-mysql.yml               # MySQL Docker 配置
+│   ├── prompt-template/        # PromptTemplate 组件化管理示例目录
+│   │   ├── prompt-template1.mjs                   # 基础模板用法
+│   │   ├── pipeline-prompt-template.mjs           # 管道模板（模块化组合）
+│   │   ├── pipeline-prompt-template2.mjs          # OKR 评审场景
+│   │   ├── pipeline-prompt-template3.mjs          # Pipeline + Chat 组合
+│   │   ├── partial.mjs                            # 部分应用（.partial()）
+│   │   ├── chat-prompt-template.mjs               # 对话模板基础
+│   │   ├── chat-prompt-template2.mjs              # 多轮对话示例
+│   │   ├── fewshot-prompt-template.mjs            # 少样本模板（字符串）
+│   │   ├── fewshot-chat-prompt-template.mjs       # 少样本对话模板
+│   │   ├── example-selector1.mjs                  # 动态选择示例（基础）
+│   │   ├── example-selector2.mjs                  # 基于相似度选择示例
+│   │   ├── weekly-report-examples-writer-milvus.mjs  # 写入示例到 Milvus
+│   │   └── weekly-report-examples-reader-milvus.mjs  # 从 Milvus 检索示例
 │   ├── tool-runner.mjs         # 工具调用循环
 │   └── tools/                  # 本地工具实现
 └── react-todo-app/             # Agent 生成的 React Todo 示例项目
@@ -718,6 +786,116 @@ node src/output-parse/xml-output-parser.mjs
 - 生成 XML 格式指令
 - 解析 XML 为 JavaScript 对象
 
+### 运行 PromptTemplate 组件化管理示例
+
+**基础模板**
+
+```bash
+node src/prompt-template/prompt-template1.mjs
+```
+
+这个示例会：
+
+- 演示 PromptTemplate 基础用法
+- 使用占位符 `{variable}` 定义模板
+- 调用 `.format()` 填入变量生成提示词
+
+**管道模板**
+
+```bash
+node src/prompt-template/pipeline-prompt-template.mjs
+```
+
+这个示例会：
+
+- 使用 PipelinePromptTemplate 组合 4 个模块（人设/背景/任务/格式）
+- 演示模块导出与复用（personaPrompt、contextPrompt）
+- 一次传入所有变量，Pipeline 自动分发到子模板
+
+```bash
+node src/prompt-template/pipeline-prompt-template3.mjs
+```
+
+这个示例会：
+
+- 将 PipelinePromptTemplate 与 ChatPromptTemplate 组合
+- finalPrompt 使用对话格式（system + human）
+- 使用 `.formatPromptValue()` 生成消息数组
+
+**部分应用**
+
+```bash
+node src/prompt-template/partial.mjs
+```
+
+这个示例会：
+
+- 使用 `.partial()` 预填充不变的变量（公司信息、价值观）
+- 基于预配置模板多次调用 `.format()` 填入变化的变量
+- 演示模板工厂模式
+
+**对话模板**
+
+```bash
+node src/prompt-template/chat-prompt-template.mjs
+```
+
+这个示例会：
+
+- 使用 ChatPromptTemplate 定义多角色对话
+- system 消息设定角色，human 消息提供数据
+- 调用 `.formatMessages()` 生成消息数组
+- 直接传给 `model.invoke()` 调用模型
+
+**少样本模板**
+
+```bash
+node src/prompt-template/fewshot-prompt-template.mjs
+```
+
+这个示例会：
+
+- 使用 FewShotPromptTemplate 提供示例指导
+- 定义示例模板（examplePrompt）和示例数据（examples）
+- 通过示例让 AI 学习语气、结构和信息组织方式
+
+```bash
+node src/prompt-template/fewshot-chat-prompt-template.mjs
+```
+
+这个示例会：
+
+- 使用 FewShotChatMessagePromptTemplate 在对话中插入示例
+- 每条示例展开为 HumanMessage + AIMessage
+- 流式调用模型并实时输出
+
+**向量数据库操作**
+
+⚠️ **前置条件**：需要先启动 Milvus 服务
+
+```bash
+# 1. 写入示例到 Milvus
+node src/prompt-template/weekly-report-examples-writer-milvus.mjs
+```
+
+这个示例会：
+
+- 定义 8 个不同场景的周报示例
+- 使用 Embedding 模型将文本转换为 1024 维向量
+- 在 Milvus 中创建集合和索引
+- 批量插入示例数据（包含向量）
+
+```bash
+# 2. 从 Milvus 检索示例
+node src/prompt-template/weekly-report-examples-reader-milvus.mjs
+```
+
+这个示例会：
+
+- 根据用户输入生成查询向量
+- 在 Milvus 中检索最相似的示例
+- 演示语义检索的应用
+
 ### 运行智能录入与 Mini Cursor Agent 示例
 
 **前置准备：启动 MySQL 服务**
@@ -883,6 +1061,41 @@ pnpm dev
 
 10. **XML 解析**：`src/output-parse/xml-output-parser.mjs` - 了解 XML 格式处理
 
+**PromptTemplate 组件化管理学习路径**：
+
+如果是第一次学习提示词组件化，建议按这个顺序：
+
+**基础模板（1 个文件）**
+
+1. **基础用法**：`src/prompt-template/prompt-template1.mjs` - 理解 PromptTemplate 和占位符替换
+
+**管道模板（3 个文件）**
+
+2. **模块化组合**：`src/prompt-template/pipeline-prompt-template.mjs` - 学习 PipelinePromptTemplate 组合多个模块
+3. **模块复用**：`src/prompt-template/pipeline-prompt-template2.mjs` - 理解导入复用其他文件的模块
+4. **对话组合**：`src/prompt-template/pipeline-prompt-template3.mjs` - 掌握 Pipeline + ChatPromptTemplate 组合
+
+**部分应用（1 个文件）**
+
+5. **预填充变量**：`src/prompt-template/partial.mjs` - 学习 .partial() 创建可复用模板
+
+**对话模板（2 个文件）**
+
+6. **多角色对话**：`src/prompt-template/chat-prompt-template.mjs` - 理解 ChatPromptTemplate 和消息格式
+7. **多轮对话**：`src/prompt-template/chat-prompt-template2.mjs` - 学习多轮对话历史管理
+
+**少样本模板（4 个文件）**
+
+8. **字符串示例**：`src/prompt-template/fewshot-prompt-template.mjs` - 理解 FewShotPromptTemplate 基础
+9. **对话示例**：`src/prompt-template/fewshot-chat-prompt-template.mjs` - 学习 FewShotChatMessagePromptTemplate
+10. **动态选择**：`src/prompt-template/example-selector1.mjs` - 掌握动态示例选择
+11. **语义检索**：`src/prompt-template/example-selector2.mjs` - 理解基于相似度的示例选择
+
+**向量数据库（2 个文件，需先启动 Milvus）**
+
+12. **写入示例**：`src/prompt-template/weekly-report-examples-writer-milvus.mjs` - 学习向量存储
+13. **检索示例**：`src/prompt-template/weekly-report-examples-reader-milvus.mjs` - 掌握语义检索
+
 **智能录入与 Mini Cursor Agent（3 个文件，需先启动 MySQL）**
 
 如果是第一次学习实战应用，建议按这个顺序：
@@ -966,6 +1179,50 @@ pnpm dev
 16. 添加健康检查：在脚本启动前自动检测 MySQL 服务是否可用
 17. 实现数据库连接池：支持并发查询场景
 18. 添加性能监控：记录每次数据库操作的耗时
+
+### PromptTemplate 组件化管理练习
+
+**基础模板**
+
+1. 修改 `prompt-template1.mjs`，创建一个新的周报模板，添加更多占位符
+2. 实现模板缓存机制，避免重复创建相同的 PromptTemplate
+3. 对比字符串拼接和 PromptTemplate 的优劣
+
+**管道模板**
+
+4. 在 `pipeline-prompt-template.mjs` 中添加第 5 个模块（如风险评估模块）
+5. 创建日报模板，复用人设和背景模块（personaPrompt、contextPrompt）
+6. 实现模板配置文件（JSON），动态加载模块定义
+7. 对比单个大模板和管道模板的维护成本
+8. 实现模板版本管理（v1/v2/v3 的平滑切换）
+
+**部分应用**
+
+9. 使用 `.partial()` 创建多公司模板工厂函数
+10. 实现模板缓存：相同的 .partial() 调用返回相同实例
+11. 对比 .partial() 和直接传入所有变量的性能差异
+12. 实现动态 .partial()：从数据库加载预设配置
+
+**对话模板**
+
+13. 在 `chat-prompt-template.mjs` 中添加 assistant 消息（多轮对话）
+14. 实现对话历史管理（MessagesPlaceholder 动态插入）
+15. 对比 PromptTemplate 和 ChatPromptTemplate 的适用场景
+16. 创建对话模板工厂函数，支持不同角色设定
+
+**少样本模板**
+
+17. 在 `fewshot-prompt-template.mjs` 中添加第 3 条示例
+18. 实现动态示例：根据用户输入选择不同的示例集
+19. 对比 FewShotPromptTemplate 和 FewShotChatMessagePromptTemplate
+20. 实现示例质量评估：记录哪些示例最有效
+
+**向量检索**
+
+21. 修改 `weekly-report-examples-writer-milvus.mjs`，添加 10 条新示例
+22. 调整检索参数（k 值、相似度阈值），对比检索效果
+23. 实现混合检索：向量检索 + 关键词过滤
+24. 添加示例更新机制：支持增删改 Milvus 中的示例
 
 ### 结构化大模型输出练习
 

@@ -8,7 +8,7 @@ import {
 import { OpenAIEmbeddings } from '@langchain/openai'
 
 const COLLECTION_NAME = 'ai_diary'
-const VECTOR_DIM = 1024
+const VECTOR_DIM = parseInt(process.env.EMBEDDING_DIM) || 1024
 
 // 初始化 Embeddings 模型
 const embeddings = new OpenAIEmbeddings({

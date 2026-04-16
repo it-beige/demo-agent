@@ -8,8 +8,8 @@ import {
 import { embeddings } from '@/index.mjs'
 import { COLLECTION_NAME } from '@/memory/constant.mjs'
 
-// 先动态获取向量维度
-let VECTOR_DIM = 1024
+// 从环境变量获取向量维度，如果未设置则动态获取
+let VECTOR_DIM = parseInt(process.env.EMBEDDING_DIM) || 1024
 
 const client = new MilvusClient({
   address: 'localhost:19530',

@@ -9,83 +9,77 @@ const args = process.argv.slice(2)
 if (args.length === 0) {
   console.log('用法: pnpm dev <脚本路径>')
   console.log('示例:')
-  console.log('  pnpm dev memory/retrieval-memory.mjs')
-  console.log('  pnpm dev mivlus/book-test/ebook-writer.mjs')
-  console.log('  pnpm dev ebook-writer.mjs  (自动查找)')
+  console.log('  pnpm dev normal.mjs')
+  console.log('  pnpm dev ./normal.mjs')
+  console.log('  pnpm dev src/output-parse/normal.mjs')
+  console.log('  pnpm dev ./src/output-parse/normal.mjs')
+  console.log('  pnpm dev output-parse/normal.mjs')
+  console.log('  pnpm dev memory/insert-conversations.mjs')
   process.exit(1)
 }
 
 let scriptPath = args[0]
 
-// 移除开头的 ./
+// 规范化路径:移除开头的 ./
 scriptPath = scriptPath.replace(/^\.\//, '')
 
-/**
- * 递归查找文件
- */
-function findFile(dir, filename) {
-  try {
-    const files = readdirSync(dir, { withFileTypes: true })
-    for (const file of files) {
-      const fullPath = join(dir, file.name)
-      if (file.isDirectory()) {
-        // 跳过 node_modules 和 .git
-        if (file.name === 'node_modules' || file.name === '.git') continue
-        const found = findFile(fullPath, filename)
-        if (found) return found
-      } else if (file.name === filename) {
-        return fullPath
-      }
-    }
-  } catch (error) {
-    // 忽略权限错误等
+// 智能路径解析策略
+function resolveScriptPath(inputPath) {
+  const candidates = []
+
+  // 策略1: 如果以 src/ 开头,直接使用
+  if (inputPath.startsWith('src/')) {
+    candidates.push(inputPath)
+  } else {
+    // 策略2: 直接路径 (根目录或 src 下的文件)
+    candidates.push(inputPath)
+    // 策略3: 在 src/ 下查找
+    candidates.push(`src/${inputPath}`)
   }
+
+  // 策略4: 在用户原始工作目录下查找 (支持在子目录中运行)
+  // pnpm 会设置 INIT_CWD 为用户运行命令的目录
+  const originalCwd = process.env.INIT_CWD || process.cwd()
+  const cwdPath = resolve(originalCwd, inputPath)
+  if (existsSync(cwdPath)) {
+    return cwdPath
+  }
+
+  // 查找第一个存在的文件
+  for (const candidate of candidates) {
+    if (existsSync(candidate)) {
+      return candidate
+    }
+  }
+
   return null
 }
 
-// 路径解析逻辑
+// 如果是相对路径,自动补全
 if (!scriptPath.startsWith('/')) {
-  // 1. 尝试直接访问
-  if (existsSync(scriptPath)) {
-    // 文件存在,直接使用
-  }
-  // 2. 尝试在 src/ 下查找
-  else if (existsSync(`src/${scriptPath}`)) {
-    scriptPath = `src/${scriptPath}`
-  }
-  // 3. 如果只提供了文件名,在 src/ 下递归查找
-  else if (!scriptPath.includes('/')) {
-    const found = findFile('src', scriptPath)
-    if (found) {
-      scriptPath = found
-    } else {
-      console.error(`✗ 找不到文件: ${args[0]}`)
-      console.error(`尝试过的路径:`)
-      console.error(`  - ${scriptPath}`)
-      console.error(`  - src/${scriptPath}`)
-      console.error(`  - src/**/${scriptPath} (递归查找)`)
-      process.exit(1)
-    }
-  }
-  // 4. 提供了相对路径但找不到
-  else {
+  const resolvedPath = resolveScriptPath(scriptPath)
+
+  if (!resolvedPath) {
     console.error(`✗ 找不到文件: ${args[0]}`)
     console.error(`尝试过的路径:`)
     console.error(`  - ${scriptPath}`)
     console.error(`  - src/${scriptPath}`)
-    console.error('')
-    console.error('提示: 使用相对于 src/ 的路径,例如:')
-    console.error('  pnpm dev mivlus/book-test/ebook-writer.mjs')
+    if (scriptPath.startsWith('src/')) {
+      console.error(`  - ${scriptPath}`)
+    }
     process.exit(1)
   }
+
+  scriptPath = resolvedPath
 }
 
 console.log(`运行: ${scriptPath}\n`)
 
 try {
-  execSync(`tsx --tsconfig tsconfig.json ${scriptPath}`, {
+  execSync(`pnpm exec tsx --tsconfig tsconfig.json ${scriptPath}`, {
     stdio: 'inherit',
     cwd: resolve(process.cwd()),
+    env: { ...process.env, FORCE_COLOR: '0' },
   })
 } catch (error) {
   process.exit(error.status || 1)

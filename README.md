@@ -65,28 +65,46 @@
 - **重点**：记忆存储策略对比、token 级别的消息管理、向量检索实现、RAG 数据流
 - **核心问题**：如何在对话历史过长时智能管理记忆，避免超出模型上下文窗口
 
-### 第 9 章：Milvus 向量数据库基础
+### 第 9 章：结构化大模型输出
 
-- **文件**：`src/mivlus/insert.mjs`
-- **内容**：Milvus 集合创建、索引构建、数据插入
-  - **集合管理**：创建集合、定义字段（主键、向量、元数据）
-  - **索引创建**：IVF_FLAT 索引、COSINE 相似度度量
-  - **数据插入**：批量插入、向量生成
-- **重点**：Milvus 基础操作、向量维度配置、索引类型选择
-- **核心问题**：如何为不同类型的向量数据设计合适的集合结构
+- **文件**：`src/output-parse/` 目录下的示例代码
+- **内容**：从基础到高级的结构化输出解析技术
+  - **基础解析**：手动 JSON.parse()、JsonOutputParser 智能提取
+  - **结构化定义**：StructuredOutputParser 字段定义、Zod Schema 完整类型系统
+  - **现代 API**：withStructuredOutput() 最简封装、一行搞定结构化输出
+  - **流式输出**：普通文本流式、结构化数据流式、增量 diff 显示算法
+  - **Tool Calls**：原生函数调用、流式工具调用、JsonOutputToolsParser 解析
+  - **XML 格式**：XMLOutputParser XML 格式输出解析
+- **重点**：输出解析器家族对比、流式与结构化组合、Tool Calls 原生能力、生产级最佳实践
+- **核心问题**：如何稳定可靠地让 AI 返回符合预期的结构化数据
 
-### 第 10 章：电子书 RAG 系统
+### 第 10 章：智能录入与 Mini Cursor Agent
 
-- **文件**：`src/mivlus/book-test/` 目录下的示例代码
-- **内容**：完整电子书 RAG 流程（EPUB 解析 → 文本切分 → 向量存储 → 智能问答）
-  - **电子书解析**：使用 EPubLoader 加载 EPUB 格式电子书
-  - **文本处理**：RecursiveCharacterTextSplitter 按章节切分内容
-  - **向量化存储**：将章节内容转换为向量并存入 Milvus
-  - **语义检索**：基于问题相似度检索最相关章节
-  - **RAG 问答**：检索增强生成，让 AI 基于电子书内容回答问题
-- **重点**：非结构化文档处理、章节级检索、多字段元数据管理
-- **核心问题**：如何对长文档（如小说）进行智能切分和精准检索
-- **示例数据**：`天龙八部.epub`（金庸武侠小说）
+- **文件**：`src/output-parse-demo/` 目录下的实战示例
+- **内容**：两个完整的 AI 应用实战案例
+  - **智能数据录入**：AI 驱动的非结构化文本提取 + MySQL 批量插入
+    - Zod Schema 定义数据结构、withStructuredOutput 自动解析
+    - 批量插入语法、事务处理、环境变量配置
+  - **Mini Cursor Agent**：简化版 AI 编程助手实现
+    - ReAct 模式（推理 → 行动 → 观察循环）
+    - 流式工具调用处理、增量 diff 显示算法
+    - 消息历史管理、多轮自主任务执行
+  - **工程化配置**：数据库常量提取、Docker Compose 服务编排
+- **重点**：从理论到实战的完整链路、Agent 自主决策机制、流式处理优化
+- **核心问题**：如何将 AI 输出解析技术应用到真实业务场景中
+
+### 第 11 章：PromptTemplate 组件化管理
+
+- **文件**：`src/prompt-template/` 目录下的示例代码
+- **内容**：从基础模板到组件化的完整演进路径
+  - **基础模板**：PromptTemplate 基础用法、占位符替换
+  - **管道模板**：PipelinePromptTemplate 模块化组合、子模板复用
+  - **部分应用**：.partial() 预填充变量、模板工厂模式
+  - **对话模板**：ChatPromptTemplate 多角色消息、system/human/assistant
+  - **少样本模板**：FewShotPromptTemplate 示例指导、FewShotChatMessagePromptTemplate 对话示例
+  - **向量检索**：Milvus 存储示例、动态检索最相关示例
+- **重点**：模板组件化、模块复用、动态示例选择、对话格式标准化
+- **核心问题**：如何管理复杂提示词，让它可维护、可复用、可测试
 
 ---
 
@@ -121,6 +139,34 @@
 - 如何实现基于语义相似度的电子书内容检索
 - 如何构建电子书智能问答系统（RAG 流程）
 - Agent 和 MCP 这两种集成方式分别适合什么场景
+- 如何让 AI 稳定返回 JSON 格式的结构化数据
+- 如何使用 JsonOutputParser 智能提取和解析 JSON
+- 如何用 StructuredOutputParser 定义字段级输出结构
+- 如何使用 Zod Schema 定义复杂嵌套类型和完整类型系统
+- 如何用 withStructuredOutput() 一行代码实现结构化输出
+- 如何实现流式输出并实时显示 AI 生成内容
+- 如何将流式与结构化结合，边接收边解析数据
+- 如何使用 Tool Calls 利用模型原生函数调用能力
+- 如何实现流式 Tool Calls 并智能显示增量数据
+- 如何使用 XMLOutputParser 处理 XML 格式输出
+- 如何让 AI 从自然语言文本中智能提取结构化信息
+- 如何将 AI 提取的数据批量插入 MySQL 数据库
+- 如何使用事务保证数据库操作的原子性
+- 如何实现简化版的 AI 编程助手（类似 Cursor）
+- 如何让 AI 自主调用工具完成复杂任务（读文件、写文件、执行命令）
+- 如何实现流式工具调用的增量显示（diff 算法）
+- 如何使用 ReAct 模式让 AI 进行多轮自主决策
+- 如何管理 Agent 的对话历史和上下文
+- 如何配置 Docker Compose 运行 MySQL 服务
+- 如何提取数据库配置到常量文件实现配置解耦
+- 如何使用 PromptTemplate 管理提示词模板
+- 如何用 PipelinePromptTemplate 实现模板组件化
+- 如何使用 .partial() 预填充模板变量
+- 如何使用 ChatPromptTemplate 定义多角色对话
+- 如何用 FewShotPromptTemplate 提供示例指导
+- 如何使用 FewShotChatMessagePromptTemplate 在对话中插入示例
+- 如何将 Few-Shot 示例存储到 Milvus 向量数据库
+- 如何根据用户输入动态检索最相关的示例
 
 ## 📁 仓库里有什么
 
@@ -184,16 +230,78 @@
 - `src/memory/retrieval-memory.mjs`：完整的 RAG 检索增强生成流程演示
 - `src/memory/query-conversations.mjs`：查询 Milvus 中的所有对话记录
 
-### Milvus 向量数据库示例
+### 结构化大模型输出示例
 
-- `src/mivlus/insert.mjs`：AI 日记向量数据库示例（集合创建、索引、数据插入）
+**基础解析（2 个文件）**
 
-### 电子书 RAG 示例
+- `src/output-parse/normal.mjs`：手动 JSON.parse() 基础演示
+- `src/output-parse/json-output-parser.mjs`：JsonOutputParser 智能提取与格式指令
 
-- `src/mivlus/book-test/ebook-writer.mjs`：电子书解析与向量化存储（EPUB → Milvus）
-- `src/mivlus/book-test/ebook-query.mjs`：电子书内容向量检索测试
-- `src/mivlus/book-test/ebook-reader-rag.mjs`：完整的电子书 RAG 问答系统
-- `src/mivlus/book-test/天龙八部.epub`：示例电子书文件
+**结构化定义（3 个文件）**
+
+- `src/output-parse/structured-output-parser.mjs`：StructuredOutputParser 字段定义
+- `src/output-parse/zod-schema-parser.mjs`：Zod Schema 完整类型系统（嵌套对象、数组、可选字段）
+- `src/output-parse/with-structured-output.mjs`：现代 API 一行搞定结构化输出
+
+**流式输出（4 个文件）**
+
+- `src/output-parse/stream-normal.mjs`：普通文本流式输出演示
+- `src/output-parse/stream-structured-partial.mjs`：流式接收 + 批量解析（两阶段处理）
+- `src/output-parse/stream-tool-calls-raw.mjs`：流式 Tool Calls 原始数据
+- `src/output-parse/stream-tool-calls-parser.mjs`：流式 Tool Calls + JsonOutputToolsParser 智能解析
+
+**XML 格式（1 个文件）**
+
+- `src/output-parse/xml-output-parser.mjs`：XML 格式输出解析
+
+### 智能录入与 Mini Cursor Agent 实战示例
+
+**智能数据录入（2 个文件）**
+
+- `src/output-parse-demo/smart-import.mjs`：AI 驱动的非结构化文本提取 + MySQL 批量插入
+- `src/output-parse-demo/create-table.mjs`：数据库初始化脚本（建表 + 插入测试数据）
+
+**Mini Cursor Agent（1 个文件）**
+
+- `src/output-parse-demo/mini-cursor.mjs`：简化版 AI 编程助手（ReAct 模式 + 流式工具调用）
+
+**工程化配置（2 个文件）**
+
+- `src/output-parse-demo/constant.mjs`：数据库配置常量提取（连接配置、表结构、SQL 语句）
+- `src/output-parse-demo/docker-compose-mysql.yml`：MySQL Docker 服务编排配置
+
+### PromptTemplate 组件化管理示例
+
+**基础模板（1 个文件）**
+
+- `src/prompt-template/prompt-template1.mjs`：PromptTemplate 基础用法、占位符替换
+
+**管道模板（3 个文件）**
+
+- `src/prompt-template/pipeline-prompt-template.mjs`：PipelinePromptTemplate 模块化组合（人设/背景/任务/格式）
+- `src/prompt-template/pipeline-prompt-template2.mjs`：OKR 评审场景、模块复用演示
+- `src/prompt-template/pipeline-prompt-template3.mjs`：Pipeline + ChatPromptTemplate 组合
+
+**部分应用（1 个文件）**
+
+- `src/prompt-template/partial.mjs`：.partial() 预填充变量、模板工厂模式
+
+**对话模板（2 个文件）**
+
+- `src/prompt-template/chat-prompt-template.mjs`：ChatPromptTemplate 基础用法、system/human 角色
+- `src/prompt-template/chat-prompt-template2.mjs`：多轮对话示例
+
+**少样本模板（4 个文件）**
+
+- `src/prompt-template/fewshot-prompt-template.mjs`：FewShotPromptTemplate 基础用法（字符串格式）
+- `src/prompt-template/fewshot-chat-prompt-template.mjs`：FewShotChatMessagePromptTemplate（对话格式）
+- `src/prompt-template/example-selector1.mjs`：动态选择示例（基础）
+- `src/prompt-template/example-selector2.mjs`：基于相似度选择示例（Milvus 检索）
+
+**向量数据库（2 个文件）**
+
+- `src/prompt-template/weekly-report-examples-writer-milvus.mjs`：将周报示例写入 Milvus
+- `src/prompt-template/weekly-report-examples-reader-milvus.mjs`：从 Milvus 检索示例
 
 ### 流程图
 
@@ -226,19 +334,43 @@
 │   │   ├── query-conversations.mjs        # 查询 Milvus 中的所有记录
 │   │   └── chat_history.json              # 文件存储示例
 │   ├── splitters/              # 文本分割器示例目录
-│   │   ├── RecursiveCharacterTextSplitter.mjs  # 递归字符分割（自定义分隔符）
-│   │   ├── RecursiveSplitterCode.mjs         # 代码专用分割器
-│   │   ├── RecursiveSplitterMarkdown.mjs     # Markdown 文档分割
-│   │   ├── RecursiveSplitterLatex.mjs        # LaTeX 公式分割
-│   │   └── TokenTextSplitter.mjs             # 基于 Token 计数的分割
-│   ├── mivlus/                 # Milvus 向量数据库示例目录
-│   │   ├── insert.mjs                     # AI 日记向量数据库（基础操作）
-│   │   ├── book-test/                     # 电子书 RAG 示例
-│   │   │   ├── ebook-writer.mjs           # 电子书解析与向量化存储
-│   │   │   ├── ebook-query.mjs            # 电子书内容检索测试
-│   │   │   ├── ebook-reader-rag.mjs       # 完整电子书 RAG 问答系统
-│   │   │   └── 天龙八部.epub              # 示例电子书
-│   │   └── volumes/                       # Milvus Docker 数据卷
+│   │   ├── CharacterTextSplitter-test.mjs           # 基于字符的分割
+│   │   ├── RecursiveCharacterTextSplitter-test.mjs  # 递归字符分割（自定义分隔符）
+│   │   ├── TokenTextSplitter-test.mjs               # 基于 Token 计数的分割
+│   │   ├── recursive-splitter-code.mjs              # 代码专用分割器
+│   │   ├── recursive-splitter-markdown.mjs          # Markdown 文档分割
+│   │   └── recursive-splitter-latex.mjs             # LaTeX 公式分割
+│   ├── output-parse/           # 结构化大模型输出示例目录
+│   │   ├── normal.mjs                             # 手动 JSON.parse 基础演示
+│   │   ├── json-output-parser.mjs                 # JsonOutputParser 智能提取
+│   │   ├── structured-output-parser.mjs           # StructuredOutputParser 字段定义
+│   │   ├── zod-schema-parser.mjs                  # Zod Schema 完整类型系统
+│   │   ├── with-structured-output.mjs             # 现代 API 一行搞定
+│   │   ├── stream-normal.mjs                      # 普通文本流式输出
+│   │   ├── stream-structured-partial.mjs          # 流式 + 结构化（两阶段）
+│   │   ├── stream-tool-calls-raw.mjs              # 流式 Tool Calls 原始数据
+│   │   ├── stream-tool-calls-parser.mjs           # 流式 Tool Calls 智能解析
+│   │   └── xml-output-parser.mjs                  # XML 格式输出解析
+│   ├── output-parse-demo/      # 智能录入与 Mini Cursor Agent 实战示例
+│   │   ├── smart-import.mjs                       # AI 智能数据录入（文本提取 + 数据库插入）
+│   │   ├── mini-cursor.mjs                        # Mini Cursor Agent（ReAct 模式）
+│   │   ├── create-table.mjs                       # 数据库初始化脚本
+│   │   ├── constant.mjs                           # 数据库配置常量
+│   │   └── docker-compose-mysql.yml               # MySQL Docker 配置
+│   ├── prompt-template/        # PromptTemplate 组件化管理示例目录
+│   │   ├── prompt-template1.mjs                   # 基础模板用法
+│   │   ├── pipeline-prompt-template.mjs           # 管道模板（模块化组合）
+│   │   ├── pipeline-prompt-template2.mjs          # OKR 评审场景
+│   │   ├── pipeline-prompt-template3.mjs          # Pipeline + Chat 组合
+│   │   ├── partial.mjs                            # 部分应用（.partial()）
+│   │   ├── chat-prompt-template.mjs               # 对话模板基础
+│   │   ├── chat-prompt-template2.mjs              # 多轮对话示例
+│   │   ├── fewshot-prompt-template.mjs            # 少样本模板（字符串）
+│   │   ├── fewshot-chat-prompt-template.mjs       # 少样本对话模板
+│   │   ├── example-selector1.mjs                  # 动态选择示例（基础）
+│   │   ├── example-selector2.mjs                  # 基于相似度选择示例
+│   │   ├── weekly-report-examples-writer-milvus.mjs  # 写入示例到 Milvus
+│   │   └── weekly-report-examples-reader-milvus.mjs  # 从 Milvus 检索示例
 │   ├── tool-runner.mjs         # 工具调用循环
 │   └── tools/                  # 本地工具实现
 └── react-todo-app/             # Agent 生成的 React Todo 示例项目
@@ -302,6 +434,27 @@ EMBEDDINGS_MODEL=text-embedding-3-small
 ```
 
 如果不提供 `EMBEDDINGS_*`，当前示例会优先回退到 `API_KEY / BASE_URL`，再不行就自动降级为关键词检索。
+
+如果你要运行智能录入与 Mini Cursor Agent 示例，还需要配置数据库环境变量：
+
+```bash
+# 在 src/output-parse-demo/.env 中配置
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=root123456
+DB_NAME=hello
+```
+
+说明：
+
+- `DB_HOST`：MySQL 服务器地址（默认 localhost）
+- `DB_PORT`：MySQL 端口（默认 3306）
+- `DB_USER`：数据库用户名
+- `DB_PASSWORD`：数据库密码
+- `DB_NAME`：数据库名称
+
+如果使用 Docker Compose 启动 MySQL，密码应与 `docker-compose-mysql.yml` 中的 `MYSQL_ROOT_PASSWORD` 一致。
 
 ## 如何运行
 
@@ -517,73 +670,295 @@ node src/memory/query-conversations.mjs
 - 显示每条记录的完整信息（ID、轮次、时间、内容）
 - 适合验证数据插入和检索结果
 
-### 运行 Milvus 向量数据库基础示例
+### 运行结构化大模型输出示例
 
-**10. 测试 Milvus 基础操作（AI 日记）**
+**1. 基础解析**
 
 ```bash
-node src/mivlus/insert.mjs
+node src/output-parse/normal.mjs
 ```
 
 这个示例会：
 
-- 连接到本地 Milvus 向量数据库（localhost:19530）
-- 创建 `ai_diary` 集合（包含 id、vector、content、date、mood、tags 字段）
-- 创建 IVF_FLAT 索引，使用 COSINE 相似度度量
-- 批量插入 5 条 AI 日记数据（包含文本向量化）
-- 演示 Array 类型字段的使用（tags 标签数组）
-- 适合理解 Milvus 集合设计、数据类型和索引配置
+- 演示最基础的模型调用和 JSON 解析
+- 使用 `JSON.parse()` 手动解析 AI 返回的 JSON 字符串
+- 适合理解结构化输出的基础原理
 
-### 运行电子书 RAG 示例
-
-⚠️ **前置条件**：需要先启动 Milvus 服务，并准备 EPUB 电子书文件
-
-**11. 电子书解析与向量化存储**
+**2. JsonOutputParser 智能提取**
 
 ```bash
-node src/mivlus/book-test/ebook-writer.mjs
+node src/output-parse/json-output-parser.mjs
 ```
 
 这个示例会：
 
-- 使用 EPubLoader 加载 `天龙八部.epub` 电子书
-- 提取书名（自动从文件名解析）
-- 按章节切分文本（RecursiveCharacterTextSplitter，chunkSize=500）
-- 创建 `ebook_collection` 集合（包含 id、book_id、book_name、chapter_num、index、content、vector 字段）
-- 批量插入所有章节片段到 Milvus（包含章节号等元数据）
-- 生成 1024 维向量嵌入
-- 演示长文档的完整处理流程
+- 使用 `JsonOutputParser` 自动提取和解析 JSON
+- 通过 `getFormatInstructions()` 自动生成格式指令
+- 比手动解析更鲁棒，能处理 AI 的额外文字
 
-**12. 电子书内容向量检索测试**
+**3. StructuredOutputParser 字段定义**
 
 ```bash
-node src/mivlus/book-test/ebook-query.mjs
+node src/output-parse/structured-output-parser.mjs
 ```
 
 这个示例会：
 
-- 连接到 Milvus 并加载 `ebook_collection` 集合
-- 将查询问题（如"鸠摩智会什么武功？"）向量化
-- 检索最相似的 5 个章节片段
-- 显示每条结果的相似度分数、章节号、内容
-- 适合验证电子书向量化质量和检索准确性
+- 使用 `fromNamesAndDescriptions()` 定义字段名和描述
+- 生成包含字段说明的详细格式指令
+- 保证字段完整性（所有字段必填）
 
-**13. 电子书 RAG 问答系统**
+**4. Zod Schema 完整类型系统**
 
 ```bash
-node src/mivlus/book-test/ebook-reader-rag.mjs
+node src/output-parse/zod-schema-parser.mjs
 ```
 
 这个示例会：
 
-- 演示完整的电子书 RAG（检索增强生成）流程
-- 针对测试问题，依次执行：
-  1. **检索**：将问题向量化，从 Milvus 检索最相似的 3 个章节片段
-  2. **增强**：将检索到的章节内容作为上下文构建 prompt
-  3. **生成**：调用 AI 模型基于电子书内容生成回答
-- 显示检索结果的相似度分数和章节信息
-- 展示 AI 如何基于小说原文回答角色相关问题
-- 形成"提问→检索→增强→回答"的完整闭环
+- 使用 Zod 定义复杂嵌套结构（对象、数组、可选字段）
+- 演示完整的类型系统（string、number、array、object）
+- 自动类型校验，失败时抛出 ZodError
+
+**5. withStructuredOutput 现代 API**
+
+```bash
+node src/output-parse/with-structured-output.mjs
+```
+
+这个示例会：
+
+- 使用 `model.withStructuredOutput(schema)` 一行搞定结构化输出
+- 自动完成格式指令注入、解析、验证
+- 生产环境推荐的最佳实践
+
+**6. 普通文本流式输出**
+
+```bash
+node src/output-parse/stream-normal.mjs
+```
+
+这个示例会：
+
+- 演示 `model.stream()` 的流式调用
+- 使用 `for await...of` 遍历异步数据流
+- 实现打字机效果实时显示
+
+**7. 流式 + 结构化（两阶段处理）**
+
+```bash
+node src/output-parse/stream-structured-partial.mjs
+```
+
+这个示例会：
+
+- 流式接收 AI 返回的 JSON 字符串
+- 累积完整内容后批量解析
+- 展示两阶段处理模式
+
+**8. 流式 Tool Calls 原始数据**
+
+```bash
+node src/output-parse/stream-tool-calls-raw.mjs
+```
+
+这个示例会：
+
+- 使用 `bindTools()` 绑定工具定义
+- 流式接收 `tool_call_chunks` 原始数据
+- 直接打印 JSON 参数片段
+
+**9. 流式 Tool Calls 智能解析**
+
+```bash
+node src/output-parse/stream-tool-calls-parser.mjs
+```
+
+这个示例会：
+
+- 使用 `JsonOutputToolsParser` 自动解析工具调用
+- 通过 `.pipe()` 连接模型和解析器
+- 演示增量 diff 显示算法
+
+**10. XML 格式输出**
+
+```bash
+node src/output-parse/xml-output-parser.mjs
+```
+
+这个示例会：
+
+- 使用 `XMLOutputParser` 处理 XML 格式输出
+- 生成 XML 格式指令
+- 解析 XML 为 JavaScript 对象
+
+### 运行 PromptTemplate 组件化管理示例
+
+**基础模板**
+
+```bash
+node src/prompt-template/prompt-template1.mjs
+```
+
+这个示例会：
+
+- 演示 PromptTemplate 基础用法
+- 使用占位符 `{variable}` 定义模板
+- 调用 `.format()` 填入变量生成提示词
+
+**管道模板**
+
+```bash
+node src/prompt-template/pipeline-prompt-template.mjs
+```
+
+这个示例会：
+
+- 使用 PipelinePromptTemplate 组合 4 个模块（人设/背景/任务/格式）
+- 演示模块导出与复用（personaPrompt、contextPrompt）
+- 一次传入所有变量，Pipeline 自动分发到子模板
+
+```bash
+node src/prompt-template/pipeline-prompt-template3.mjs
+```
+
+这个示例会：
+
+- 将 PipelinePromptTemplate 与 ChatPromptTemplate 组合
+- finalPrompt 使用对话格式（system + human）
+- 使用 `.formatPromptValue()` 生成消息数组
+
+**部分应用**
+
+```bash
+node src/prompt-template/partial.mjs
+```
+
+这个示例会：
+
+- 使用 `.partial()` 预填充不变的变量（公司信息、价值观）
+- 基于预配置模板多次调用 `.format()` 填入变化的变量
+- 演示模板工厂模式
+
+**对话模板**
+
+```bash
+node src/prompt-template/chat-prompt-template.mjs
+```
+
+这个示例会：
+
+- 使用 ChatPromptTemplate 定义多角色对话
+- system 消息设定角色，human 消息提供数据
+- 调用 `.formatMessages()` 生成消息数组
+- 直接传给 `model.invoke()` 调用模型
+
+**少样本模板**
+
+```bash
+node src/prompt-template/fewshot-prompt-template.mjs
+```
+
+这个示例会：
+
+- 使用 FewShotPromptTemplate 提供示例指导
+- 定义示例模板（examplePrompt）和示例数据（examples）
+- 通过示例让 AI 学习语气、结构和信息组织方式
+
+```bash
+node src/prompt-template/fewshot-chat-prompt-template.mjs
+```
+
+这个示例会：
+
+- 使用 FewShotChatMessagePromptTemplate 在对话中插入示例
+- 每条示例展开为 HumanMessage + AIMessage
+- 流式调用模型并实时输出
+
+**向量数据库操作**
+
+⚠️ **前置条件**：需要先启动 Milvus 服务
+
+```bash
+# 1. 写入示例到 Milvus
+node src/prompt-template/weekly-report-examples-writer-milvus.mjs
+```
+
+这个示例会：
+
+- 定义 8 个不同场景的周报示例
+- 使用 Embedding 模型将文本转换为 1024 维向量
+- 在 Milvus 中创建集合和索引
+- 批量插入示例数据（包含向量）
+
+```bash
+# 2. 从 Milvus 检索示例
+node src/prompt-template/weekly-report-examples-reader-milvus.mjs
+```
+
+这个示例会：
+
+- 根据用户输入生成查询向量
+- 在 Milvus 中检索最相似的示例
+- 演示语义检索的应用
+
+### 运行智能录入与 Mini Cursor Agent 示例
+
+**前置准备：启动 MySQL 服务**
+
+```bash
+# 使用 Docker Compose 启动 MySQL
+docker-compose -f src/output-parse-demo/docker-compose-mysql.yml up -d
+
+# 查看服务状态
+docker-compose -f src/output-parse-demo/docker-compose-mysql.yml ps
+```
+
+**1. 初始化数据库（建表 + 插入测试数据）**
+
+```bash
+node src/output-parse-demo/create-table.mjs
+```
+
+这个示例会：
+
+- 连接到 MySQL 数据库（使用 `.env` 中的配置）
+- 创建 `friends` 表（包含姓名、性别、出生日期、公司、职位、手机、微信等字段）
+- 批量插入 2 条测试数据（王经理、李总监）
+- 使用事务保证数据一致性
+
+**2. 测试智能数据录入（AI 文本提取 + 数据库插入）**
+
+```bash
+node src/output-parse-demo/smart-import.mjs
+```
+
+这个示例会：
+
+- 读取包含多人信息的自然语言文本
+  - 例如："张总，女的，30 出头，在腾讯做技术总监，手机 13800138000..."
+- 使用 Zod Schema 定义数据结构
+- 调用 `withStructuredOutput()` 让 AI 提取结构化信息
+- 将提取的结果批量插入 MySQL 数据库
+- 显示提取和插入的详细信息
+
+**3. 测试 Mini Cursor Agent（AI 自主完成任务）**
+
+```bash
+node src/output-parse-demo/mini-cursor.mjs
+```
+
+这个示例会：
+
+- 接收复杂的任务描述（如"创建一个 React TodoList 应用"）
+- AI 自主决策并调用工具完成任务：
+  - `command-execute`：执行命令（创建项目、安装依赖、启动服务器）
+  - `file-write`：写入文件（编写 React 组件代码）
+  - `file-read`：读取文件（查看现有代码）
+  - `directory-list`：列出目录（确认项目结构）
+- 流式显示文件写入过程（增量 diff 算法）
+- 最多 30 轮循环自主完成任务
+- 返回最终执行结果
 
 ## Agent 内置工具说明
 
@@ -666,9 +1041,94 @@ pnpm dev
 
 **检索策略 - RAG（4 个文件，需先启动 Milvus）** 7. **常量定义**：`src/memory/constant.mjs` - 了解集合名称配置 8. **数据插入**：`src/memory/insert-conversations.mjs` - 批量导入对话到向量数据库 9. **RAG 流程**：`src/memory/retrieval-memory.mjs` - 完整的检索-增强-生成-入库闭环10. **数据查询**：`src/memory/query-conversations.mjs` - 查看向量数据库中的所有记录
 
-**Milvus 基础操作（1 个文件）** 11. **基础示例**：`src/mivlus/insert.mjs` - 理解集合创建、索引配置、数据插入全流程
+**结构化大模型输出学习路径**：
 
-**电子书 RAG 系统（3 个文件，需先启动 Milvus）** 12. **电子书解析**：`src/mivlus/book-test/ebook-writer.mjs` - 学习 EPUB 解析、章节切分、向量化存储 13. **检索测试**：`src/mivlus/book-test/ebook-query.mjs` - 验证向量检索准确性和元数据过滤 14. **RAG 问答**：`src/mivlus/book-test/ebook-reader-rag.mjs` - 完整电子书智能问答系统
+如果是第一次学习结构化输出，建议按这个顺序：
+
+**基础解析（2 个文件）**
+
+1. **手动解析**：`src/output-parse/normal.mjs` - 理解 JSON.parse() 基础原理
+2. **智能提取**：`src/output-parse/json-output-parser.mjs` - 学习 JsonOutputParser
+
+**结构化定义（3 个文件）**
+
+3. **字段定义**：`src/output-parse/structured-output-parser.mjs` - 理解 StructuredOutputParser
+4. **Zod Schema**：`src/output-parse/zod-schema-parser.mjs` - 掌握完整类型系统
+5. **现代 API**：`src/output-parse/with-structured-output.mjs` - 学习生产级最佳实践
+
+**流式输出（4 个文件）**
+
+6. **普通流式**：`src/output-parse/stream-normal.mjs` - 理解流式调用基础
+7. **流式 + 结构化**：`src/output-parse/stream-structured-partial.mjs` - 学习两阶段处理
+8. **Tool Calls 原始**：`src/output-parse/stream-tool-calls-raw.mjs` - 了解工具调用机制
+9. **Tool Calls 解析**：`src/output-parse/stream-tool-calls-parser.mjs` - 掌握智能解析
+
+**XML 格式（1 个文件）**
+
+10. **XML 解析**：`src/output-parse/xml-output-parser.mjs` - 了解 XML 格式处理
+
+**PromptTemplate 组件化管理学习路径**：
+
+如果是第一次学习提示词组件化，建议按这个顺序：
+
+**基础模板（1 个文件）**
+
+1. **基础用法**：`src/prompt-template/prompt-template1.mjs` - 理解 PromptTemplate 和占位符替换
+
+**管道模板（3 个文件）**
+
+2. **模块化组合**：`src/prompt-template/pipeline-prompt-template.mjs` - 学习 PipelinePromptTemplate 组合多个模块
+3. **模块复用**：`src/prompt-template/pipeline-prompt-template2.mjs` - 理解导入复用其他文件的模块
+4. **对话组合**：`src/prompt-template/pipeline-prompt-template3.mjs` - 掌握 Pipeline + ChatPromptTemplate 组合
+
+**部分应用（1 个文件）**
+
+5. **预填充变量**：`src/prompt-template/partial.mjs` - 学习 .partial() 创建可复用模板
+
+**对话模板（2 个文件）**
+
+6. **多角色对话**：`src/prompt-template/chat-prompt-template.mjs` - 理解 ChatPromptTemplate 和消息格式
+7. **多轮对话**：`src/prompt-template/chat-prompt-template2.mjs` - 学习多轮对话历史管理
+
+**少样本模板（4 个文件）**
+
+8. **字符串示例**：`src/prompt-template/fewshot-prompt-template.mjs` - 理解 FewShotPromptTemplate 基础
+9. **对话示例**：`src/prompt-template/fewshot-chat-prompt-template.mjs` - 学习 FewShotChatMessagePromptTemplate
+10. **动态选择**：`src/prompt-template/example-selector1.mjs` - 掌握动态示例选择
+11. **语义检索**：`src/prompt-template/example-selector2.mjs` - 理解基于相似度的示例选择
+
+**向量数据库（2 个文件，需先启动 Milvus）**
+
+12. **写入示例**：`src/prompt-template/weekly-report-examples-writer-milvus.mjs` - 学习向量存储
+13. **检索示例**：`src/prompt-template/weekly-report-examples-reader-milvus.mjs` - 掌握语义检索
+
+**智能录入与 Mini Cursor Agent（3 个文件，需先启动 MySQL）**
+
+如果是第一次学习实战应用，建议按这个顺序：
+
+**环境准备**
+
+1. **启动 MySQL**：使用 Docker Compose 启动数据库服务
+2. **配置环境变量**：在 `.env` 中配置数据库连接信息
+3. **初始化数据库**：`src/output-parse-demo/create-table.mjs` - 建表并插入测试数据
+
+**智能数据录入**
+
+4. **AI 文本提取**：`src/output-parse-demo/smart-import.mjs` - 学习非结构化文本到结构化数据的完整流程
+5. **理解 Schema**：回顾 `src/output-parse/zod-schema-parser.mjs` - 理解 Zod Schema 的定义方式
+6. **批量插入**：观察 `smart-import.mjs` 中的批量插入语法和事务处理
+
+**Mini Cursor Agent**
+
+7. **Agent 循环**：`src/output-parse-demo/mini-cursor.mjs` - 理解 ReAct 模式的完整实现
+8. **流式处理**：重点学习流式工具调用解析和增量 diff 显示算法
+9. **消息历史**：理解 InMemoryChatMessageHistory 的作用和多轮对话管理
+10. **工具绑定**：对比 `bindTools()` 和第 9 章的工具调用机制
+
+**工程化配置**
+
+11. **配置提取**：`src/output-parse-demo/constant.mjs` - 学习配置解耦的最佳实践
+12. **Docker 编排**：`src/output-parse-demo/docker-compose-mysql.yml` - 理解容器化部署
 
 ## 建议动手练习
 
@@ -706,6 +1166,114 @@ pnpm dev
 **检索与问答** 21. 在 `ebook-reader-rag.mjs` 中增加引用来源标注（回答时标明出自第几章）22. 实现跨章节检索：先定位相关章节，再在该章节内进行二次检索 23. 给问答系统增加对话历史，支持多轮追问（如"他还会什么？"）24. 对比不同 Embeddings 模型的检索质量（尝试不同的 embedding 模型）25. 实现混合检索：向量检索 + 关键词检索（章节号、角色名精确匹配）
 
 这几个练习都不大，但非常适合建立对 MCP 和 Agent 的直觉。
+
+### 智能录入与 Mini Cursor Agent 练习
+
+**智能数据录入**
+
+1. 修改 `smart-import.mjs` 的测试文本，尝试提取 5 个人的信息并批量插入
+2. 在 `friendSchema` 中添加新字段（如邮箱、地址、头像 URL），观察 AI 的提取能力
+3. 实现错误重试机制：当 AI 提取失败时自动重试最多 3 次
+4. 添加流式输出：使用 `model.stream()` 实时显示 AI 的提取过程
+5. 实现数据验证：在插入前用 Zod Schema 验证 AI 返回的数据格式
+6. 对比不同模型的提取准确率（qwen-max vs qwen-plus vs qwen-turbo）
+
+**Mini Cursor Agent**
+
+7. 添加新工具：实现 `search-file` 工具（在目录中搜索文件）
+8. 添加工具调用日志：记录每个工具的执行时间和结果
+9. 实现最大循环警告：当接近 30 次循环时打印警告信息
+10. 添加任务超时机制：超过 5 分钟自动终止任务
+11. 实现工具调用并行化：让 AI 可以同时调用多个不依赖的工具
+12. 添加任务进度显示：实时显示当前是第几轮循环、执行了什么工具
+
+**工程化配置**
+
+13. 将 `.env` 配置改为支持多个数据库环境（开发、测试、生产）
+14. 在 `docker-compose-mysql.yml` 中添加数据卷备份策略
+15. 实现数据库迁移脚本：支持表结构的版本管理
+16. 添加健康检查：在脚本启动前自动检测 MySQL 服务是否可用
+17. 实现数据库连接池：支持并发查询场景
+18. 添加性能监控：记录每次数据库操作的耗时
+
+### PromptTemplate 组件化管理练习
+
+**基础模板**
+
+1. 修改 `prompt-template1.mjs`，创建一个新的周报模板，添加更多占位符
+2. 实现模板缓存机制，避免重复创建相同的 PromptTemplate
+3. 对比字符串拼接和 PromptTemplate 的优劣
+
+**管道模板**
+
+4. 在 `pipeline-prompt-template.mjs` 中添加第 5 个模块（如风险评估模块）
+5. 创建日报模板，复用人设和背景模块（personaPrompt、contextPrompt）
+6. 实现模板配置文件（JSON），动态加载模块定义
+7. 对比单个大模板和管道模板的维护成本
+8. 实现模板版本管理（v1/v2/v3 的平滑切换）
+
+**部分应用**
+
+9. 使用 `.partial()` 创建多公司模板工厂函数
+10. 实现模板缓存：相同的 .partial() 调用返回相同实例
+11. 对比 .partial() 和直接传入所有变量的性能差异
+12. 实现动态 .partial()：从数据库加载预设配置
+
+**对话模板**
+
+13. 在 `chat-prompt-template.mjs` 中添加 assistant 消息（多轮对话）
+14. 实现对话历史管理（MessagesPlaceholder 动态插入）
+15. 对比 PromptTemplate 和 ChatPromptTemplate 的适用场景
+16. 创建对话模板工厂函数，支持不同角色设定
+
+**少样本模板**
+
+17. 在 `fewshot-prompt-template.mjs` 中添加第 3 条示例
+18. 实现动态示例：根据用户输入选择不同的示例集
+19. 对比 FewShotPromptTemplate 和 FewShotChatMessagePromptTemplate
+20. 实现示例质量评估：记录哪些示例最有效
+
+**向量检索**
+
+21. 修改 `weekly-report-examples-writer-milvus.mjs`，添加 10 条新示例
+22. 调整检索参数（k 值、相似度阈值），对比检索效果
+23. 实现混合检索：向量检索 + 关键词过滤
+24. 添加示例更新机制：支持增删改 Milvus 中的示例
+
+### 结构化大模型输出练习
+
+**基础解析**
+
+1. 对比 `normal.mjs` 和 `json-output-parser.mjs`，观察 AI 返回格式的稳定性差异
+2. 故意让 AI 返回包含额外文字的 JSON，测试两种解析方式的容错能力
+3. 修改 `json-output-parser.mjs` 的 schema，添加更多字段观察效果
+
+**结构化定义**
+
+4. 在 `zod-schema-parser.mjs` 中定义一个新的复杂 schema（如电影信息、商品信息）
+5. 实现嵌套对象数组（如作者的多本书籍，每本书有多个章节）
+6. 测试 ZodError 错误处理，观察 AI 返回不符合 schema 时的详细错误信息
+7. 对比 `structured-output-parser.mjs` 和 `zod-schema-parser.mjs` 的格式指令差异
+
+**流式输出**
+
+8. 修改 `stream-normal.mjs`，添加进度条显示（如：已接收 X 字符）
+9. 在 `stream-structured-partial.mjs` 中实现实时解析进度显示
+10. 优化 `stream-tool-calls-parser.mjs` 的 diff 算法，支持格式化 JSON 显示
+11. 实现流式输出的暂停/继续功能（模拟网络中断场景）
+
+**Tool Calls**
+
+12. 在 `stream-tool-calls-raw.mjs` 中添加多工具调用支持
+13. 实现 Tool Calls 结果的自动执行（如调用天气 API、搜索 API）
+14. 对比 `bindTools` 和 `withStructuredOutput` 的底层实现差异
+15. 实现 Tool Calls 的并行调用和结果聚合
+
+**XML 格式**
+
+16. 修改 `xml-output-parser.mjs`，定义特定的 XML schema（如果支持）
+17. 对比 XML 和 JSON 在同一任务中的 AI 遵循度
+18. 实现 XML 结果的 XPath 查询和数据提取
 
 ## MCP 配置踩坑记录
 
@@ -803,5 +1371,7 @@ args: ['-y', '@modelcontextprotocol/server-filesystem', ...allowedPaths]
 - 如果你准备继续扩展，建议优先补上脚本、日志和错误处理
 - 运行检索策略示例前，需要先启动 Milvus 服务（参考 Docker Compose 配置）
 - Milvus 向量数据库占用内存较大，建议至少分配 4GB 以上内存
-- 电子书 RAG 示例需要 EPUB 格式的电子书文件，请确保文件路径正确
-- EPUB 文件大小会影响向量化时间，大型书籍可能需要数分钟处理
+- 运行智能录入与 Mini Cursor Agent 示例前，需要先启动 MySQL 服务
+- 数据库密码不要硬编码在代码中，务必使用 `.env` 文件管理
+- `mini-cursor.mjs` 会实际执行命令和写入文件，建议在测试目录中运行
+- MySQL Docker 容器会占用约 500MB 磁盘空间，用完后可以用 `docker-compose down -v` 清理

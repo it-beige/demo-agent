@@ -106,6 +106,27 @@
 - **重点**：模板组件化、模块复用、动态示例选择、对话格式标准化
 - **核心问题**：如何管理复杂提示词，让它可维护、可复用、可测试
 
+### 第 12 章：Runnable - 把写逻辑变成组装 Chain
+
+- **文件**：`src/runnable/` 目录下的示例代码
+- **内容**：从传统方式到 Runnable 组装的完整演进路径
+  - **传统方式对比**：手动串联 Prompt → Model → OutputParser 的 3 步流程
+  - **Runnable 基础**：RunnableSequence 串行执行、.pipe() 链式调用
+  - **自定义逻辑**：RunnableLambda 包装自定义函数
+  - **并行执行**：RunnableMap 同时执行多个任务、结果合并
+  - **条件分支**：RunnableBranch 根据条件动态选择处理路径
+  - **键值路由**：RouterRunnable 显式指定 key 选择处理器
+  - **数组遍历**：RunnableEach 对数组每个元素应用相同处理
+  - **数据流管理**：RunnablePassthrough 直通/赋值、RunnablePick 字段选择
+  - **高级特性**：
+    - **重试机制**：.withRetry() 失败自动重试
+    - **降级机制**：.withFallbacks() 备选方案依次尝试
+    - **回调监听**：callbacks 监控链执行（Start/End/Error）
+    - **配置传递**：.withConfig() 动态传递统一配置
+    - **对话历史**：RunnableWithMessageHistory 多轮对话记忆管理
+- **重点**：声明式组装、数据流控制、高级特性组合、生产级最佳实践
+- **核心问题**：如何将命令式代码转变为声明式 Chain，提升可维护性和可复用性
+
 ---
 
 ## 🎯 这个仓库适合学什么
@@ -167,6 +188,20 @@
 - 如何使用 FewShotChatMessagePromptTemplate 在对话中插入示例
 - 如何将 Few-Shot 示例存储到 Milvus 向量数据库
 - 如何根据用户输入动态检索最相关的示例
+- 如何使用 RunnableSequence 将多个组件串联成 Chain
+- 如何用 .pipe() 方法实现链式调用
+- 如何使用 RunnableLambda 包装自定义函数
+- 如何用 RunnableMap 并行执行多个任务
+- 如何使用 RunnableBranch 实现条件分支路由
+- 如何用 RouterRunnable 根据 key 显式选择处理器
+- 如何使用 RunnableEach 对数组进行批量处理
+- 如何用 RunnablePassthrough 实现数据直通和字段赋值
+- 如何使用 RunnablePick 从对象中挑选指定字段
+- 如何用 .withRetry() 为 Chain 添加重试机制
+- 如何使用 .withFallbacks() 实现服务降级
+- 如何通过 callbacks 监控 Chain 的执行过程
+- 如何用 .withConfig() 动态传递配置
+- 如何使用 RunnableWithMessageHistory 管理多轮对话历史
 
 ## 📁 仓库里有什么
 
@@ -303,6 +338,33 @@
 - `src/prompt-template/weekly-report-examples-writer-milvus.mjs`：将周报示例写入 Milvus
 - `src/prompt-template/weekly-report-examples-reader-milvus.mjs`：从 Milvus 检索示例
 
+### Runnable - 把写逻辑变成组装 Chain 示例
+
+**基础对比（1 个文件）**
+
+- `src/runnable/before.mjs`：传统方式手动串联 Prompt → Model → OutputParser
+
+**Runnable 基础（1 个文件）**
+
+- `src/runnable/runnable.mjs`：RunnableSequence 串行执行、.pipe() 链式调用
+
+**核心 API（6 个文件）**
+
+- `src/runnable/api-case/RunnableLambda.mjs`：包装自定义函数
+- `src/runnable/api-case/RunnableMap.mjs`：并行执行多个任务
+- `src/runnable/api-case/RunnableBranch.mjs`：条件分支路由
+- `src/runnable/api-case/RunnableRoute.mjs`：RouterRunnable 键值路由
+- `src/runnable/api-case/RunnablePassthrough.mjs`：数据直通/赋值
+- `src/runnable/api-case/RunnableEach.mjs`：数组遍历处理
+
+**高级特性（5 个文件，来自 ai-agent-course-code）**
+
+- `runnable-test/src/runnables/RunnableWithRetry.mjs`：失败自动重试
+- `runnable-test/src/runnables/RunnableWithFallbacks.mjs`：服务降级机制
+- `runnable-test/src/runnables/RunnableWithCallbacks.mjs`：回调监听监控
+- `runnable-test/src/runnables/RunnableWithConfig.mjs`：动态配置传递
+- `runnable-test/src/runnables/RunnableWithMessageHistory.mjs`：多轮对话记忆管理
+
 ### 流程图
 
 - `src/mco-amap-flow.md`：MCP Agent 调用流程图和时序图
@@ -371,6 +433,16 @@
 │   │   ├── example-selector2.mjs                  # 基于相似度选择示例
 │   │   ├── weekly-report-examples-writer-milvus.mjs  # 写入示例到 Milvus
 │   │   └── weekly-report-examples-reader-milvus.mjs  # 从 Milvus 检索示例
+│   ├── runnable/              # Runnable 组装 Chain 示例目录
+│   │   ├── before.mjs                           # 传统方式对比基准
+│   │   ├── runnable.mjs                         # RunnableSequence 串行执行
+│   │   └── api-case/                            # 核心 API 示例
+│   │       ├── RunnableLambda.mjs               # 自定义函数包装
+│   │       ├── RunnableMap.mjs                  # 并行执行
+│   │       ├── RunnableBranch.mjs               # 条件分支
+│   │       ├── RunnableRoute.mjs                # 键值路由
+│   │       ├── RunnablePassthrough.mjs          # 数据直通/赋值
+│   │       └── RunnableEach.mjs                 # 数组遍历
 │   ├── tool-runner.mjs         # 工具调用循环
 │   └── tools/                  # 本地工具实现
 └── react-todo-app/             # Agent 生成的 React Todo 示例项目

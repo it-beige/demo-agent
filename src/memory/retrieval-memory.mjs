@@ -6,7 +6,7 @@ import { HumanMessage } from '@langchain/core/messages'
 import { v4 as uuidv4 } from 'uuid'
 
 const COLLECTION_NAME = 'conversations'
-const VECTOR_DIM = parseInt(process.env.EMBEDDING_DIM) || 1024
+const VECTOR_DIM = parseInt(process.env.EMBEDDING_DIM)
 
 //  OpenAI Chat 模型
 model

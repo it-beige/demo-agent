@@ -8,7 +8,7 @@ import {
 import { embeddings } from '@/index.mjs'
 
 const COLLECTION_NAME = 'weekly_report_examples'
-const VECTOR_DIM = parseInt(process.env.EMBEDDING_DIM) || 1024
+const VECTOR_DIM = parseInt(process.env.EMBEDDING_DIM)
 
 const EXAMPLES = [
   {
@@ -183,17 +183,17 @@ async function insertExamples() {
     const insertResult = await client.insert({
       collection_name: COLLECTION_NAME,
       data: insertData,
-    });
-    
-    const insertedCount = Number(insertResult.insert_cnt) || 0;
-    console.log(`✓ 已插入 ${insertedCount} 条记录`);
-    
+    })
+
+    const insertedCount = Number(insertResult.insert_cnt) || 0
+    console.log(`✓ 已插入 ${insertedCount} 条记录`)
+
     // 刷新数据，确保数据持久化并可被检索
-    console.log('刷新数据...');
-    await client.flush({ collection_names: [COLLECTION_NAME] });
-    console.log('✓ 数据已刷新');
-    
-    return insertedCount;
+    console.log('刷新数据...')
+    await client.flush({ collection_names: [COLLECTION_NAME] })
+    console.log('✓ 数据已刷新')
+
+    return insertedCount
   } catch (error) {
     console.error('插入周报示例时出错:', error.message)
     console.error('错误详情:', error)

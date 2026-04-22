@@ -3,8 +3,8 @@ import { fileURLToPath } from 'node:url'
 import { MultiServerMCPClient } from '@langchain/mcp-adapters'
 import { HumanMessage, SystemMessage } from '@langchain/core/messages'
 
-import { model } from './index.mjs'
-import { runToolAgent } from './tool-runner.mjs'
+import { model } from '../index.mjs'
+import { runToolAgent } from '../tool-runner.mjs'
 
 function getAllowedPaths() {
   return (process.env.ALLOWED_PATHS ?? '')
@@ -41,15 +41,15 @@ function createAmapClient() {
       },
       ...(allowedPaths.length > 0
         ? {
-          filesystem: {
-            command: 'npx',
-            args: [
-              '-y',
-              '@modelcontextprotocol/server-filesystem',
-              ...allowedPaths,
-            ],
-          },
-        }
+            filesystem: {
+              command: 'npx',
+              args: [
+                '-y',
+                '@modelcontextprotocol/server-filesystem',
+                ...allowedPaths,
+              ],
+            },
+          }
         : {}),
 
       'chrome-devtools': {

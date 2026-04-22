@@ -1,8 +1,8 @@
 import 'dotenv/config'
 import { fileURLToPath } from 'node:url'
 import { MultiServerMCPClient } from '@langchain/mcp-adapters'
-import { model } from './index.mjs'
-import { runToolAgent } from './tool-runner.mjs'
+import { model } from '../index.mjs'
+import { runToolAgent } from '../tool-runner.mjs'
 import { HumanMessage, SystemMessage } from '@langchain/core/messages'
 
 const mcpServerPath = fileURLToPath(

@@ -10,7 +10,7 @@ import { HumanMessage, SystemMessage } from '@langchain/core/messages'
 import { z } from 'zod'
 import { Document } from '@langchain/core/documents'
 
-import { runToolAgent } from './tool-runner.mjs'
+import { runToolAgent } from '../tool-runner.mjs'
 
 const EMBEDDING_MODEL_ALIASES = {
   'text-embedding-v3': 'text-embedding-3-small',

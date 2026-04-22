@@ -13,37 +13,37 @@
 
 ### 第 1 章：Agent 基础示例
 
-- **文件**：`src/index.mjs`, `src/tool-runner.mjs`, `src/tools/*`
+- **文件**：`src/demo/agent-react-todo.mjs`, `src/tools/*`
 - **内容**：模型调用本地工具（读/写文件、执行命令）完成任务
 - **产物**：自动生成 React Todo 应用
 
 ### 第 2 章：MCP Server 基础
 
-- **文件**：`src/mcp-server.mjs`
+- **文件**：`src/demo/mcp-server.mjs`
 - **内容**：Tool、Resource 定义，stdio 通信，zod 参数校验
 - **重点**：理解 MCP 协议的基本组成
 
 ### 第 3 章：多 MCP Server 集成
 
-- **文件**：`src/mcp-amap.mjs`
+- **文件**：`src/demo/mcp-amap.mjs`
 - **内容**：MultiServerMCPClient、高德地图 MCP、filesystem MCP
-- **流程图**：`src/mco-amap-flow.md`
+- **流程图**：`src/demo/mco-amap-flow.md`
 
 ### 第 4 章：RAG 检索增强生成
 
-- **文件**：`src/loader-and-spliter2.mjs`, `src/rag-demo.mjs`
+- **文件**：`src/demo/loader-and-spliter2.mjs`, `src/demo/rag-demo.mjs`
 - **内容**：网页加载 → 文本切分 → 向量索引 → 检索回答
 - **重点**：chunkSize/chunkOverlap、embeddings 降级兜底
 
 ### 第 5 章：动态网站内容提取
 
-- **文件**：`src/loader-and-spliter.mjs`
+- **文件**：`src/demo/loader-and-spliter.mjs`
 - **内容**：Puppeteer 抓取掘金文章、Document 转换、文本分割
 - **重点**：处理 JavaScript 动态渲染的内容
 
 ### 第 6 章：兼容性加载方案
 
-- **文件**：`src/loader-and-spliter2.mjs`
+- **文件**：`src/demo/loader-and-spliter2.mjs`
 - **内容**：Cheerio + Puppeteer 渐进式降级策略
 - **重点**：性能与稳定性的平衡设计
 
@@ -119,11 +119,11 @@
   - **数组遍历**：RunnableEach 对数组每个元素应用相同处理
   - **数据流管理**：RunnablePassthrough 直通/赋值、RunnablePick 字段选择
   - **高级特性**：
-    - **重试机制**：.withRetry() 失败自动重试
-    - **降级机制**：.withFallbacks() 备选方案依次尝试
-    - **回调监听**：callbacks 监控链执行（Start/End/Error）
-    - **配置传递**：.withConfig() 动态传递统一配置
-    - **对话历史**：RunnableWithMessageHistory 多轮对话记忆管理
+    - **重试机制**：`.withRetry()` 失败自动重试（`onFailedAttempt` 回调、最大尝试次数）
+    - **降级机制**：`.withFallbacks()` 备选方案依次尝试
+    - **回调监听**：`callbacks` 监控链执行（Start/End/Error）
+    - **配置传递**：`.withConfig()` 动态传递统一配置（`configurable` 业务配置）
+    - **对话历史**：`RunnableWithMessageHistory` 多轮对话记忆管理
 - **重点**：声明式组装、数据流控制、高级特性组合、生产级最佳实践
 - **核心问题**：如何将命令式代码转变为声明式 Chain，提升可维护性和可复用性
 
@@ -131,77 +131,102 @@
 
 ## 🎯 这个仓库适合学什么
 
-你可以用它快速理解下面几件事：
+你可以用它快速理解下面几件事，按主题分类：
 
-- 如何通过 `LangChain + OpenAI 兼容接口` 调用模型
-- 如何给模型挂载本地工具，让模型自己读文件、写文件、执行命令
-- 工具调用循环是怎么工作的
-- MCP Server 的基础写法是什么样
-- 如何把多个 MCP Server 挂到同一个 Agent 上
-- filesystem MCP 的允许目录该怎么配置
-- RAG 里"加载 -> 切分 -> 向量检索 -> 回答"的链路怎么串起来
-- 当 embeddings 不可用时，怎么给示例代码做降级兜底
-- 如何使用 Puppeteer 抓取动态渲染网站的内容
-- 如何实现 Cheerio + Puppeteer 的兼容性降级方案
-- 如何用 RecursiveCharacterTextSplitter 分割长文档为适合检索的片段
-- 如何使用 InMemoryChatMessageHistory 管理内存中的对话历史
-- 如何使用 FileSystemChatMessageHistory 持久化对话到本地文件
-- 如何通过 trimMessages API 按消息数或 token 数截断历史
-- 如何基于消息数量触发对话总结策略
-- 如何基于 token 数量实现更精确的对话总结与保留策略
-- 如何使用 Milvus 向量数据库存储对话数据
-- 如何通过语义相似度检索相关历史对话
-- 如何构建 RAG（检索增强生成）完整流程
-- 如何实现对话记忆的检索-增强-生成-入库闭环
-- 如何使用 Milvus 进行基础向量数据管理（集合、索引、插入）
-- 如何解析 EPUB 格式电子书并提取章节内容
-- 如何将长文档按章节切分为适合向量检索的片段
-- 如何为电子书内容构建带元数据（书名、章节号）的向量索引
-- 如何实现基于语义相似度的电子书内容检索
-- 如何构建电子书智能问答系统（RAG 流程）
-- Agent 和 MCP 这两种集成方式分别适合什么场景
-- 如何让 AI 稳定返回 JSON 格式的结构化数据
-- 如何使用 JsonOutputParser 智能提取和解析 JSON
-- 如何用 StructuredOutputParser 定义字段级输出结构
-- 如何使用 Zod Schema 定义复杂嵌套类型和完整类型系统
-- 如何用 withStructuredOutput() 一行代码实现结构化输出
-- 如何实现流式输出并实时显示 AI 生成内容
-- 如何将流式与结构化结合，边接收边解析数据
-- 如何使用 Tool Calls 利用模型原生函数调用能力
-- 如何实现流式 Tool Calls 并智能显示增量数据
-- 如何使用 XMLOutputParser 处理 XML 格式输出
-- 如何让 AI 从自然语言文本中智能提取结构化信息
-- 如何将 AI 提取的数据批量插入 MySQL 数据库
-- 如何使用事务保证数据库操作的原子性
-- 如何实现简化版的 AI 编程助手（类似 Cursor）
-- 如何让 AI 自主调用工具完成复杂任务（读文件、写文件、执行命令）
-- 如何实现流式工具调用的增量显示（diff 算法）
-- 如何使用 ReAct 模式让 AI 进行多轮自主决策
-- 如何管理 Agent 的对话历史和上下文
-- 如何配置 Docker Compose 运行 MySQL 服务
-- 如何提取数据库配置到常量文件实现配置解耦
-- 如何使用 PromptTemplate 管理提示词模板
-- 如何用 PipelinePromptTemplate 实现模板组件化
-- 如何使用 .partial() 预填充模板变量
-- 如何使用 ChatPromptTemplate 定义多角色对话
-- 如何用 FewShotPromptTemplate 提供示例指导
-- 如何使用 FewShotChatMessagePromptTemplate 在对话中插入示例
-- 如何将 Few-Shot 示例存储到 Milvus 向量数据库
-- 如何根据用户输入动态检索最相关的示例
-- 如何使用 RunnableSequence 将多个组件串联成 Chain
-- 如何用 .pipe() 方法实现链式调用
-- 如何使用 RunnableLambda 包装自定义函数
-- 如何用 RunnableMap 并行执行多个任务
-- 如何使用 RunnableBranch 实现条件分支路由
-- 如何用 RouterRunnable 根据 key 显式选择处理器
-- 如何使用 RunnableEach 对数组进行批量处理
-- 如何用 RunnablePassthrough 实现数据直通和字段赋值
-- 如何使用 RunnablePick 从对象中挑选指定字段
-- 如何用 .withRetry() 为 Chain 添加重试机制
-- 如何使用 .withFallbacks() 实现服务降级
-- 如何通过 callbacks 监控 Chain 的执行过程
-- 如何用 .withConfig() 动态传递配置
-- 如何使用 RunnableWithMessageHistory 管理多轮对话历史
+### Agent & MCP
+
+| 主题           | 学习内容                                                   |
+| -------------- | ---------------------------------------------------------- |
+| Agent 基础     | 如何给模型挂载本地工具，让模型自己读文件、写文件、执行命令 |
+| 工具调用循环   | 模型如何在多轮中自主决策调用工具                           |
+| MCP Server     | MCP Server 的基础写法、Tool/Resource 定义、stdio 通信      |
+| MCP Client     | 如何把多个 MCP Server 挂到同一个 Agent 上                  |
+| filesystem MCP | 允许目录的配置方法（`ALLOWED_PATHS`）                      |
+| 场景区分       | Agent 和 MCP 这两种集成方式分别适合什么场景                |
+
+### RAG & 向量检索
+
+| 主题            | 学习内容                                                 |
+| --------------- | -------------------------------------------------------- |
+| RAG 流程        | "加载 → 切分 → 向量检索 → 回答"的链路怎么串起来          |
+| Embeddings 降级 | 当 embeddings 不可用时，怎么降级为关键词检索             |
+| 动态内容抓取    | 如何使用 Puppeteer 抓取动态渲染网站的内容                |
+| 兼容性方案      | 如何实现 Cheerio + Puppeteer 的兼容性降级方案            |
+| 文本分割        | 如何用 RecursiveCharacterTextSplitter 分割长文档         |
+| Milvus 基础     | 如何使用 Milvus 进行基础向量数据管理（集合、索引、插入） |
+| 向量检索        | 如何通过语义相似度检索相关数据                           |
+| 电子书 RAG      | 如何解析 EPUB、按章节切分、构建带元数据的向量索引        |
+| 电子书问答      | 如何构建电子书智能问答系统（RAG 流程）                   |
+
+### 对话记忆管理
+
+| 主题       | 学习内容                                                   |
+| ---------- | ---------------------------------------------------------- |
+| 内存存储   | 如何使用 InMemoryChatMessageHistory 管理内存中的对话历史   |
+| 文件持久化 | 如何使用 FileSystemChatMessageHistory 持久化对话到本地文件 |
+| 消息截断   | 如何通过 trimMessages API 按消息数或 token 数截断历史      |
+| 对话总结   | 如何基于消息数量/token 数量触发对话总结策略                |
+| 检索策略   | 如何使用 Milvus 向量数据库存储对话数据                     |
+| RAG 闭环   | 如何实现对话记忆的检索-增强-生成-入库闭环                  |
+
+### 结构化输出
+
+| 主题                   | 学习内容                                             |
+| ---------------------- | ---------------------------------------------------- |
+| 基础解析               | 如何让 AI 稳定返回 JSON 格式的结构化数据             |
+| JsonOutputParser       | 如何使用 JsonOutputParser 智能提取和解析 JSON        |
+| StructuredOutputParser | 如何用 StructuredOutputParser 定义字段级输出结构     |
+| Zod Schema             | 如何使用 Zod Schema 定义复杂嵌套类型和完整类型系统   |
+| withStructuredOutput   | 如何用 withStructuredOutput() 一行代码实现结构化输出 |
+| 流式输出               | 如何实现流式输出并实时显示 AI 生成内容               |
+| 流式 + 结构化          | 如何将流式与结构化结合，边接收边解析数据             |
+| Tool Calls             | 如何使用 Tool Calls 利用模型原生函数调用能力         |
+| 流式 Tool Calls        | 如何实现流式 Tool Calls 并智能显示增量数据           |
+| XML 格式               | 如何使用 XMLOutputParser 处理 XML 格式输出           |
+
+### 智能录入 & Agent 实战
+
+| 主题        | 学习内容                                     |
+| ----------- | -------------------------------------------- |
+| 数据提取    | 如何让 AI 从自然语言文本中智能提取结构化信息 |
+| 数据库插入  | 如何将 AI 提取的数据批量插入 MySQL 数据库    |
+| 事务处理    | 如何使用事务保证数据库操作的原子性           |
+| Mini Cursor | 如何实现简化版的 AI 编程助手（类似 Cursor）  |
+| ReAct 模式  | 如何使用 ReAct 模式让 AI 进行多轮自主决策    |
+| 流式 diff   | 如何实现流式工具调用的增量显示（diff 算法）  |
+| Docker 部署 | 如何配置 Docker Compose 运行 MySQL 服务      |
+| 配置解耦    | 如何提取数据库配置到常量文件实现配置解耦     |
+
+### PromptTemplate 组件化
+
+| 主题       | 学习内容                                     |
+| ---------- | -------------------------------------------- |
+| 基础模板   | 如何使用 PromptTemplate 管理提示词模板       |
+| 管道模板   | 如何用 PipelinePromptTemplate 实现模板组件化 |
+| 部分应用   | 如何使用 .partial() 预填充模板变量           |
+| 对话模板   | 如何使用 ChatPromptTemplate 定义多角色对话   |
+| 少样本模板 | 如何用 FewShotPromptTemplate 提供示例指导    |
+| 动态示例   | 如何将 Few-Shot 示例存储到 Milvus 向量数据库 |
+| 语义检索   | 如何根据用户输入动态检索最相关的示例         |
+
+### Runnable 链式组装
+
+| 主题       | 学习内容                                                            |
+| ---------- | ------------------------------------------------------------------- |
+| 基础组装   | 如何使用 RunnableSequence 将多个组件串联成 Chain                    |
+| 链式调用   | 如何用 .pipe() 方法实现链式调用                                     |
+| 自定义函数 | 如何使用 RunnableLambda 包装自定义函数                              |
+| 并行执行   | 如何用 RunnableMap 并行执行多个任务                                 |
+| 条件分支   | 如何使用 RunnableBranch 实现条件分支路由                            |
+| 键值路由   | 如何用 RouterRunnable 根据 key 显式选择处理器                       |
+| 数组遍历   | 如何使用 RunnableEach 对数组进行批量处理                            |
+| 数据流管理 | 如何用 RunnablePassthrough 实现数据直通和字段赋值                   |
+| 字段选择   | 如何使用 RunnablePick 从对象中挑选指定字段                          |
+| 重试机制   | 如何用 .withRetry() 为 Chain 添加重试机制（`onFailedAttempt` 回调） |
+| 降级机制   | 如何使用 .withFallbacks() 实现服务降级                              |
+| 回调监听   | 如何通过 callbacks 监控 Chain 的执行过程                            |
+| 配置传递   | 如何用 .withConfig() 动态传递配置（`configurable` 业务配置）        |
+| 对话历史   | 如何使用 RunnableWithMessageHistory 管理多轮对话历史                |
 
 ## 📁 仓库里有什么
 
@@ -209,27 +234,25 @@
 
 ### Agent 示例
 
-- `src/index.mjs`：模型与系统提示词初始化
-- `src/tool-runner.mjs`：工具调用循环处理
+- `src/demo/agent-react-todo.mjs`：示例任务描述
 - `src/tools/*`：本地工具实现（读/写文件、列目录、执行命令）
-- `src/agent-react-todo.mjs`：示例任务描述
 
 ### MCP Server 示例
 
-- `src/mcp-server.mjs`：MCP Server 基础示例（query_user 工具 + docs://guide 资源）
+- `src/demo/mcp-server.mjs`：MCP Server 基础示例（query_user 工具 + docs://guide 资源）
 
 ### MCP Client 示例
 
-- `src/mcp-amap.mjs`：MultiServerMCPClient 集成高德地图和 filesystem
+- `src/demo/mcp-amap.mjs`：MultiServerMCPClient 集成高德地图和 filesystem
 
 ### RAG 示例
 
-- `src/loader-and-spliter2.mjs`：网页加载 + 文本切分 + RAG 完整流程
-- `src/rag-demo.mjs`：Embedding 配置与健康检查
+- `src/demo/loader-and-spliter2.mjs`：网页加载 + 文本切分 + RAG 完整流程
+- `src/demo/rag-demo.mjs`：Embedding 配置与健康检查
 
 ### 动态内容提取
 
-- `src/loader-and-spliter.mjs`：Puppeteer 抓取掘金文章
+- `src/demo/loader-and-spliter.mjs`：Puppeteer 抓取掘金文章
 
 ### 文本分割器示例
 
@@ -348,7 +371,7 @@
 
 - `src/runnable/runnable.mjs`：RunnableSequence 串行执行、.pipe() 链式调用
 
-**核心 API（6 个文件）**
+**核心 API（7 个文件）**
 
 - `src/runnable/api-case/RunnableLambda.mjs`：包装自定义函数
 - `src/runnable/api-case/RunnableMap.mjs`：并行执行多个任务
@@ -356,14 +379,15 @@
 - `src/runnable/api-case/RunnableRoute.mjs`：RouterRunnable 键值路由
 - `src/runnable/api-case/RunnablePassthrough.mjs`：数据直通/赋值
 - `src/runnable/api-case/RunnableEach.mjs`：数组遍历处理
+- `src/runnable/api-case/RunnablePick.mjs`：字段选择提取
 
-**高级特性（5 个文件，来自 ai-agent-course-code）**
+**高级特性（5 个文件）**
 
-- `runnable-test/src/runnables/RunnableWithRetry.mjs`：失败自动重试
-- `runnable-test/src/runnables/RunnableWithFallbacks.mjs`：服务降级机制
-- `runnable-test/src/runnables/RunnableWithCallbacks.mjs`：回调监听监控
-- `runnable-test/src/runnables/RunnableWithConfig.mjs`：动态配置传递
-- `runnable-test/src/runnables/RunnableWithMessageHistory.mjs`：多轮对话记忆管理
+- `src/runnable/api-case/RunnableWithRetry.mjs`：失败自动重试（`onFailedAttempt` 回调）
+- `src/runnable/api-case/RunnableWithFallbacks.mjs`：备选方案降级机制
+- `src/runnable/api-case/RunnableWithConfig.mjs`：配置传递（`configurable` 业务配置）
+- `src/runnable/api-case/RunnableWithMessageHistory.mjs`：多轮对话记忆管理
+- `src/runnable/api-case/RunnableWithCallbacks.mjs`：回调监听链执行
 
 ### 流程图
 
@@ -375,14 +399,16 @@
 .
 ├── agent-react-todo.mjs        # Agent 示例启动入口
 ├── src/
-│   ├── agent-react-todo.mjs    # Agent 示例任务
-│   ├── index.mjs               # 模型与系统提示词初始化
-│   ├── loader-and-spliter.mjs  # Puppeteer 抓取掘金文章
-│   ├── loader-and-spliter2.mjs # RAG + 兼容性加载方案
-│   ├── mcp-amap.mjs            # 地图 + filesystem MCP Client 示例
-│   ├── mcp-server.mjs          # MCP Server 示例
-│   ├── mco-amap-flow.md        # MCP Agent 调用流程图
-│   ├── rag-demo.mjs            # RAG 配置与健康检查示例
+│   ├── demo/                   # 示例代码目录（从 src/ 迁移）
+│   │   ├── agent-react-todo.mjs    # Agent 示例任务
+│   │   ├── langchain-mcp-test.mjs  # LangChain MCP 测试
+│   │   ├── loader-and-spliter.mjs  # Puppeteer 抓取掘金文章
+│   │   ├── loader-and-spliter2.mjs # RAG + 兼容性加载方案
+│   │   ├── mcp-amap.mjs            # 地图 + filesystem MCP Client 示例
+│   │   ├── mcp-server.mjs          # MCP Server 示例
+│   │   ├── mco-amap-flow.md        # MCP Agent 调用流程图
+│   │   ├── rag-demo.mjs            # RAG 配置与健康检查示例
+│   │   └── tiktoken-test.mjs       # Tiktoken 测试
 │   ├── memory/                 # 对话记忆管理示例目录
 │   │   ├── history-test.mjs               # InMemoryChatMessageHistory 基础用法
 │   │   ├── history-test2.mjs              # FileSystemChatMessageHistory 持久化存储
@@ -442,7 +468,14 @@
 │   │       ├── RunnableBranch.mjs               # 条件分支
 │   │       ├── RunnableRoute.mjs                # 键值路由
 │   │       ├── RunnablePassthrough.mjs          # 数据直通/赋值
-│   │       └── RunnableEach.mjs                 # 数组遍历
+│   │       ├── RunnableEach.mjs                 # 数组遍历
+│   │       ├── RunnablePick.mjs                 # 字段选择
+│   │       └── api-case/                        # 高级特性示例
+│   │           ├── RunnableWithRetry.mjs        # 失败自动重试
+│   │           ├── RunnableWithFallbacks.mjs    # 备选方案降级
+│   │           ├── RunnableWithConfig.mjs       # 配置传递
+│   │           ├── RunnableWithCallbacks.mjs    # 回调监听
+│   │           └── RunnableWithMessageHistory.mjs  # 多轮对话记忆
 │   ├── tool-runner.mjs         # 工具调用循环
 │   └── tools/                  # 本地工具实现
 └── react-todo-app/             # Agent 生成的 React Todo 示例项目

@@ -139,6 +139,19 @@
 - **重点**：后端流式输出到前端实时渲染的完整链路、NestJS 与 LangChain 的集成模式、SSE 协议的工程化实践
 - **核心问题**：如何将 LangChain 的流式能力通过 HTTP 协议稳定地传递到前端
 
+### 第 14 章：Nest + Tool Calling 实现 AI 智能助手（ReAct 循环）
+
+- **文件**：`src/cron-job-tool/` 目录下的完整 NestJS 项目
+- **内容**：NestJS 集成 LangChain，实现带工具调用的 AI 智能助手
+  - **ReAct 循环**：while(true) 循环让 AI 自主决策——推理 → 调用工具 → 观察结果 → 继续推理
+  - **工具定义**：LangChain `tool()` 包装 + Zod 参数校验的工厂提供者模式
+  - **查询用户**：query_user 工具 + UserService 内存数据库（三国人物数据）
+  - **发送邮件**：send_mail 工具 + @nestjs-modules/mailer SMTP 集成
+  - **互联网搜索**：web_search 工具 + Bocha Web Search API 实时搜索
+  - **流式输出**：工具调用场景下的流式处理（tool_call_chunks 检测）
+- **重点**：ReAct 循环的完整实现、多工具注册与调度、流式 + 工具调用的混合处理、工厂提供者依赖注入
+- **核心问题**：如何让 AI 在对话中自主调用外部工具完成复杂任务
+
 ---
 
 ## 🎯 这个仓库适合学什么
@@ -252,6 +265,19 @@
 | 配置管理   | 如何使用 ConfigModule 注入环境变量、实现 .env 自动查找        |
 | 静态托管   | 如何使用 ServeStaticModule 托管前端测试页面                   |
 | Chain 构建 | 如何用 PromptTemplate + Model + StringOutputParser 组装 Chain |
+
+### Nest + Tool Calling AI 智能助手
+
+| 主题         | 学习内容                                                   |
+| ------------ | ---------------------------------------------------------- |
+| ReAct 循环   | 如何用 while(true) 实现推理→工具→观察→推理的自主决策循环   |
+| 工具注册     | 如何在 NestJS 中用工厂提供者模式注册多个 LangChain 工具    |
+| Tool Calling | 如何用 model.bindTools() 让 AI 具备工具调用能力            |
+| 参数校验     | 如何使用 Zod Schema 定义工具参数（字符串、邮箱、数字范围） |
+| 工具调度     | 如何根据 tool_calls 分发到不同工具并注入 ToolMessage       |
+| 流式混合     | 流式输出中如何检测 tool_call_chunks 区分文本回答和工具调用 |
+| 邮件集成     | 如何使用 @nestjs-modules/mailer 通过 SMTP 发送邮件         |
+| 互联网搜索   | 如何通过 Bocha Web Search API 让 AI 具备实时搜索能力       |
 
 ## 📁 仓库里有什么
 
@@ -431,6 +457,20 @@
 
 - `src/asr-and-tts-nest-service/public/index.html`：SSE 测试页面（EventSource API + 状态指示 + 实时渲染）
 
+### Nest + Tool Calling AI 智能助手示例
+
+**核心文件（4 个文件）**
+
+- `src/cron-job-tool/src/ai/ai.controller.ts`：AI 控制器（普通响应 + SSE 流式两个端点）
+- `src/cron-job-tool/src/ai/ai.service.ts`：ReAct 循环核心（工具调度 + 流式混合输出）
+- `src/cron-job-tool/src/ai/ai.module.ts`：工厂提供者（ChatOpenAI + 三个工具定义）
+- `src/cron-job-tool/src/ai/user.service.ts`：用户数据服务（Map 内存数据库 + CRUD）
+
+**配置与工具（2 个文件）**
+
+- `src/cron-job-tool/src/utils/config.util.ts`：.env 文件自动向上查找策略
+- `src/cron-job-tool/src/app.module.ts`：应用根模块（ConfigModule + MailerModule + AiModule）
+
 ### 流程图
 
 - `src/mco-amap-flow.md`：MCP Agent 调用流程图和时序图
@@ -533,6 +573,18 @@
 │   │   │   └── main.ts                      # 启动入口
 │   │   └── public/
 │   │       └── index.html                   # SSE 前端测试页面
+│   ├── cron-job-tool/          # Nest + Tool Calling AI 智能助手示例
+│   │   ├── src/
+│   │   │   ├── ai/
+│   │   │   │   ├── ai.controller.ts        # AI 控制器（chat + chat/stream 端点）
+│   │   │   │   ├── ai.service.ts            # ReAct 循环 + 工具调度 + 流式输出
+│   │   │   │   ├── ai.module.ts             # 工厂提供者 + 三个工具注册
+│   │   │   │   └── user.service.ts          # 用户数据服务（Map 内存数据库）
+│   │   │   ├── utils/
+│   │   │   │   └── config.util.ts           # .env 自动查找工具
+│   │   │   ├── app.module.ts                # 应用根模块
+│   │   │   └── main.ts                      # 启动入口
+│   │   └── README.md                        # Nest CLI 默认 README
 │   ├── tool-runner.mjs         # 工具调用循环
 │   └── tools/                  # 本地工具实现
 └── react-todo-app/             # Agent 生成的 React Todo 示例项目
@@ -596,6 +648,38 @@ EMBEDDINGS_MODEL=text-embedding-3-small
 ```
 
 如果不提供 `EMBEDDINGS_*`，当前示例会优先回退到 `API_KEY / BASE_URL`，再不行就自动降级为关键词检索。
+
+��果你要运行 Nest + Tool Calling AI 智能助手示例的互联网搜索功能，还需要配置 Bocha API Key：
+
+```bash
+BOCHA_API_KEY=your-bocha-api-key
+```
+
+说明：
+
+- `BOCHA_API_KEY`：Bocha Web Search API 密钥（用于互联网搜索工具）
+
+如果你要运行 Nest + Tool Calling AI 智能助手示例的邮件发送功能，还需要配置 SMTP 信息：
+
+```bash
+MAIL_HOST=smtp.example.com
+MAIL_PORT=587
+MAIL_SECURE=false
+MAIL_USER=your-email@example.com
+MAIL_PASS=your-password
+MAIL_FROM=your-email@example.com
+```
+
+说明：
+
+- `MAIL_HOST`：SMTP 服务器地址
+- `MAIL_PORT`：SMTP 端口（465=SSL, 587=TLS）
+- `MAIL_SECURE`：是否使用 SSL（true/false）
+- `MAIL_USER`：SMTP 用户名
+- `MAIL_PASS`：SMTP 密码
+- `MAIL_FROM`：发件人邮箱地址
+
+如果不提供 `BOCHA_API_KEY`，AI 会在调用搜索工具时返回"API Key 未配置"的提示。
 
 如果你要运行智能录入与 Mini Cursor Agent 示例，还需要配置数据库环境变量：
 
@@ -996,6 +1080,82 @@ pnpm start:dev
 curl -N "http://localhost:3000/ai/chat/stream?query=什么是NestJS"
 ```
 
+### 运行 Nest + Tool Calling AI 智能助手示例
+
+⚠️ **前置条件**：需要先在根目录 `.env` 中配置 `MODEL`、`API_KEY`、`BASE_URL`
+
+**1. 安装依赖**
+
+```bash
+cd src/cron-job-tool
+pnpm install
+```
+
+> ⚠️ **注意**：发送邮件功能需要额外安装 `@nestjs-modules/mailer`：
+>
+> ```bash
+> pnpm add @nestjs-modules/mailer
+> ```
+>
+> 并在 `.env` 中配置 `MAIL_HOST`、`MAIL_PORT`、`MAIL_USER`、`MAIL_PASS`、`MAIL_FROM`
+
+**2. 启动开发服务器**
+
+```bash
+pnpm start:dev
+```
+
+**3. 测试普通问答**
+
+```bash
+curl "http://localhost:3000/ai/chat?query=什么是NestJS"
+```
+
+这个示例会：
+
+- 启动 NestJS 服务（默认监听 3000 端口）
+- 注册普通聊天端点 `GET /ai/chat?query=xxx`（一次性返回 JSON）
+- 注册流式聊天端点 `GET /ai/chat/stream?query=xxx`（SSE 实时推送）
+- AI 可根据问题自主选择调用工具
+
+**4. 测试工具调用 — 查询用户**
+
+```bash
+curl "http://localhost:3000/ai/chat?query=查询用户001的信息"
+```
+
+这个示例会：
+
+- AI 识别需要调用 `query_user` 工具
+- 查询内存数据库中三国人物的信息（赵云、诸葛亮、关羽等）
+- 返回格式化后的用户信息
+
+**5. 测试工具调用 — 互联网搜索**
+
+⚠️ **前置条件**：需要在 `.env` 中配置 `BOCHA_API_KEY`（Bocha Web Search API Key）
+
+```bash
+curl "http://localhost:3000/ai/chat?query=帮我搜索一下今天的人工智能新闻"
+```
+
+这个示例会：
+
+- AI 识别需要调用 `web_search` 工具
+- 调用 Bocha API 搜索互联网
+- 返回结构化的搜索结果（标题、URL、摘要、来源）
+
+**6. 测试流式工具调用**
+
+```bash
+curl -N "http://localhost:3000/ai/chat/stream?query=查询用户003的信息"
+```
+
+这个示例会：
+
+- 以 SSE 流式方式输出 AI 回答
+- 如果 AI 决定调用工具，流式输出会暂停，执行工具后继续输出
+- 最终用户看到的是连续的流式回答体验
+
 ### 运行 PromptTemplate 组件化管理示例
 
 **基础模板**
@@ -1329,6 +1489,35 @@ pnpm dev
 
 7. **测试页面**：`src/asr-and-tts-nest-service/public/index.html` - 掌握 EventSource API 的使用
 
+**Nest + Tool Calling AI 智能助手学习路径**：
+
+如果是第一次学习 ReAct 循环和工具调用，建议按这个顺序：
+
+**环境准备（1 步）**
+
+1. **安装依赖**：进入 `src/cron-job-tool/` 执行 `pnpm install`
+
+**数据层（1 个文件）**
+
+2. **用户服务**：`src/cron-job-tool/src/ai/user.service.ts` - 理解 Map 内存数据库和 CRUD
+
+**工具注册（1 个文件，核心）**
+
+3. **模块与工具**：`src/cron-job-tool/src/ai/ai.module.ts` - 学习三个 LangChain 工具的工厂定义、Zod 参数校验、MailerService 注入
+
+**ReAct 循环（1 个文件，核心）**
+
+4. **非流式版本**：`src/cron-job-tool/src/ai/ai.service.ts` 的 `runChain()` - 理解 while(true) 自循环逻辑
+5. **流式版本**：`src/cron-job-tool/src/ai/ai.service.ts` 的 `runChainStream()` - 学习 tool_call_chunks 检测
+
+**控制器（1 个文件）**
+
+6. **API 端点**：`src/cron-job-tool/src/ai/ai.controller.ts` - 理解普通响应和 SSE 两个端点的分工
+
+**根模块（1 个文件）**
+
+7. **应用配置**：`src/cron-job-tool/src/app.module.ts` - 理解 MailerModule 异步配置
+
 **智能录入与 Mini Cursor Agent（3 个文件，需先启动 MySQL）**
 
 如果是第一次学习实战应用，建议按这个顺序：
@@ -1497,6 +1686,40 @@ pnpm dev
 15. 添加限流守卫（ThrottlerGuard）：防止 SSE 端点被滥用
 16. 实现流式输出的单元测试：使用 Observable 测试工具验证 SSE 输出
 
+### Nest + Tool Calling AI 智能助手练习
+
+**ReAct 循环**
+
+1. 添加最大循环轮次限制（maxIterations），防止 AI 陷入无限工具调用死循环
+2. 实现并行工具调用：用 Promise.all 同时执行多个不依赖的工具
+3. 添加工具调用日志记录，显示每轮 AI 调用了什么工具、传了什么参数、结果如何
+4. 实现缓存机制：同一工具相同参数的结果在短时间内不再重复调用
+
+**工具扩展**
+
+5. 添加 `weather_search` 工具：通过天气 API 查询指定城市的天气信息
+6. 添加 `calculator` 工具：让 AI 能够调用计算器处理数学运算
+7. 添加 `get_time` 工具：返回当前时间，测试无参数的简单工具
+8. 实现动态工具发现：将 if/else 调度改为注册表模式，新增工具无需改调度代码
+
+**流式输出**
+
+9. 优化流式输出中工具调用的用户体验：调用工具时显示「🔍 正在查询用户信息...」
+10. 将工具返回结果也以流式方式推送，用户能看到 AI 的"思考过程"
+11. 实现带权重的工具选择：AI 在多个工具之间时显示候选列表
+
+**邮件集成**
+
+12. 补充安装 `@nestjs-modules/mailer` 并配置 SMTP，测试发送邮件功能
+13. 添加邮件发送模板：支持 HTML 格式的邮件排版
+14. 实现邮件发送队列：批量发送时不阻塞 AI 响应
+
+**工程化**
+
+15. 给工具添加超时机制：调用外部 API（如 Bocha）超过 5 秒自动超时
+16. 实现工具的健康检查端点：`GET /ai/tools/status` 返回所有工具的可用状态
+17. 添加 AI 的多轮对话记忆：用 RunnableWithMessageHistory 支持上下文对话
+
 ### 结构化大模型输出练习
 
 **基础解析**
@@ -1634,4 +1857,8 @@ args: ['-y', '@modelcontextprotocol/server-filesystem', ...allowedPaths]
 - 运行 Nest + LangChain 流式 AI 接口示例前，需要先在根目录 `.env` 中配置 `MODEL`、`API_KEY`、`BASE_URL`
 - `asr-and-tts-nest-service` 项目需要单独安装依赖（`cd src/asr-and-tts-nest-service && pnpm install`）
 - SSE 连接长时间空闲可能被代理服务器断开，生产环境需要添加心跳机制
+- `cron-job-tool` 项目需要单独安装依赖（`cd src/cron-job-tool && pnpm install`）
+- 运行 `cron-job-tool` 互联网搜索功能需要在 `.env` 中配置 `BOCHA_API_KEY`
+- 运行 `cron-job-tool` 邮件发送功能需要安装 `@nestjs-modules/mailer` 并配置 SMTP 环境变量
+- `cron-job-tool` 的 `runChain()` 和 `runChainStream()` 目前没有最大循环限制，生产环境应添加 `maxIterations`
 - MySQL Docker 容器会占用约 500MB 磁盘空间，用完后可以用 `docker-compose down -v` 清理

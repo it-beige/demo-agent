@@ -127,6 +127,18 @@
 - **重点**：声明式组装、数据流控制、高级特性组合、生产级最佳实践
 - **核心问题**：如何将命令式代码转变为声明式 Chain，提升可维护性和可复用性
 
+### 第 13 章：Nest + LangChain 实现基于 SSE 的流式 AI 接口
+
+- **文件**：`src/asr-and-tts-nest-service/` 目录下的完整 NestJS 项目
+- **内容**：NestJS 集成 LangChain，通过 SSE 协议实现流式 AI 对话接口
+  - **后端架构**：NestJS 模块化设计、LangChain Chain 流式输出、RxJS Observable 转换
+  - **SSE 端点**：`@Sse()` 装饰器声明、AsyncGenerator 流式生成、EventSource 协议规范
+  - **前端交互**：EventSource API 消费 SSE、实时状态指示、连接生命周期管理
+  - **配置管理**：ConfigModule 环境变量注入、.env 自动向上查找策略
+  - **静态托管**：ServeStaticModule 托管前端测试页面
+- **重点**：后端流式输出到前端实时渲染的完整链路、NestJS 与 LangChain 的集成模式、SSE 协议的工程化实践
+- **核心问题**：如何将 LangChain 的流式能力通过 HTTP 协议稳定地传递到前端
+
 ---
 
 ## 🎯 这个仓库适合学什么
@@ -227,6 +239,19 @@
 | 回调监听   | 如何通过 callbacks 监控 Chain 的执行过程                            |
 | 配置传递   | 如何用 .withConfig() 动态传递配置（`configurable` 业务配置）        |
 | 对话历史   | 如何使用 RunnableWithMessageHistory 管理多轮对话历史                |
+
+### Nest + LangChain 流式 AI 接口
+
+| 主题       | 学习内容                                                      |
+| ---------- | ------------------------------------------------------------- |
+| Nest 集成  | 如何在 NestJS 中集成 LangChain，用依赖注入管理模型实例        |
+| SSE 端点   | 如何使用 `@Sse()` 装饰器声明 Server-Sent Events 接口          |
+| 流式输出   | 如何将 LangChain `chain.stream()` 的 AsyncGenerator 转为 SSE  |
+| RxJS 转换  | 如何用 `from()` + `map()` 将 AsyncGenerator 转为 Observable   |
+| 前端消费   | 如何使用 EventSource API 在前端接收并实时渲染流式数据         |
+| 配置管理   | 如何使用 ConfigModule 注入环境变量、实现 .env 自动查找        |
+| 静态托管   | 如何使用 ServeStaticModule 托管前端测试页面                   |
+| Chain 构建 | 如何用 PromptTemplate + Model + StringOutputParser 组装 Chain |
 
 ## 📁 仓库里有什么
 
@@ -389,6 +414,23 @@
 - `src/runnable/api-case/RunnableWithMessageHistory.mjs`：多轮对话记忆管理
 - `src/runnable/api-case/RunnableWithCallbacks.mjs`：回调监听链执行
 
+### Nest + LangChain 流式 AI 接口示例
+
+**核心文件（3 个文件）**
+
+- `src/asr-and-tts-nest-service/src/ai/ai.controller.ts`：SSE 控制器（`@Sse()` 装饰器 + RxJS Observable）
+- `src/asr-and-tts-nest-service/src/ai/ai.service.ts`：LangChain Chain 构建 + AsyncGenerator 流式输出
+- `src/asr-and-tts-nest-service/src/ai/ai.module.ts`：依赖注入 + ChatOpenAI 工厂提供者
+
+**配置与工具（2 个文件）**
+
+- `src/asr-and-tts-nest-service/src/utils/config.util.ts`：.env 文件自动向上查找策略
+- `src/asr-and-tts-nest-service/src/app.module.ts`：应用根模块（ConfigModule + ServeStaticModule + AiModule）
+
+**前端页面（1 个文件）**
+
+- `src/asr-and-tts-nest-service/public/index.html`：SSE 测试页面（EventSource API + 状态指示 + 实时渲染）
+
 ### 流程图
 
 - `src/mco-amap-flow.md`：MCP Agent 调用流程图和时序图
@@ -476,6 +518,21 @@
 │   │           ├── RunnableWithConfig.mjs       # 配置传递
 │   │           ├── RunnableWithCallbacks.mjs    # 回调监听
 │   │           └── RunnableWithMessageHistory.mjs  # 多轮对话记忆
+│   ├── asr-and-tts-nest-service/  # Nest + LangChain 流式 AI 接口示例
+│   │   ├── src/
+│   │   │   ├── ai/
+│   │   │   │   ├── ai.controller.ts        # SSE 控制器（@Sse 装饰器）
+│   │   │   │   ├── ai.service.ts            # LangChain Chain + 流式输出
+│   │   │   │   ├── ai.module.ts             # 依赖注入 + 模型工厂提供者
+│   │   │   │   ├── dto/                     # DTO 定义
+│   │   │   │   └── entities/                # 实体定义
+│   │   │   ├── book/                        # 示例 CRUD 模块（脚手架预留）
+│   │   │   ├── utils/
+│   │   │   │   └── config.util.ts           # .env 自动查找工具
+│   │   │   ├── app.module.ts                # 应用根模块
+│   │   │   └── main.ts                      # 启动入口
+│   │   └── public/
+│   │       └── index.html                   # SSE 前端测试页面
 │   ├── tool-runner.mjs         # 工具调用循环
 │   └── tools/                  # 本地工具实现
 └── react-todo-app/             # Agent 生成的 React Todo 示例项目
@@ -897,6 +954,48 @@ node src/output-parse/xml-output-parser.mjs
 - 生成 XML 格式指令
 - 解析 XML 为 JavaScript 对象
 
+### 运行 Nest + LangChain 流式 AI 接口示例
+
+⚠️ **前置条件**：需要先在根目录 `.env` 中配置 `MODEL`、`API_KEY`、`BASE_URL`
+
+**1. 安装依赖**
+
+```bash
+cd src/asr-and-tts-nest-service
+pnpm install
+```
+
+**2. 启动开发服务器**
+
+```bash
+pnpm start:dev
+```
+
+这个示例会：
+
+- 启动 NestJS 服务（默认监听 3000 端口）
+- 自动向上查找 `.env` 文件加载环境变量
+- 注册 SSE 流式聊天端点 `GET /ai/chat/stream?query=xxx`
+- 托管静态前端测试页面到根路径
+
+**3. 打开测试页面**
+
+浏览器访问 `http://localhost:3000`，页面提供：
+
+- 输入框填写问题内容
+- 点击「开始流式请求」建立 SSE 连接
+- 实时显示 AI 响应内容（打字机效果）
+- 连接状态指示（连接中/已连接/已断开）
+- 支持手动停止请求
+
+**4. 直接测试 SSE 端点**
+
+也可以用 curl 测试：
+
+```bash
+curl -N "http://localhost:3000/ai/chat/stream?query=什么是NestJS"
+```
+
 ### 运行 PromptTemplate 组件化管理示例
 
 **基础模板**
@@ -1207,6 +1306,29 @@ pnpm dev
 12. **写入示例**：`src/prompt-template/weekly-report-examples-writer-milvus.mjs` - 学习向量存储
 13. **检索示例**：`src/prompt-template/weekly-report-examples-reader-milvus.mjs` - 掌握语义检索
 
+**Nest + LangChain 流式 AI 接口学习路径**：
+
+如果是第一次学习 NestJS + LangChain 集成，建议按这个顺序：
+
+**环境准备（1 步）**
+
+1. **安装依赖**：进入 `src/asr-and-tts-nest-service/` 执行 `pnpm install`
+
+**后端核心（3 个文件，按数据流顺序阅读）**
+
+2. **Chain 构建**：`src/asr-and-tts-nest-service/src/ai/ai.service.ts` - 理解 LangChain Chain 的组装和流式输出
+3. **SSE 端点**：`src/asr-and-tts-nest-service/src/ai/ai.controller.ts` - 学习 `@Sse()` 装饰器和 Observable 转换
+4. **依赖注入**：`src/asr-and-tts-nest-service/src/ai/ai.module.ts` - 理解 NestJS 工厂提供者模式
+
+**配置与基础设施（2 个文件）**
+
+5. **环境变量**：`src/asr-and-tts-nest-service/src/utils/config.util.ts` - 学习 .env 自动查找策略
+6. **根模块**：`src/asr-and-tts-nest-service/src/app.module.ts` - 理解模块编排和静态资源托管
+
+**前端交互（1 个文件）**
+
+7. **测试页面**：`src/asr-and-tts-nest-service/public/index.html` - 掌握 EventSource API 的使用
+
 **智能录入与 Mini Cursor Agent（3 个文件，需先启动 MySQL）**
 
 如果是第一次学习实战应用，建议按这个顺序：
@@ -1345,6 +1467,36 @@ pnpm dev
 23. 实现混合检索：向量检索 + 关键词过滤
 24. 添加示例更新机制：支持增删改 Milvus 中的示例
 
+### Nest + LangChain 流式 AI 接口练习
+
+**SSE 端点**
+
+1. 修改 `ai.controller.ts`，添加 POST 方式的 SSE 端点（支持 Body 传参而非 Query）
+2. 给 SSE 响应添加 `event` 字段，实现多种事件类型（如 `message`、`done`、`error`）
+3. 实现心跳机制：空闲时每 15 秒发送 `:keep-alive` 注释行，防止连接超时
+4. 添加连接数限制：当同时连接数超过阈值时拒绝新连接
+
+**LangChain 集成**
+
+5. 在 `ai.service.ts` 中添加带对话历史的 Chain（结合 `RunnableWithMessageHistory`）
+6. 实现多模型切换：通过 Query 参数选择不同模型（如 qwen-max / qwen-plus）
+7. 添加 Tool Calls 支持：让 SSE 端点也能流式输出工具调用结果
+8. 实现 Chain 的降级机制：主模型失败时自动切换到备选模型
+
+**前端交互**
+
+9. 在 `index.html` 中添加 Markdown 渲染（使用 marked.js）
+10. 实现多轮对话界面：维护消息历史，支持连续提问
+11. 添加流式输出的进度显示（已接收字符数、耗时统计）
+12. 实现断线重连机制：SSE 连接意外断开时自动重试
+
+**工程化**
+
+13. 添加 Swagger 文档：为 SSE 端点生成 API 文档
+14. 实现请求日志中间件：记录每次 SSE 请求的查询内容和响应耗时
+15. 添加限流守卫（ThrottlerGuard）：防止 SSE 端点被滥用
+16. 实现流式输出的单元测试：使用 Observable 测试工具验证 SSE 输出
+
 ### 结构化大模型输出练习
 
 **基础解析**
@@ -1479,4 +1631,7 @@ args: ['-y', '@modelcontextprotocol/server-filesystem', ...allowedPaths]
 - 运行智能录入与 Mini Cursor Agent 示例前，需要先启动 MySQL 服务
 - 数据库密码不要硬编码在代码中，务必使用 `.env` 文件管理
 - `mini-cursor.mjs` 会实际执行命令和写入文件，建议在测试目录中运行
+- 运行 Nest + LangChain 流式 AI 接口示例前，需要先在根目录 `.env` 中配置 `MODEL`、`API_KEY`、`BASE_URL`
+- `asr-and-tts-nest-service` 项目需要单独安装依赖（`cd src/asr-and-tts-nest-service && pnpm install`）
+- SSE 连接长时间空闲可能被代理服务器断开，生产环境需要添加心跳机制
 - MySQL Docker 容器会占用约 500MB 磁盘空间，用完后可以用 `docker-compose down -v` 清理

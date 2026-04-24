@@ -38,5 +38,6 @@ lerna-debug.log*
 # OS files
 .DS_Store
 
+.aone_copilot
 
 volumes

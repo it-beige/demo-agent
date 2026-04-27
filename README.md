@@ -152,6 +152,30 @@
 - **重点**：ReAct 循环的完整实现、多工具注册与调度、流式 + 工具调用的混合处理、工厂提供者依赖注入
 - **核心问题**：如何让 AI 在对话中自主调用外部工具完成复杂任务
 
+### 第 15 章：Nest + Tool 实现 OpenClaw 同款定时任务
+
+- **文件**：`src/cron-job-tool/` 目录下的 Job 模块（`src/job/`）
+- **内容**：基于 NestJS + TypeORM + SchedulerRegistry 实现 AI 驱动的定时任务系统
+  - **任务实体**：Job Entity 支持三种调度类型（cron 表达式、interval 间隔、at 一次性）
+  - **任务管理**：CRUD 操作 + 动态启停 + 运行状态追踪 + 执行时间记录
+  - **任务执行**：JobAgentService 绑定多工具（搜索/邮件/数据库），用 AI 理解自然语言指令并自动调用工具完成
+  - **启动恢复**：OnApplicationBootstrap 钩子自动加载已启用任务并恢复调度器状态
+  - **持久化存储**：TypeORM + SQLite/MySQL 存储任务定义和执行历史
+- **重点**：SchedulerRegistry 统一管理定时任务、AI Agent 作为任务执行器、自然语言指令解析、任务生命周期管理
+- **核心问题**：如何实现类似 OpenClaw 的 AI 定时任务——用户用自然语言描述任务，系统自动调度并执行
+
+### 第 16 章：AGUI 协议：Vercel AI SDK + LangChain 实现流式组件渲染
+
+- **文件**：`src/agui-backend/` + `src/agui-frontend/` 完整全栈项目
+- **内容**：基于 Vercel AI SDK 的 AGUI 协议，实现 AI 对话中的流式组件渲染（工具调用面板、搜索面板、邮件面板等）
+  - **后端架构**：NestJS + LangChain `createAgent` + `@ai-sdk/langchain` 桥接层 + `pipeUIMessageStreamToResponse`
+  - **AGUI 协议**：UIMessage 格式定义（包含 text、tool-invocation、data 等多种 part 类型）、流式传输规范
+  - **前端实现**：`@ai-sdk/react` 的 `useChat` Hook + `DefaultChatTransport` + 自定义 ToolPanel 组件
+  - **组件渲染**：WebSearch 搜索结果面板（综合答案 + 引用列表）、SendMail 邮件面板（参数流式生成 + 进度显示）、Markdown 流式渲染
+  - **流式处理**：tool-input-available（参数流式生成）、tool-output-available（结果返回）、tool-output-error（错误处理）
+- **重点**：AGUI 协议的 UIMessage 数据流、LangChain Agent 到 Vercel AI SDK 的桥接模式、流式工具调用组件、前后端协议对齐
+- **核心问题**：如何实现类似 ChatGPT 的流式工具调用面板——用户能看到 AI 生成参数的过程、搜索结果的精美展示、邮件发送的实时进度
+
 ---
 
 ## 🎯 这个仓库适合学什么
@@ -470,6 +494,35 @@
 
 - `src/cron-job-tool/src/utils/config.util.ts`：.env 文件自动向上查找策略
 - `src/cron-job-tool/src/app.module.ts`：应用根模块（ConfigModule + MailerModule + AiModule）
+
+### Nest + AI 定时任务系统示例（OpenClaw 同款）
+
+**核心文件（4 个文件）**
+
+- `src/cron-job-tool/src/job/entities/job.entity.ts`：Job 实体定义（支持 cron/every/at 三种类型）
+- `src/cron-job-tool/src/job/job.service.ts`：任务管理服务（CRUD + 调度器控制 + 生命周期管理）
+- `src/cron-job-tool/src/job/job-agent.service.ts`：AI 任务执行器（绑定多工具 + 自然语言指令解析）
+- `src/cron-job-tool/src/job/job.module.ts`：Job 模块（TypeORM + ToolModule 依赖注入）
+
+**工具依赖**
+
+- `src/cron-job-tool/src/tool/tool.module.ts`：工具模块（提供搜索、邮件、数据库 CRUD 工具）
+- `src/cron-job-tool/src/utils/detect-port.util.ts`：端口自动检测工具
+- `src/cron-job-tool/src/utils/mail-template.util.ts`：Markdown 邮件模板渲染工具
+
+### AGUI 协议：流式组件渲染示例
+
+**后端核心（3 个文件）**
+
+- `src/agui-backend/src/ai/ai.controller.ts`：AI 控制器（POST /ai/chat 端点 + pipeUIMessageStreamToResponse）
+- `src/agui-backend/src/ai/ai.service.ts`：AI 服务（LangChain createAgent + toUIMessageStream 桥接）
+- `src/agui-backend/src/ai/ai.module.ts`：AI 模块（ChatOpenAI + WebSearch Tool + SendMail Tool 工厂提供者）
+
+**前端核心（3 个文件）**
+
+- `src/agui-frontend/src/App.tsx`：主应用（useChat Hook + DefaultChatTransport + 对话界面）
+- `src/agui-frontend/src/components/ToolPanels.tsx`：工具面板组件（WebSearch/SendMail 面板 + 流式状态处理）
+- `src/agui-frontend/src/components/StreamdownText.tsx`：Markdown 流式渲染组件
 
 ### 流程图
 
@@ -1860,5 +1913,3 @@ args: ['-y', '@modelcontextprotocol/server-filesystem', ...allowedPaths]
 - `cron-job-tool` 项目需要单独安装依赖（`cd src/cron-job-tool && pnpm install`）
 - 运行 `cron-job-tool` 互联网搜索功能需要在 `.env` 中配置 `BOCHA_API_KEY`
 - 运行 `cron-job-tool` 邮件发送功能需要安装 `@nestjs-modules/mailer` 并配置 SMTP 环境变量
-- `cron-job-tool` 的 `runChain()` 和 `runChainStream()` 目前没有最大循环限制，生产环境应添加 `maxIterations`
-- MySQL Docker 容器会占用约 500MB 磁盘空间，用完后可以用 `docker-compose down -v` 清理

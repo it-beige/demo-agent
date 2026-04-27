@@ -40,4 +40,5 @@ lerna-debug.log*
 
 .aone_copilot
 
-volumes
+volumessrc/agui-backend/
+src/agui-frontend/

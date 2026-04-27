@@ -23,7 +23,6 @@
     "@nestjs/schedule": "^6.1.3",
     "@nestjs/serve-static": "^5.0.5",
     "@nestjs/typeorm": "^11.0.1",
-    "mysql2": "^3.22.0",
     "typeorm": "^0.3.28"
   },
   "jest": {
@@ -42,5 +41,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "devDependencies": {
+    "@types/cron": "^2.4.3"
   }
 }

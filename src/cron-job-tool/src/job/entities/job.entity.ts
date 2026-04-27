@@ -21,21 +21,21 @@ export class Job {
 
   // cron 类型使用（Cron 表达式）
   @Column({ type: 'varchar', length: 100, nullable: true })
-  cron: string | null;
+  cron?: string;
 
   // every 类型使用（间隔毫秒）
   @Column({ type: 'int', nullable: true })
-  everyMs: number | null;
+  everyMs?: number;
 
   // at 类型使用（指定触发时间点）
   @Column({ type: 'timestamp', nullable: true })
-  at: Date | null;
+  at?: Date;
 
   @Column({ default: true })
   isEnabled: boolean;
 
   @Column({ type: 'timestamp', nullable: true })
-  lastRun: Date | null;
+  lastRun?: Date;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

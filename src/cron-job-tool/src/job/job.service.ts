@@ -9,6 +9,7 @@ import { SchedulerRegistry } from '@nestjs/schedule';
 import { CronJob } from 'cron';
 import { EntityManager } from 'typeorm';
 import { Job } from './entities/job.entity';
+import { JobAgentService } from './job-agent.service';
 
 @Injectable()
 export class JobService implements OnApplicationBootstrap {
@@ -19,6 +20,9 @@ export class JobService implements OnApplicationBootstrap {
 
   @Inject(SchedulerRegistry)
   private readonly schedulerRegistry: SchedulerRegistry;
+
+  @Inject(JobAgentService)
+  private readonly jobAgentService: JobAgentService;
 
   async onApplicationBootstrap() {
     const enabledJobs = await this.entityManager.find(Job, {
@@ -67,30 +71,30 @@ export class JobService implements OnApplicationBootstrap {
       | {
           type: 'cron';
           instruction: string;
-          cron: string;
+          cron?: string;
           isEnabled?: boolean;
         }
       | {
           type: 'every';
           instruction: string;
-          everyMs: number;
+          everyMs?: number;
           isEnabled?: boolean;
         }
       | {
           type: 'at';
           instruction: string;
-          at: Date;
+          at?: Date;
           isEnabled?: boolean;
         },
   ) {
     const entity = this.entityManager.create(Job, {
       instruction: input.instruction,
       type: input.type,
-      cron: input.type === 'cron' ? input.cron : null,
-      everyMs: input.type === 'every' ? input.everyMs : null,
-      at: input.type === 'at' ? input.at : null,
+      cron: input.type === 'cron' ? input.cron : undefined,
+      everyMs: input.type === 'every' ? input.everyMs : undefined,
+      at: input.type === 'at' ? input.at : undefined,
       isEnabled: input.isEnabled ?? true,
-      lastRun: null,
+      lastRun: undefined,
     });
 
     const saved = await this.entityManager.save(Job, entity);
@@ -148,7 +152,12 @@ export class JobService implements OnApplicationBootstrap {
         this.logger.log(`run job ${job.id}, ${job.instruction}`);
         await this.entityManager.update(Job, job.id, { lastRun: new Date() });
 
-        this.logger.log(`[job ${job.id}] executed`);
+        try {
+          const result = await this.jobAgentService.runJob(job.instruction);
+          this.logger.log(`[job ${job.id}] 执行结果：${result}`);
+        } catch (error) {
+          this.logger.error(`[job ${job.id}] 执行失败：${(error as Error).message}`);
+        }
       }, job.everyMs);
 
       this.schedulerRegistry.addInterval(job.id, ref);
@@ -171,7 +180,12 @@ export class JobService implements OnApplicationBootstrap {
           isEnabled: false, // at 类型只执行一次：执行完自动停用
         });
 
-        this.logger.log(`[job ${job.id}] executed`);
+        try {
+          const result = await this.jobAgentService.runJob(job.instruction);
+          this.logger.log(`[job ${job.id}] 执行结果：${result}`);
+        } catch (error) {
+          this.logger.error(`[job ${job.id}] 执行失败：${(error as Error).message}`);
+        }
 
         try {
           this.schedulerRegistry.deleteTimeout(job.id);
@@ -218,7 +232,12 @@ export class JobService implements OnApplicationBootstrap {
       this.logger.log(`run job ${job.id}, ${job.instruction}`);
       await this.entityManager.update(Job, job.id, { lastRun: new Date() });
 
-      this.logger.log(`[job ${job.id}] executed`);
+      try {
+        const result = await this.jobAgentService.runJob(job.instruction);
+        this.logger.log(`[job ${job.id}] 执行结果：${result}`);
+      } catch (error) {
+        this.logger.error(`[job ${job.id}] 执行失败：${(error as Error).message}`);
+      }
     });
   }
 }

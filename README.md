@@ -5,8 +5,6 @@
 > 1. **Agent**：让模型结合本地工具完成一个实际任务
 > 2. **MCP Server**：把本地能力封装成标准化工具，供 Cursor 等 MCP Client 调用
 >
-> 这个仓库不是生产级框架，更像一个方便拆开阅读、动手实验、逐步扩展的最小示例集合。
-
 ---
 
 ## 🚀 快速开始
@@ -24,26 +22,26 @@
 
 ## 📚 章节目录
 
-本仓库按章节逐步添加学习内容，每个章节聚焦一个主题。点击章节标题进入对应文档：
+**本仓库按章节逐步添加学习内容**，每个章节聚焦一个主题。点击章节标题进入对应文档：
 
-| #   | 章节                                                                                          | 关键词                                  | 难度       |
-| --- | --------------------------------------------------------------------------------------------- | --------------------------------------- | ---------- |
-| 1   | [Agent 基础示例](./docs/chapters/01-agent-basic.md)                                           | ReAct 循环、本地工具调用                | ⭐          |
-| 2   | [MCP Server 基础](./docs/chapters/02-mcp-server-basic.md)                                     | Tool / Resource、stdio、Zod             | ⭐          |
-| 3   | [多 MCP Server 集成](./docs/chapters/03-multi-mcp.md)                                         | MultiServerMCPClient、高德地图          | ⭐⭐         |
-| 4   | [RAG 检索增强生成](./docs/chapters/04-rag.md)                                                 | Embeddings 降级、关键词检索兜底         | ⭐⭐         |
-| 5   | [动态网站内容提取](./docs/chapters/05-dynamic-content.md)                                     | Puppeteer、动态渲染                     | ⭐⭐         |
-| 6   | [兼容性加载方案](./docs/chapters/06-compatibility-loader.md)                                  | Cheerio + Puppeteer 渐进式降级          | ⭐⭐         |
-| 7   | [文本分割器详解](./docs/chapters/07-text-splitter.md)                                         | RecursiveCharacterTextSplitter、Token   | ⭐⭐         |
-| 8   | [对话记忆管理](./docs/chapters/08-conversation-memory.md)                                     | 截断 / 总结 / 检索三大策略、Milvus      | ⭐⭐⭐        |
-| 9   | [结构化大模型输出](./docs/chapters/09-structured-output.md)                                   | Zod、withStructuredOutput、Tool Calls   | ⭐⭐⭐        |
-| 10  | [智能录入与 Mini Cursor Agent](./docs/chapters/10-smart-import-mini-cursor.md)                | MySQL 实战、流式 ReAct                  | ⭐⭐⭐        |
-| 11  | [PromptTemplate 组件化管理](./docs/chapters/11-prompt-template.md)                            | Pipeline、Few-Shot、动态示例选择        | ⭐⭐⭐        |
-| 12  | [Runnable - 把写逻辑变成组装 Chain](./docs/chapters/12-runnable-chain.md)                     | Sequence / Map / Branch / 重试 / 降级   | ⭐⭐⭐        |
-| 13  | [Nest + LangChain 实现基于 SSE 的流式 AI 接口](./docs/chapters/13-nest-langchain-sse.md)      | NestJS SSE、流式输出、EventSource       | ⭐⭐⭐⭐       |
-| 14  | [Nest + Tool Calling 实现 AI 智能助手（ReAct 循环）](./docs/chapters/14-nest-tool-calling.md) | 工厂提供者、bindTools、流式工具调用     | ⭐⭐⭐⭐       |
-| 15  | [Nest + Tool 实现 OpenClaw 同款定时任务](./docs/chapters/15-nest-cron-job.md)                 | TypeORM、SchedulerRegistry、AI 任务执行 | ⭐⭐⭐⭐       |
-| 16  | [AGUI 协议：Vercel AI SDK + LangChain 实现流式组件渲染](./docs/chapters/16-agui-protocol.md)  | UIMessage、ToolPanel、全栈              | ⭐⭐⭐⭐       |
+| #   | 章节                                                                                          | 关键词                                  |
+| --- | --------------------------------------------------------------------------------------------- | --------------------------------------- |
+| 1   | [Agent 基础示例](./docs/chapters/01-agent-basic.md)                                           | ReAct 循环、本地工具调用                |
+| 2   | [MCP Server 基础](./docs/chapters/02-mcp-server-basic.md)                                     | Tool / Resource、stdio、Zod             |
+| 3   | [多 MCP Server 集成](./docs/chapters/03-multi-mcp.md)                                         | MultiServerMCPClient、高德地图          |
+| 4   | [RAG 检索增强生成](./docs/chapters/04-rag.md)                                                 | Embeddings 降级、关键词检索兜底         |
+| 5   | [动态网站内容提取](./docs/chapters/05-dynamic-content.md)                                     | Puppeteer、动态渲染                     |
+| 6   | [兼容性加载方案](./docs/chapters/06-compatibility-loader.md)                                  | Cheerio + Puppeteer 渐进式降级          |
+| 7   | [文本分割器详解](./docs/chapters/07-text-splitter.md)                                         | RecursiveCharacterTextSplitter、Token   |
+| 8   | [对话记忆管理](./docs/chapters/08-conversation-memory.md)                                     | 截断 / 总结 / 检索三大策略、Milvus      |
+| 9   | [结构化大模型输出](./docs/chapters/09-structured-output.md)                                   | Zod、withStructuredOutput、Tool Calls   |
+| 10  | [智能录入与 Mini Cursor Agent](./docs/chapters/10-smart-import-mini-cursor.md)                | MySQL 实战、流式 ReAct                  |
+| 11  | [PromptTemplate 组件化管理](./docs/chapters/11-prompt-template.md)                            | Pipeline、Few-Shot、动态示例选择        |
+| 12  | [Runnable - 把写逻辑变成组装 Chain](./docs/chapters/12-runnable-chain.md)                     | Sequence / Map / Branch / 重试 / 降级   |
+| 13  | [Nest + LangChain 实现基于 SSE 的流式 AI 接口](./docs/chapters/13-nest-langchain-sse.md)      | NestJS SSE、流式输出、EventSource       |
+| 14  | [Nest + Tool Calling 实现 AI 智能助手（ReAct 循环）](./docs/chapters/14-nest-tool-calling.md) | 工厂提供者、bindTools、流式工具调用     |
+| 15  | [Nest + Tool 实现 OpenClaw 同款定时任务](./docs/chapters/15-nest-cron-job.md)                 | TypeORM、SchedulerRegistry、AI 任务执行 |
+| 16  | [AGUI 协议：Vercel AI SDK + LangChain 实现流式组件渲染](./docs/chapters/16-agui-protocol.md)  | UIMessage、ToolPanel、全栈              |
 
 ---
 

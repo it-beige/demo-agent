@@ -15,6 +15,7 @@
 - [🌊 Nest + LangChain 流式 AI 接口练习](#-nest-langchain-流式-ai-接口练习)
 - [🔁 Nest + Tool Calling AI 智能助手练习](#-nest-tool-calling-ai-智能助手练习)
 - [📦 结构化大模型输出练习](#-结构化大模型输出练习)
+- [🎙️ Nest + TTS/ASR 语音助手练习](#-nest-ttsasr-语音助手练习)
 
 ---
 
@@ -263,6 +264,41 @@
 18. 实现 XML 结果的 XPath 查询和数据提取
 
 ---
+
+## 🎙️ Nest + TTS/ASR 语音助手练习
+
+### 语音识别 ASR
+
+1. 修改 `speech.service.ts`，支持更多音频格式（mp3、ogg、webm）
+2. 添加音频时长限制：超过 60 秒的音频拒绝识别
+3. 实现流式 ASR：使用腾讯云 WebSocket ASR 接口实现实时语音识别
+
+### TTS 中继与会话管理
+
+4. 给 `tts-relay.service.ts` 添加会话超时机制：5 分钟无活动自动关闭会话
+5. 实现 pendingChunks 的最大缓冲限制（如 100 个 chunk），超过后丢弃最老的
+6. 添加会话统计信息：记录每个会话的 chunk 数量、音频帧数量、连接时长
+7. 实现会话恢复日志：记录断线重连时的旧连接清理和新连接建立过程
+
+### WebSocket 网关
+
+8. 修改 `tts.gateway.ts`，添加连接认证机制（如 JWT token 验证）
+9. 实现最大连接数限制：单 IP 最多同时 3 个 TTS 连接
+10. 添加 WebSocket 心跳机制：每 30 秒发送 ping/pong 检测连接存活
+
+### 前端 MediaSource
+
+11. 修改 `index.html`，添加音频播放进度条和音量控制
+12. 实现播放速度调节：支持 0.5x、1x、1.5x、2x 速度切换
+13. 添加音频缓冲区可视化：显示已缓冲的音频时长和播放进度
+14. 实现播放失败降级：MediaSource 错误时自动切换到普通 `<audio>` 标签
+
+### 事件驱动与架构
+
+15. 添加新的事件监听器：在 TTS 流式输出时记录日志到文件
+16. 实现事件重试机制：TTS 事件处理失败时自动重试 3 次
+17. 添加事件监控端点：`GET /speech/events/stats` 返回当前事件处理统计
+18. 对比 EventEmitter2 和 Redis Pub/Sub 的优劣，实现分布式事件总线
 
 ## ➡️ 下一步
 

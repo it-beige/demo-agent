@@ -13,6 +13,7 @@
 - [🌊 Nest + LangChain 流式 AI 接口学习路径](#-nest-langchain-流式-ai-接口学习路径)
 - [🔁 Nest + Tool Calling AI 智能助手学习路径](#-nest-tool-calling-ai-智能助手学习路径)
 - [🤖 智能录入与 Mini Cursor Agent 学习路径](#-智能录入与-mini-cursor-agent-学习路径)
+- [🎙️ Nest + TTS/ASR 语音助手学习路径](#-nest-ttsasr-语音助手学习路径)
 
 ---
 
@@ -217,6 +218,41 @@
 📖 对应章节：[第 10 章 智能录入与 Mini Cursor Agent](./chapters/10-smart-import-mini-cursor.md)
 
 ---
+
+## 🎙️ Nest + TTS/ASR 语音助手学习路径
+
+如果是第一次学习实时语音交互系统，建议按这个顺序：
+
+### 环境准备（1 步）
+
+1. **安装依赖**：进入 `src/tts-stt-nest/` 执行 `pnpm install`，配置 OpenAI API 和腾讯云密钥
+
+### 语音识别 ASR（1 个文件）
+
+2. **ASR 服务**：`src/tts-stt-nest/src/speech/speech.service.ts` - 理解腾讯云 ASR SDK 调用和文件上传处理
+
+### 流式 AI + 事件发布（2 个文件）
+
+3. **AI 服务**：`src/tts-stt-nest/src/ai/ai.service.ts` - 学习 AsyncGenerator 流式输出 + EventEmitter2 事件发布（start/chunk/end）
+4. **AI 控制器**：`src/tts-stt-nest/src/ai/ai.controller.ts` - 理解 SSE 端点和 Observable 转换
+
+### TTS 中继核心（3 个文件，重点）
+
+5. **事件类型**：`src/tts-stt-nest/src/common/stream-events.ts` - 理解 AiTtsStreamEvent 联合类型定义
+6. **TTS 中继服务**：`src/tts-stt-nest/src/speech/tts-relay.service.ts` - 掌握会话状态机（ready/pendingChunks/closed）、缓冲机制、腾讯云 WebSocket 转发
+7. **TTS 网关**：`src/tts-stt-nest/src/gateways/tts.gateway.ts` - 学习薄封装模式、sessionId 提取、断线重连支持
+
+### 配置与基础设施（3 个文件）
+
+8. **TTS 配置构建器**：`src/tts-stt-nest/src/speech/tts-config.builder.ts` - 理解 HMAC-SHA1 签名算法和 WebSocket URL 构建
+9. **语音模块**：`src/tts-stt-nest/src/speech/speech.module.ts` - 学习腾讯云 SDK 工厂提供者和依赖注入
+10. **WebSocket 适配器**：`src/tts-stt-nest/src/gateways/ws-adapter.ts` - 理解原生 ws 库替代 Socket.IO
+
+### 前端流式播放（1 个文件）
+
+11. **语音助手页面**：`src/tts-stt-nest/public/index.html` - 掌握 MediaSource API 流式音频播放、录音 + ASR + SSE 完整交互流程
+
+📖 对应章节：[第 17 章 Nest + 腾讯云 TTS/ASR 实现实时语音助手](./chapters/17-nest-tts-asr.md)
 
 ## ➡️ 下一步
 

@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>简单 AI 测试 - TTS-STT-NEST</title>
+    <style>
+      :root {
+        --bg: #f3f4f7;
+        --card: #ffffff;
+        --text: #1f2329;
+        --muted: #6b7280;
+        --primary: #3b82f6;
+        --primary-soft: #e8f1ff;
+        --border: #e5e7eb;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+        color: var(--text);
+        background: var(--bg);
+      }
+
+      .page {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 0 20px;
+      }
+
+      .card {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        margin: 0 0 8px 0;
+        font-size: 24px;
+      }
+
+      h2 {
+        margin: 0 0 16px 0;
+        font-size: 18px;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        font-size: 14px;
+        margin-bottom: 24px;
+      }
+
+      .input-group {
+        margin-bottom: 16px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 80px;
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 14px;
+        font-family: inherit;
+        resize: vertical;
+      }
+
+      textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px var(--primary-soft);
+      }
+
+      .btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        font-size: 14px;
+        cursor: pointer;
+        font-weight: 500;
+      }
+
+      .btn:hover {
+        background: #2563eb;
+      }
+
+      .btn:disabled {
+        background: var(--muted);
+        cursor: not-allowed;
+      }
+
+      .result {
+        margin-top: 16px;
+        padding: 12px;
+        background: var(--bg);
+        border-radius: 8px;
+        font-size: 14px;
+        line-height: 1.6;
+        min-height: 60px;
+        white-space: pre-wrap;
+      }
+
+      .status {
+        margin-top: 8px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .api-info {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 8px;
+      }
+
+      .api-info code {
+        background: var(--bg);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="card">
+        <h1>AI 流式对话测试</h1>
+        <div class="subtitle">测试 /ai/chat SSE 接口</div>
+
+        <div class="input-group">
+          <label for="queryInput">输入问题</label>
+          <textarea id="queryInput" placeholder="请输入你的问题..."></textarea>
+        </div>
+
+        <button id="sendBtn" class="btn">发送</button>
+
+        <div class="result" id="result">等待输入...</div>
+        <div class="status" id="status"></div>
+
+        <div class="api-info">
+          API: <code>GET /ai/chat?query=xxx</code>
+        </div>
+      </section>
+
+      <section class="card">
+        <h1>语音识别测试</h1>
+        <div class="subtitle">测试 /speech/recognize 接口</div>
+
+        <div class="input-group">
+          <label>录音测试</label>
+          <button id="recordBtn" class="btn">开始录音</button>
+        </div>
+
+        <div class="result" id="asrResult">等待录音...</div>
+        <div class="status" id="asrStatus"></div>
+
+        <div class="api-info">
+          API: <code>POST /speech/recognize</code> (multipart/form-data: audio)
+        </div>
+      </section>
+
+      <section class="card">
+        <h1>WebSocket TTS 测试</h1>
+        <div class="subtitle">测试 WebSocket TTS 连接</div>
+
+        <div class="input-group">
+          <label>连接状态</label>
+          <button id="connectBtn" class="btn">连接 WebSocket</button>
+        </div>
+
+        <div class="result" id="wsResult">等待连接...</div>
+        <div class="status" id="wsStatus"></div>
+
+        <div class="api-info">
+          WS: <code>ws://localhost:3000/tts</code>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // AI 流式对话测试
+      const queryInput = document.getElementById('queryInput');
+      const sendBtn = document.getElementById('sendBtn');
+      const result = document.getElementById('result');
+      const status = document.getElementById('status');
+
+      sendBtn.addEventListener('click', async () => {
+        const query = queryInput.value.trim();
+        if (!query) {
+          result.textContent = '请输入问题';
+          return;
+        }
+
+        sendBtn.disabled = true;
+        result.textContent = '';
+        status.textContent = '正在连接...';
+
+        try {
+          const url = `/ai/chat?query=${encodeURIComponent(query)}`;
+          const eventSource = new EventSource(url);
+
+          eventSource.onmessage = (event) => {
+            result.textContent += event.data;
+            status.textContent = '接收中...';
+          };
+
+          eventSource.onerror = () => {
+            eventSource.close();
+            sendBtn.disabled = false;
+            status.textContent = '完成';
+          };
+
+          eventSource.onopen = () => {
+            status.textContent = '连接成功，接收流式数据...';
+          };
+        } catch (error) {
+          result.textContent = `错误: ${error.message}`;
+          status.textContent = '连接失败';
+          sendBtn.disabled = false;
+        }
+      });
+
+      // 语音识别测试
+      const recordBtn = document.getElementById('recordBtn');
+      const asrResult = document.getElementById('asrResult');
+      const asrStatus = document.getElementById('asrStatus');
+
+      let mediaRecorder = null;
+      let chunks = [];
+      let isRecording = false;
+
+      recordBtn.addEventListener('click', async () => {
+        if (isRecording) {
+          mediaRecorder.stop();
+          recordBtn.textContent = '开始录音';
+          isRecording = false;
+          return;
+        }
+
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          chunks = [];
+          mediaRecorder = new MediaRecorder(stream);
+
+          mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+              chunks.push(event.data);
+            }
+          };
+
+          mediaRecorder.onstop = async () => {
+            const blob = new Blob(chunks, { type: 'audio/webm' });
+            const formData = new FormData();
+            formData.append('audio', blob, 'recording.webm');
+
+            asrStatus.textContent = '正在识别...';
+            asrResult.textContent = '';
+
+            try {
+              const response = await fetch('/speech/recognize', {
+                method: 'POST',
+                body: formData
+              });
+
+              if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+              }
+
+              const data = await response.json();
+              asrResult.textContent = data.text || '识别结果为空';
+              asrStatus.textContent = '识别完成';
+            } catch (error) {
+              asrResult.textContent = `识别失败: ${error.message}`;
+              asrStatus.textContent = '错误';
+            }
+
+            stream.getTracks().forEach(track => track.stop());
+          };
+
+          mediaRecorder.start();
+          recordBtn.textContent = '停止录音';
+          isRecording = true;
+          asrStatus.textContent = '录音中...';
+          asrResult.textContent = '';
+        } catch (error) {
+          asrResult.textContent = `无法录音: ${error.message}`;
+          asrStatus.textContent = '错误';
+        }
+      });
+
+      // WebSocket TTS 测试
+      const connectBtn = document.getElementById('connectBtn');
+      const wsResult = document.getElementById('wsResult');
+      const wsStatus = document.getElementById('wsStatus');
+
+      let ws = null;
+
+      connectBtn.addEventListener('click', () => {
+        if (ws) {
+          ws.close();
+          ws = null;
+          connectBtn.textContent = '连接 WebSocket';
+          wsStatus.textContent = '已断开';
+          return;
+        }
+
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.host}/tts`;
+
+        ws = new WebSocket(wsUrl);
+        wsStatus.textContent = '连接中...';
+        wsResult.textContent = '';
+
+        ws.onopen = () => {
+          wsStatus.textContent = '已连接';
+          connectBtn.textContent = '断开连接';
+          wsResult.textContent = 'WebSocket 连接成功';
+        };
+
+        ws.onmessage = (event) => {
+          if (typeof event.data === 'string') {
+            try {
+              const msg = JSON.parse(event.data);
+              wsResult.textContent += `收到消息: ${JSON.stringify(msg)}\n`;
+            } catch (e) {
+              wsResult.textContent += `收到文本: ${event.data}\n`;
+            }
+          } else {
+            wsResult.textContent += `收到二进制数据: ${event.data.byteLength} bytes\n`;
+          }
+        };
+
+        ws.onerror = (error) => {
+          wsStatus.textContent = '错误';
+          wsResult.textContent += `WebSocket 错误\n`;
+        };
+
+        ws.onclose = () => {
+          wsStatus.textContent = '已断开';
+          connectBtn.textContent = '连接 WebSocket';
+          ws = null;
+        };
+      });
+    </script>
+  </body>
+</html>

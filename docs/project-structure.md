@@ -112,6 +112,32 @@
 │   │   │   ├── app.module.ts                # 应用根模块
 │   │   │   └── main.ts                      # 启动入口
 │   │   └── README.md                        # Nest CLI 默认 README
+│   ├── tts-stt-nest/           # Nest + 腾讯云 TTS/ASR 实现实时语音助手示例
+│   │   ├── src/
+│   │   │   ├── ai/
+│   │   │   │   ├── ai.controller.ts        # SSE 控制器（@Sse 装饰器 + Observable）
+│   │   │   │   ├── ai.service.ts            # LangChain Chain + AsyncGenerator + 事件发布
+│   │   │   │   └── ai.module.ts             # ChatOpenAI 工厂提供者（支持自定义 baseURL）
+│   │   │   ├── speech/
+│   │   │   │   ├── speech.controller.ts    # ASR 控制器（文件上传端点）
+│   │   │   │   ├── speech.service.ts        # ASR 语音识别服务（腾讯云 ASR SDK）
+│   │   │   │   ├── speech.module.ts         # 语音模块（腾讯云 SDK 工厂 + Relay 注入）
+│   │   │   │   ├── tts-relay.service.ts     # TTS 中继服务（会话管理 + 腾讯云转发 + 缓冲机制）
+│   │   │   │   └── tts-config.builder.ts    # TTS 配置构建器（HMAC-SHA1 签名 + WebSocket URL）
+│   │   │   ├── gateways/
+│   │   │   │   ├── tts.gateway.ts           # WebSocket 网关（/tts 端点 + 薄封装模式）
+│   │   │   │   ├── ws-adapter.ts            # 原生 ws 库适配器（替代 Socket.IO）
+│   │   │   │   └── gateways.module.ts       # 网关模块声明
+│   │   │   ├── common/
+│   │   │   │   └── stream-events.ts         # 事件类型定义（AiTtsStreamEvent 联合类型）
+│   │   │   ├── utils/
+│   │   │   │   ├── config.util.ts           # .env 自动查找工具
+│   │   │   │   └── detect-port.util.ts      # 端口占用检测与自动切换
+│   │   │   ├── app.module.ts                # 应用根模块（AI + Speech + Gateways）
+│   │   │   └── main.ts                      # 启动入口（HTTP + WebSocket 服务器）
+│   │   └── public/
+│   │       ├── index.html                   # 单页语音助手前端（录音 + ASR + SSE + MediaSource）
+│   │       └── simple-test.html             # TTS WebSocket 简单测试页面
 │   ├── tool-runner.mjs         # 工具调用循环
 │   └── tools/                  # 本地工具实现
 └── react-todo-app/             # Agent 生成的 React Todo 示例项目

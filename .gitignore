@@ -39,5 +39,7 @@ lerna-debug.log*
 .DS_Store
 
 .aone_copilot
-
 volumes
+
+# test uploads
+uploads

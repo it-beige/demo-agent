@@ -16,6 +16,7 @@
 - [🔁 Nest + Tool Calling AI 智能助手练习](#-nest-tool-calling-ai-智能助手练习)
 - [📦 结构化大模型输出练习](#-结构化大模型输出练习)
 - [🎙️ Nest + TTS/ASR 语音助手练习](#-nest-ttsasr-语音助手练习)
+- [🕸️ LangGraph 与多 Agent 架构练习](#-langgraph-与多-agent-架构练习)
 
 ---
 
@@ -299,6 +300,58 @@
 16. 实现事件重试机制：TTS 事件处理失败时自动重试 3 次
 17. 添加事件监控端点：`GET /speech/events/stats` 返回当前事件处理统计
 18. 对比 EventEmitter2 和 Redis Pub/Sub 的优劣，实现分布式事件总线
+
+---
+
+## 🕸️ LangGraph 与多 Agent 架构练习
+
+### 基础图结构
+
+1. 修改 `basic-graph.mjs`，在 `Annotation.Root` 里再加一个数组字段（如 `logs`），并让每个节点往里 push 一条日志，最后打印
+2. 把 step1 / step2 / step3 改成"读 → 处理 → 写"三段式（如：读文件、统计字数、写结果），保留 Mermaid 输出
+3. 试着把节点改成异步函数（`async`）+ `setTimeout` 模拟耗时，观察执行顺序
+
+### 条件路由
+
+4. 在 `conditional-routing.mjs` 中新增第三种分支（如 `translate`，遇到中英混排时调用翻译节点）
+5. 把 router 节点改成调用大模型分类（让模型决定走哪条路），而非硬编码字符串匹配
+6. 让 `math` 分支在出错时回退到 `chat` 分支（计算失败由模型用自然语言回答）
+
+### 循环与重试
+
+7. 修改 `loop-retry.mjs`，让"成功条件"变成"调用真实 API 直到返回 200"
+8. 在循环中累积错误日志（数组），失败超过 N 次时打印所有历史错误
+9. 对比 `recursionLimit: 5` 和 `recursionLimit: 100` 在长循环中的差异
+
+### 检查点与会话隔离
+
+10. 修改 `checkpointer-memory.mjs`，把 `MemorySaver` 换成基于文件的 checkpointer（自定义实现，把 state 序列化到 JSON 文件）
+11. 实现一个"清空会话"功能：根据 `thread_id` 删除该会话的所有检查点
+12. 给状态加 `lastVisitedAt` 字段，每次 invoke 自动更新，演示会话级时间戳追踪
+
+### 人工干预（HITL）
+
+13. 改造 `graph-interrupt.mjs`，把单步确认变成多步确认（先确认收款人、再确认金额）
+14. 把终端输入换成"通过 HTTP 端点提交确认结果"，模拟 Web 应用的人工审批
+15. 给 interrupt payload 增加 `metadata`（如审批人、提交时间），恢复时校验权限
+
+### 工具调用集成
+
+16. 在 `prebuilt-tool-node.mjs` 的 `get_product_stock` 工具基础上，新增 `update_product_price` 工具，让 Agent 能查 + 改
+17. 把 `inventory-mock.mjs` 换成真实 HTTP 接口（用 `node:fetch` 请求一个 mock 服务）
+18. 让 ToolNode 同时绑定 3 个工具（库存 / 物流 / 评价），观察模型是否会"组合调用"
+
+### 封装版 Agent
+
+19. 对比 `prebuilt-agent.mjs` 和 `prebuilt-tool-node.mjs` 在相同输入下的内部图结构差异（都打印 Mermaid）
+20. 给 `createAgent` 加一个 `responseFormat`（结构化输出 schema），让 Agent 返回固定 JSON
+21. 给 Agent 增加 `pre_model_hook` / `post_model_hook`，在调模型前后打印日志
+
+### 多 Agent Supervisor
+
+22. 在 `multi-agent-supervisor.mjs` 基础上新增第三个子代理 `news_agent`（查新闻），让 supervisor 学会三选一
+23. 把 supervisor 的 prompt 改成更激进的"必须依次调用所有相关代理"，对比执行路径变化
+24. 让两个子代理共享同一个工具池（同时能查天气 + 小知识），观察 supervisor 是否还会调度
 
 ## ➡️ 下一步
 

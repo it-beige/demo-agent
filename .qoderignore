@@ -1,0 +1,25 @@
+# Qoder 索引优化配置
+# 排除大型目录以提升性能
+
+# 依赖目录
+node_modules/
+src/*/node_modules/
+
+# 构建输出
+dist/
+build/
+*.tsbuildinfo
+
+# 大型文件
+pnpm-lock.yaml
+*.log
+
+# Git 内部
+.git/
+
+# 缓存
+.cache/
+.vite/
+
+# OS 文件
+.DS_Store

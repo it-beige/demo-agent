@@ -138,6 +138,21 @@
 │   │   └── public/
 │   │       ├── index.html                   # 单页语音助手前端（录音 + ASR + SSE + MediaSource）
 │   │       └── simple-test.html             # TTS WebSocket 简单测试页面
+│   ├── langgraph/              # 图形编排引擎：LangGraph 和多 Agent 架构示例
+│   │   ├── src/
+│   │   │   ├── basic-graph.mjs              # StateGraph 基础（Annotation + 线性流 + Mermaid 导出）
+│   │   │   ├── conditional-routing.mjs      # 条件路由（addConditionalEdges 数学/对话分支）
+│   │   │   ├── loop-retry.mjs               # 循环重试（节点指回自身 + recursionLimit）
+│   │   │   ├── checkpointer-memory.mjs      # 检查点 + 多会话隔离（MemorySaver + thread_id）
+│   │   │   ├── graph-interrupt.mjs          # 人工干预 HITL（interrupt() + Command resume）
+│   │   │   ├── prebuilt-tool-node.mjs       # 预置 ToolNode + toolsCondition（手写 agent ↔ tools 图）
+│   │   │   ├── prebuilt-agent.mjs           # createAgent 封装版 ReAct Agent
+│   │   │   ├── multi-agent-supervisor.mjs   # 多 Agent Supervisor 调度（天气 / 小知识子代理）
+│   │   │   ├── inventory-mock.mjs           # 商品库存 Mock（getProductBySku）
+│   │   │   └── simple-mock.mjs              # 天气 + 城市小知识 Mock
+│   │   └── utils/
+│   │       ├── model.mjs                    # 共享 ChatModel 实例
+│   │       └── config.util.mjs              # .env 自动查找工具
 │   ├── tool-runner.mjs         # 工具调用循环
 │   └── tools/                  # 本地工具实现
 └── react-todo-app/             # Agent 生成的 React Todo 示例项目

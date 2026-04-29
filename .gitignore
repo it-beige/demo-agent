@@ -1,5 +1,6 @@
 # Dependencies
 node_modules/
+src/*/node_modules/
 
 # Build outputs
 dist/
@@ -8,6 +9,9 @@ coverage/
 .cache/
 .vite/
 *.tsbuildinfo
+
+# Large lock files (optional - keep if needed for reproducibility)
+# pnpm-lock.yaml
 
 # Environment files
 .env

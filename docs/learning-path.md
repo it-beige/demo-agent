@@ -14,6 +14,7 @@
 - [🔁 Nest + Tool Calling AI 智能助手学习路径](#-nest-tool-calling-ai-智能助手学习路径)
 - [🤖 智能录入与 Mini Cursor Agent 学习路径](#-智能录入与-mini-cursor-agent-学习路径)
 - [🎙️ Nest + TTS/ASR 语音助手学习路径](#-nest-ttsasr-语音助手学习路径)
+- [🕸️ LangGraph 与多 Agent 架构学习路径](#-langgraph-与多-agent-架构学习路径)
 
 ---
 
@@ -253,6 +254,37 @@
 11. **语音助手页面**：`src/tts-stt-nest/public/index.html` - 掌握 MediaSource API 流式音频播放、录音 + ASR + SSE 完整交互流程
 
 📖 对应章节：[第 17 章 Nest + 腾讯云 TTS/ASR 实现实时语音助手](./chapters/17-nest-tts-asr.md)
+
+---
+
+## 🕸️ LangGraph 与多 Agent 架构学习路径
+
+如果是第一次学习 LangGraph 工作流编排，建议按这个**由浅入深**的顺序：
+
+### 基础图结构（1 个文件）
+
+1. **最简线性流**：`src/langgraph/src/basic-graph.mjs` - 理解 `StateGraph` + `Annotation.Root` 定义状态、节点、边、`START` / `END`，并打印 Mermaid 流程图
+
+### 控制流进阶（2 个文件）
+
+2. **条件路由**：`src/langgraph/src/conditional-routing.mjs` - 学习 `addConditionalEdges` 根据状态选择下一节点（数学表达式 vs 普通对话）
+3. **循环重试**：`src/langgraph/src/loop-retry.mjs` - 掌握节点指回自身实现循环 + `compile({ recursionLimit })` 控制最大循环次数
+
+### 持久化与人工干预（2 个文件）
+
+4. **检查点 + 多会话**：`src/langgraph/src/checkpointer-memory.mjs` - 理解 `MemorySaver` + `thread_id` 实现会话隔离，以及 `checkpointer.get` / `checkpointer.list` 读取快照
+5. **人工干预 HITL**：`src/langgraph/src/graph-interrupt.mjs` - 学习 `interrupt()` 暂停图、`Command({ resume })` 恢复执行（必须配合 `MemorySaver`）
+
+### 工具调用与 Agent 封装（2 个文件）
+
+6. **手写图 + ToolNode**：`src/langgraph/src/prebuilt-tool-node.mjs` - 理解 `MessagesAnnotation` + 预置 `ToolNode` + `toolsCondition` 实现 agent ↔ tools 自动循环
+7. **封装版 Agent**：`src/langgraph/src/prebuilt-agent.mjs` - 掌握 `createAgent` 一行构建带工具 + checkpointer 的 ReAct Agent
+
+### 多 Agent 协作（1 个文件）
+
+8. **Supervisor 调度**：`src/langgraph/src/multi-agent-supervisor.mjs` - 学习 `createSupervisor` 主管模式，根据问题类型调度 `weather_agent` / `trivia_agent` 子代理
+
+📖 对应章节：[第 18 章 图形编排引擎：LangGraph 和多 Agent 架构](./chapters/18-langgraph-multi-agent.md)
 
 ## ➡️ 下一步
 

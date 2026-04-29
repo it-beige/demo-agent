@@ -43,6 +43,7 @@
 | 15  | [Nest + Tool 实现 OpenClaw 同款定时任务](./docs/chapters/15-nest-cron-job.md)                 | TypeORM、SchedulerRegistry、AI 任务执行 |
 | 16  | [AGUI 协议：Vercel AI SDK + LangChain 实现流式组件渲染](./docs/chapters/16-agui-protocol.md)  | UIMessage、ToolPanel、全栈              |
 | 17  | [Nest + 腾讯云 TTS/ASR 实现实时语音助手](./docs/chapters/17-nest-tts-asr.md)                  | WebSocket 中继、MediaSource、事件驱动   |
+| 18  | [图形编排引擎：LangGraph 和多 Agent 架构](./docs/chapters/18-langgraph-multi-agent.md)        | StateGraph、条件路由、HITL、Supervisor  |
 
 ---
 
@@ -107,6 +108,12 @@
 实时语音识别、流式语音合成、MediaSource 音频播放、WebSocket 中继架构。
 
 - [第 17 章 Nest + 实时语音助手](./docs/chapters/17-nest-tts-asr.md)
+
+### 工作流编排 & 多 Agent
+
+用图（Graph）声明式编排 AI 工作流：节点、边、状态、条件分支、循环、人工干预、多 Agent 协作。
+
+- [第 18 章 图形编排引擎：LangGraph 和多 Agent 架构](./docs/chapters/18-langgraph-multi-agent.md)
 
 ---
 

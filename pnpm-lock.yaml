@@ -336,12 +336,24 @@ importers:
       '@nestjs/platform-express':
         specifier: ^11.0.1
         version: 11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19)
+      '@nestjs/serve-static':
+        specifier: ^5.0.3
+        version: 5.0.5(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19)(express@5.2.1)
+      '@nestjs/typeorm':
+        specifier: ^11.0.0
+        version: 11.0.1(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.28(mysql2@3.22.0(@types/node@24.12.2))(ts-node@10.9.2(@types/node@24.12.2)(typescript@5.9.3)))
+      mysql2:
+        specifier: ^3.14.0
+        version: 3.22.0(@types/node@24.12.2)
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
       rxjs:
         specifier: ^7.8.1
         version: 7.8.2
+      typeorm:
+        specifier: ^0.3.22
+        version: 0.3.28(mysql2@3.22.0(@types/node@24.12.2))(ts-node@10.9.2(@types/node@24.12.2)(typescript@5.9.3))
     devDependencies:
       '@eslint/eslintrc':
         specifier: ^3.2.0
@@ -9995,6 +10007,14 @@ snapshots:
     optionalDependencies:
       '@nestjs/platform-express': 11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19)
 
+  '@nestjs/typeorm@11.0.1(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.28(mysql2@3.22.0(@types/node@24.12.2))(ts-node@10.9.2(@types/node@24.12.2)(typescript@5.9.3)))':
+    dependencies:
+      '@nestjs/common': 11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/core': 11.1.19(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.19)(@nestjs/websockets@11.1.19)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      reflect-metadata: 0.2.2
+      rxjs: 7.8.2
+      typeorm: 0.3.28(mysql2@3.22.0(@types/node@24.12.2))(ts-node@10.9.2(@types/node@24.12.2)(typescript@5.9.3))
+
   '@nestjs/typeorm@11.0.1(@nestjs/common@11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.19)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.28(mysql2@3.22.0(@types/node@24.12.2))(ts-node@10.9.2(@types/node@24.12.2)(typescript@6.0.3)))':
     dependencies:
       '@nestjs/common': 11.1.19(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -17344,7 +17364,6 @@ snapshots:
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
-    optional: true
 
   typeorm@0.3.28(mysql2@3.22.0(@types/node@24.12.2))(ts-node@10.9.2(@types/node@24.12.2)(typescript@6.0.3)):
     dependencies:

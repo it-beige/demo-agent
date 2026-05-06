@@ -45,6 +45,7 @@ node agent-react-todo.mjs
 | 17  | [语音·TTS/ASR]     | [实时语音助手](./docs/chapters/17-nest-tts-asr.md)                       | 双 WebSocket 中继 + MediaSource 流式播放  |
 | 18  | [LangGraph]        | [图形编排与多 Agent](./docs/chapters/18-langgraph-multi-agent.md)        | StateGraph → 条件路由 → HITL → Supervisor |
 | 19  | [RAG·Agentic]      | [Agentic RAG 闭环](./docs/chapters/19-agentic-rag.md)                    | 查询路由→子问题拆解→多跳→联网兜底         |
+| 20  | [Deploy]           | [基于 Docker Compose 的本地开发环境和生产环境部署](./docs/chapters/20-docker-compose-deploy.md) | 一键拉起开发 + 生产部署方案               |
 
 ## 推荐主线
 
@@ -83,3 +84,4 @@ node agent-react-todo.mjs
 | [扩展方向](./docs/exercises.md)         | 每章扩展方向                 |
 | [踩坑记录](./docs/troubleshooting.md)   | 真实坑点                     |
 | [扩展方向](./docs/roadmap.md)           | 后续深挖方向                 |
+| [Docker Compose 部署](./docs/chapters/20-docker-compose-deploy.md) | 本地开发 + 生产环境一键部署   |

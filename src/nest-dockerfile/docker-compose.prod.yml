@@ -1,0 +1,33 @@
+services:
+  mysql-prod:
+    image: mysql:8.0
+    container_name: mysql-prod
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-admin}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-book}
+    ports:
+      - "3306:3306"
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/mysql-prod:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-admin}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: always
+
+  nest-app:
+    container_name: nest-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+    depends_on:
+      mysql-prod:
+        condition: service_healthy
+    restart: always

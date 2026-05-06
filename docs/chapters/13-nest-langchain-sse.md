@@ -1,106 +1,37 @@
-# 第 13 章：Nest + LangChain 实现基于 SSE 的流式 AI 接口
+# [NestJS·SSE] Nest + LangChain 流式 AI 接口
 
-> NestJS 集成 LangChain，通过 SSE 协议实现流式 AI 对话接口。核心问题：**如何将 LangChain 的流式能力通过 HTTP 协议稳定地传递到前端。**
+> NestJS 集成 LangChain，通过 SSE 协议实现流式对话接口，后端逐字输出 → 前端打字机实时渲染。
+> **关键词**：NestJS、SSE、@Sse()、AsyncGenerator、EventSource、流式输出
 
----
+## 核心设计
 
-## 📖 章节简介
+这个 demo 解决了"如何把 LangChain 的流式输出通过 HTTP 稳定送前端"的问题。技术链路：
 
-- **文件**：`src/asr-and-tts-nest-service/` 目录下的完整 NestJS 项目
-- **内容**：NestJS 集成 LangChain，通过 SSE 协议实现流式 AI 对话接口
-  - **后端架构**：NestJS 模块化设计、LangChain Chain 流式输出、RxJS Observable 转换
-  - **SSE 端点**：`@Sse()` 装饰器声明、AsyncGenerator 流式生成、EventSource 协议规范
-  - **前端交互**：EventSource API 消费 SSE、实时状态指示、连接生命周期管理
-  - **配置管理**：`ConfigModule` 环境变量注入、`.env` 自动向上查找策略
-  - **静态托管**：`ServeStaticModule` 托管前端测试页面
-- **重点**：后端流式输出到前端实时渲染的完整链路、NestJS 与 LangChain 的集成模式、SSE 协议的工程化实践
-- **核心问题**：如何将 LangChain 的流式能力通过 HTTP 协议稳定地传递到前端
+- **后端**：`AiService` 用 LangChain Chain 的 `.stream()` 返回 AsyncGenerator → `AiController` 用 `@Sse()` 装饰器 + RxJS Observable 包装 → 逐块推送 SSE
+- **前端**：EventSource API 连接 SSE 端点，每收到一块数据就追加到页面，实现打字机效果
+- **配置**：`ConfigModule` 从项目目录向上自动查找 `.env`，模型通过 ChatOpenAI 工厂提供者注入
 
----
+SSE 相比 WebSocket 的优势：单向推送够用、HTTP 透传无障碍、无需额外心跳维护。
 
-## 📁 涉及文件
-
-### 核心文件（3 个文件）
-
-- `src/asr-and-tts-nest-service/src/ai/ai.controller.ts`：SSE 控制器（`@Sse()` 装饰器 + RxJS Observable）
-- `src/asr-and-tts-nest-service/src/ai/ai.service.ts`：LangChain Chain 构建 + AsyncGenerator 流式输出
-- `src/asr-and-tts-nest-service/src/ai/ai.module.ts`：依赖注入 + ChatOpenAI 工厂提供者
-
-### 配置与工具（2 个文件）
-
-- `src/asr-and-tts-nest-service/src/utils/config.util.ts`：`.env` 文件自动向上查找策略
-- `src/asr-and-tts-nest-service/src/app.module.ts`：应用根模块（`ConfigModule` + `ServeStaticModule` + `AiModule`）
-
-### 前端页面（1 个文件）
-
-- `src/asr-and-tts-nest-service/public/index.html`：SSE 测试页面（EventSource API + 状态指示 + 实时渲染）
-
----
-
-## 🚀 如何运行
-
-> ⚠️ **前置条件**：需要先在根目录 `.env` 中配置 `MODEL`、`API_KEY`、`BASE_URL`
-
-### 1️⃣ 安装依赖
+## 运行方式
 
 ```bash
 cd src/asr-and-tts-nest-service
 pnpm install
-```
-
----
-
-### 2️⃣ 启动开发服务器
-
-```bash
 pnpm start:dev
 ```
 
-这个示例会：
-
-- 启动 NestJS 服务（默认监听 3000 端口）
-- 自动向上查找 `.env` 文件加载环境变量
-- 注册 SSE 流式聊天端点 `GET /ai/chat/stream?query=xxx`
-- 托管静态前端测试页面到根路径
-
----
-
-### 3️⃣ 打开测试页面
-
-浏览器访问 `http://localhost:3000`，页面提供：
-
-- 输入框填写问题内容
-- 点击「开始流式请求」建立 SSE 连接
-- 实时显示 AI 响应内容（打字机效果）
-- 连接状态指示（连接中 / 已连接 / 已断开）
-- 支持手动停止请求
-
----
-
-### 4️⃣ 直接测试 SSE 端点
-
-也可以用 curl 测试：
+浏览器打开 `http://localhost:3000`，在输入框填写问题，点击发送即可看到流式打字机效果。也可以用 curl 直接测 SSE 端点：
 
 ```bash
 curl -N "http://localhost:3000/ai/chat/stream?query=什么是NestJS"
 ```
 
----
+## 扩展方向
 
-## 🗺️ 推荐学习顺序
-
-详见 [推荐学习顺序 - Nest + LangChain 流式 AI 接口学习路径](./../learning-path.md#-nest-langchain-流式-ai-接口学习路径)。
-
----
-
-## ✏️ 动手练习
-
-详见 [建议动手练习 - Nest + LangChain 流式 AI 接口练习](./../exercises.md#-nest-langchain-流式-ai-接口练习)。
+- 给 SSE 端点增加多事件类型（message/done/error），前端按类型分发渲染
+- 将 LangChain Chain 替换为带 Tool Calling 的 ReAct Agent，观察流式 + 工具调用的混合表现
+- 增加心跳机制，空闲时发 `:keep-alive` 防止反向代理断连
 
 ---
-
-## 🧭 章节导航
-
-| ⬅️ 上一章 | 🏠 返回 | ➡️ 下一章 |
-| --------- | ------- | --------- |
-| [第 12 章 Runnable 链式组装](./12-runnable-chain.md) | [章节目录](./../../README.md#-章节目录) | [第 14 章 Nest + Tool Calling 实现 AI 智能助手](./14-nest-tool-calling.md) |
+⬅️ [声明式 Chain](./12-runnable-chain.md) ｜ [📚 目录](../../README.md#目录) ｜ [Nest Tool Calling ➡️](./14-nest-tool-calling.md)

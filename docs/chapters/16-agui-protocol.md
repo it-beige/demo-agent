@@ -1,67 +1,23 @@
-# 第 16 章：AGUI 协议：Vercel AI SDK + LangChain 实现流式组件渲染
+# [AGUI·全栈] Vercel AI SDK + LangChain 流式组件渲染
 
-> 基于 Vercel AI SDK 的 AGUI 协议，实现 AI 对话中的流式组件渲染。核心问题：**如何实现类似 ChatGPT 的流式工具调用面板——用户能看到 AI 生成参数的过程、搜索结果的精美展示、邮件发送的实时进度。**
+> 基于 AGUI 协议实现类似 ChatGPT 的工具调用面板：用户能看到 AI 生成参数的过程、搜索结果的精美展示、邮件发送的实时进度。
+> **关键词**：AGUI、UIMessage、useChat、ToolPanel、@ai-sdk/langchain、全栈
 
----
+## 核心设计
 
-## 📖 章节简介
+这个 demo 是前后端全栈项目，核心价值在于 **AGUI 协议的 UIMessage 数据流**：
 
-- **文件**：`src/agui-backend/` + `src/agui-frontend/` 完整全栈项目
-- **内容**：基于 Vercel AI SDK 的 AGUI 协议，实现 AI 对话中的流式组件渲染（工具调用面板、搜索面板、邮件面板等）
-  - **后端架构**：NestJS + LangChain `createAgent` + `@ai-sdk/langchain` 桥接层 + `pipeUIMessageStreamToResponse`
-  - **AGUI 协议**：`UIMessage` 格式定义（包含 text、tool-invocation、data 等多种 part 类型）、流式传输规范
-  - **前端实现**：`@ai-sdk/react` 的 `useChat` Hook + `DefaultChatTransport` + 自定义 ToolPanel 组件
-  - **组件渲染**：WebSearch 搜索结果面板（综合答案 + 引用列表）、SendMail 邮件面板（参数流式生成 + 进度显示）、Markdown 流式渲染
-  - **流式处理**：`tool-input-available`（参数流式生成）、`tool-output-available`（结果返回）、`tool-output-error`（错误处理）
-- **重点**：AGUI 协议的 `UIMessage` 数据流、LangChain Agent 到 Vercel AI SDK 的桥接模式、流式工具调用组件、前后端协议对齐
-- **核心问题**：如何实现类似 ChatGPT 的流式工具调用面板——用户能看到 AI 生成参数的过程、搜索结果的精美展示、邮件发送的实时进度
+- **后端**：NestJS + LangChain `createAgent` 构建 Agent → `@ai-sdk/langchain` 的 `toUIMessageStream` 桥接到 Vercel AI SDK → `pipeUIMessageStreamToResponse` 推流
+- **协议**：`UIMessage` 包含 text、tool-invocation、data 等多种 part 类型，工具调用有 `tool-input-available`（参数流式生成）、`tool-output-available`（结果返回）、`tool-output-error`（错误处理）三个阶段
+- **前端**：`@ai-sdk/react` 的 `useChat` Hook + `DefaultChatTransport` 消费 UIMessage → 自定义 ToolPanel 组件渲染 WebSearch 面板（综合答案 + 引用列表）和 SendMail 面板（参数流式生成 + 进度显示）
 
----
+与第 14 章对比：第 14 章是后端 Tool Calling，前端无感知；这一章把工具调用的全过程可视化地呈现给用户。
 
-## 📁 涉及文件
+## 扩展方向
 
-### 后端核心（3 个文件）
-
-- `src/agui-backend/src/ai/ai.controller.ts`：AI 控制器（POST /ai/chat 端点 + `pipeUIMessageStreamToResponse`）
-- `src/agui-backend/src/ai/ai.service.ts`：AI 服务（LangChain `createAgent` + `toUIMessageStream` 桥接）
-- `src/agui-backend/src/ai/ai.module.ts`：AI 模块（ChatOpenAI + WebSearch Tool + SendMail Tool 工厂提供者）
-
-### 前端核心（3 个文件）
-
-- `src/agui-frontend/src/App.tsx`：主应用（`useChat` Hook + `DefaultChatTransport` + 对话界面）
-- `src/agui-frontend/src/components/ToolPanels.tsx`：工具面板组件（WebSearch / SendMail 面板 + 流式状态处理）
-- `src/agui-frontend/src/components/StreamdownText.tsx`：Markdown 流式渲染组件
+- 新增更多 ToolPanel 类型（图表渲染、地图展示、代码 diff 对比）
+- 将 AGUI 协议替换为自定义 SSE 方案，对比开发体验差异
+- 实现工具调用面板的历史回溯（查看之前的工具调用结果）
 
 ---
-
-## 🚀 如何运行
-
-> 💡 源 README 未为本章单独提供运行说明。本章涉及前后端两个独立子项目，需分别 `cd` 进去 `pnpm install` 后启动：
->
-> ```bash
-> # 后端
-> cd src/agui-backend
-> pnpm install
-> pnpm start:dev
->
-> # 前端（另开一个终端）
-> cd src/agui-frontend
-> pnpm install
-> pnpm dev
-> ```
->
-> 启动后即可在前端页面中体验流式工具调用面板效果。
-
----
-
-## ✏️ 动手练习
-
-> 💡 源 README 未为本章单独列出动手练习。可以结合第 9 章流式 Tool Calls、第 14 章 Tool Calling 的练习举一反三。
-
----
-
-## 🧭 章节导航
-
-| ⬅️ 上一章                                                                | 🏠 返回                                 | ➡️ 下一章                                                               |
-| ------------------------------------------------------------------------ | --------------------------------------- | ----------------------------------------------------------------------- |
-| [第 15 章 Nest + Tool 实现 OpenClaw 同款定时任务](./15-nest-cron-job.md) | [章节目录](./../../README.md#-章节目录) | [第 17 章 Nest + 腾讯云 TTS/ASR 实现实时语音助手](./17-nest-tts-asr.md) |
+⬅️ [AI 定时任务](./15-nest-cron-job.md) ｜ [📚 目录](../../README.md#目录) ｜ [实时语音助手 ➡️](./17-nest-tts-asr.md)

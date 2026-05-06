@@ -1,68 +1,22 @@
-# 第 4 章：RAG 检索增强生成
+# [RAG] 检索增强生成：网页加载→切分→向量检索→回答
 
-> 完整的 RAG 链路：网页加载 → 文本切分 → 向量索引 → 检索回答。
+> 完整 RAG 管线：抓取网页 → 文本切分 → 向量化索引 → 语义检索 → 基于检索结果生成回答。
+> **关键词**：RAG、Cheerio、文本切分、Embeddings、降级兜底
 
----
+## 核心设计
 
-## 📖 章节简介
+这个 demo 展示了 RAG 最经典的管线结构。关键设计点：
 
-- **文件**：`src/demo/loader-and-spliter2.mjs`, `src/demo/rag-demo.mjs`
-- **内容**：网页加载 → 文本切分 → 向量索引 → 检索回答
-- **重点**：`chunkSize`/`chunkOverlap`、embeddings 降级兜底
+- **加载器兼容**：先用 Cheerio 解析静态 HTML，失败时自动回退到 Puppeteer 渲染动态页面
+- **文本切分**：使用 `RecursiveCharacterTextSplitter` 按分隔符优先级递归切分，`chunkSize` 和 `chunkOverlap` 可调
+- **Embeddings 降级**：优先使用独立配置的 Embeddings API（`EMBEDDINGS_*` 环境变量），不可用时回退到对话模型的 API，再不行就自动切换为关键词匹配——保证管线在任何配置下都能跑通
+- **向量检索**：基于 MemoryVectorStore 做内存向量检索，Top-K 结果拼接为上下文注入 Prompt
 
----
+## 扩展方向
 
-## 📁 涉及文件
-
-### RAG 示例
-
-- `src/demo/loader-and-spliter2.mjs`：网页加载 + 文本切分 + RAG 完整流程
-- `src/demo/rag-demo.mjs`：Embedding 配置与健康检查
-
----
-
-## 🚀 如何运行
-
-### 前置条件
-
-如果你要运行向量检索功能，需要在 `.env` 中提供：
-
-```bash
-EMBEDDINGS_BASE_URL=https://your-embeddings-endpoint
-EMBEDDINGS_API_KEY=your-embeddings-key
-EMBEDDINGS_MODEL=text-embedding-3-small
-```
-
-> 💡 如果不提供 `EMBEDDINGS_*`，当前示例会优先回退到 `API_KEY / BASE_URL`，再不行就自动降级为关键词检索。详见 [快速开始 - 向量检索](./../getting-started.md#向量检索可选)。
-
-### 完整 RAG 流程
-
-```bash
-node src/loader-and-spliter2.mjs
-```
-
-这个示例会：
-
-1. 抓取一篇网页文章
-2. 切分文本
-3. 尝试建立向量检索
-4. embeddings 不可用时自动切换为关键词检索
-5. 最后基于检索到的片段回答问题
-
-### 仅测试 embeddings 配置
-
-如果你只想测试 embeddings 配置是否可用，也可以看 `src/rag-demo.mjs`。
+- 调整 `chunkSize`/`chunkOverlap`，对比检索召回率和回答质量的变化
+- 将 MemoryVectorStore 替换为 Milvus/Pinecone 等持久化向量库
+- 增加引用溯源：回答中标注内容来自第几个 chunk
 
 ---
-
-## ✏️ 动手练习
-
-更多 RAG 相关练习参见 [练习 - 电子书 RAG 系统练习](./../exercises.md#-电子书-rag-系统练习)。
-
----
-
-## 🧭 章节导航
-
-| ⬅️ 上一章 | 🏠 返回 | ➡️ 下一章 |
-| --------- | ------- | --------- |
-| [第 3 章 多 MCP Server 集成](./03-multi-mcp.md) | [章节目录](./../../README.md#-章节目录) | [第 5 章 动态网站内容提取](./05-dynamic-content.md) |
+⬅️ [多 MCP Server](./03-multi-mcp.md) ｜ [📚 目录](../../README.md#目录) ｜ [Puppeteer 动态抓取 ➡️](./05-dynamic-content.md)

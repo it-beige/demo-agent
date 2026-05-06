@@ -1,84 +1,39 @@
-# 第 3 章：多 MCP Server 集成
+# [MCP·Client] 多 MCP Server 集成与工具调度
 
-> 通过 `MultiServerMCPClient` 同时挂载多个 MCP Server（高德地图 MCP + filesystem MCP）。
+> 使用 `MultiServerMCPClient` 同时挂载高德地图 MCP 和 filesystem MCP，模型在多个 Server 的工具池中自主选择调用。
+> **关键词**：MultiServerMCPClient、高德地图、filesystem、工具路由
 
----
+## 核心设计
 
-## 📖 章节简介
+当存在多个 MCP Server 时，模型面对的是一组来自不同来源的工具。这个 demo 的核心挑战是：模型能否在"查地图"和"读文件"之间正确选择。
 
-- **文件**：`src/demo/mcp-amap.mjs`
-- **内容**：`MultiServerMCPClient`、高德地图 MCP、filesystem MCP
-- **流程图**：`src/demo/mco-amap-flow.md`
+`MultiServerMCPClient` 负责同时管理两个 stdio 连接（高德地图 MCP 进程 + filesystem MCP 进程），将它们的工具集合并后交给模型。模型在一次对话中可能先调 filesystem 列出文件，再调高德地图查周边酒店——路由决策完全由模型自己完成。
 
----
+filesystem MCP 通过 `ALLOWED_PATHS` 环境变量限制可访问目录，这是安全边界的关键设计：即使模型决策失误，工具层面也不会越权访问。
 
-## 📁 涉及文件
+## 运行方式
 
-### MCP Client 示例
-
-- `src/demo/mcp-amap.mjs`：`MultiServerMCPClient` 集成高德地图和 filesystem
-
-### 流程图
-
-- `src/mco-amap-flow.md`：MCP Agent 调用流程图和时序图
-
----
-
-## 🚀 如何运行
-
-### 前置条件
-
-需要在 `.env` 中配置：
+先在 `.env` 中配置 `AMAP_MAPS_API_KEY` 和 `ALLOWED_PATHS`，然后：
 
 ```bash
-AMAP_MAPS_API_KEY=your-amap-key
-ALLOWED_PATHS=/absolute/path/one,/absolute/path/two
+pnpm dev src/demo/mcp-amap.mjs "查一下北京南站三公里附近的酒店"
+pnpm dev src/demo/mcp-amap.mjs "列出 /Users/chenkun/Desktop 下的文件"
 ```
 
-详见 [快速开始 - 高德地图 + filesystem MCP](./../getting-started.md#高德地图-filesystem-mcp可选)。
+观察重点：模型能否先选中正确的工具；filesystem 是否只能访问允许的目录；工具结果不足时模型是否明确说"不确定"而非瞎编。
 
-### 示例命令
+## 踩坑提醒
 
-执行：
+- filesystem MCP 的路径参数必须拆成数组，不能拼成字符串
+- filesystem 必须配置在 `mcpServers` 而非 `dependencies` 里
+- `chrome-devtools-mcp` 需要 Node >= 20.19.0
 
-```bash
-node src/mcp-amap.mjs "请列出 /Users/chenkun/Desktop 下的前几个文件，如果工具结果不足以支持结论，请明确说明不确定。"
-```
+详见 [踩坑记录](../troubleshooting.md)。
 
-或者：
+## 扩展方向
 
-```bash
-node src/mcp-amap.mjs "查一下北京南站三公里附近的酒店，如果工具结果不足以支持结论，请明确说明不确定。"
-```
-
-### 观察重点
-
-这个示例适合重点观察：
-
-- 模型会不会先选对工具
-- filesystem 工具是否只能访问 `ALLOWED_PATHS` 里声明过的目录
-- 当工具结果不足时，模型是否会明确说"不确定"
+- 接入更多 MCP Server（如 GitHub MCP、Postgres MCP），观察模型在更多工具间路由的表现
+- 为工具调用增加超时和降级策略
 
 ---
-
-## ⚠️ 易踩的坑
-
-| 坑点                                  | 详细说明                                                         |
-| ------------------------------------- | ---------------------------------------------------------------- |
-| filesystem MCP 路径参数不能拼成字符串 | [详见踩坑记录 #1](./../troubleshooting.md#1-filesystem-mcp-的路径参数不能拼成一个字符串) |
-| filesystem 必须放在 `mcpServers` 里   | [详见踩坑记录 #2](./../troubleshooting.md#2-filesystem-必须放在-mcpservers-里) |
-| `chrome-devtools-mcp` 对 Node 版本有要求 | [详见踩坑记录 #3](./../troubleshooting.md#3-chrome-devtools-mcp-对-node-版本有要求) |
-
----
-
-## ✏️ 动手练习
-
-更多 MCP 相关练习参见 [练习 - MCP 相关练习](./../exercises.md#-mcp-相关练习)。
-
----
-
-## 🧭 章节导航
-
-| ⬅️ 上一章 | 🏠 返回 | ➡️ 下一章 |
-| --------- | ------- | --------- |
-| [第 2 章 MCP Server 基础](./02-mcp-server-basic.md) | [章节目录](./../../README.md#-章节目录) | [第 4 章 RAG 检索增强生成](./04-rag.md) |
+⬅️ [MCP Server 基础](./02-mcp-server-basic.md) ｜ [📚 目录](../../README.md#目录) ｜ [RAG 检索增强 ➡️](./04-rag.md)

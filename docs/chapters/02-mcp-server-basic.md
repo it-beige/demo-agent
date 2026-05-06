@@ -1,84 +1,42 @@
-# 第 2 章：MCP Server 基础
+# [MCP] Tool/Resource 定义与 stdio 通信
 
-> 学习 MCP（Model Context Protocol）协议的基础写法：Tool、Resource 定义、stdio 通信、Zod 参数校验。
+> 实现一个最小可用的 MCP Server：通过 stdio 协议暴露工具和资源，供 Cursor / Claude Desktop 等 MCP Client 调用。
+> **关键词**：MCP 协议、Tool、Resource、stdio、Zod 校验
 
----
+## 核心设计
 
-## 📖 章节简介
+MCP Server 不直接面向用户交互，它通过标准输入输出（stdio）与 MCP Client 通信。这个 demo 实现了两个核心 MCP 概念：
 
-- **文件**：`src/demo/mcp-server.mjs`
-- **内容**：Tool、Resource 定义，stdio 通信，zod 参数校验
-- **重点**：理解 MCP 协议的基本组成
+- **Tool**（`query_user`）：接收参数、执行逻辑、返回结果。使用 Zod Schema 定义参数类型，MCP Client 会自动识别参数结构
+- **Resource**（`docs://guide`）：暴露静态文档内容，Client 可以像读文件一样读取
 
----
+Server 内置 3 个用户（001-003）作为 mock 数据，演示 Tool 的正常返回和错误处理（查询不存在的用户时返回结构化错误提示）。
 
-## 📁 涉及文件
+## 运行方式
 
-### MCP Server 示例
-
-- `src/demo/mcp-server.mjs`：MCP Server 基础示例（`query_user` 工具 + `docs://guide` 资源）
-
----
-
-## 🚀 如何运行
-
-这个 Server 采用 `stdio` 通信，通常**不是你在终端里手动交互**，而是由 MCP Client 启动，例如 Cursor、Claude Desktop 或其他支持 MCP 的工具。
-
-### 直接运行（仅观察）
-
-```bash
-node src/mcp-server.mjs
-```
-
-进程通常会保持等待状态，这是正常的，因为它在等待 MCP Client 通过标准输入输出与它通信。
-
-### 在 MCP Client 中注册
-
-如果某个客户端支持通过命令注册 MCP Server，通常可以配置成下面这样：
+MCP Server 通过 stdio 通信，通常由 MCP Client 启动而非手动运行。在 Cursor 或类似工具中注册：
 
 ```json
 {
   "mcpServers": {
     "demo-agent": {
       "command": "node",
-      "args": ["/path/to/demo-agent/src/mcp-server.mjs"]
+      "args": ["/path/to/demo-agent/src/demo/mcp-server.mjs"]
     }
   }
 }
 ```
 
-### 测试请求
+注册后在客户端尝试：
+- `查询用户 001 的信息` → 返回用户详情
+- `读取 docs://guide 这个资源` → 返回资源内容
+- `查询用户 999 的信息` → 返回错误提示
 
-启动后，你可以让客户端尝试类似请求：
+## 扩展方向
 
-- `查询用户 001 的信息`
-- `读取 docs://guide 这个资源`
-- `查询用户 999 的信息`
-
-> 💡 当前示例内置的可查询用户 ID 为：`001`、`002`、`003`。
-
----
-
-## ✏️ 动手练习
-
-你也可以把这部分当成一个小练习：
-
-1. 先查询一个存在的用户，观察工具返回内容
-2. 再查询一个不存在的用户，观察错误提示怎么返回
-3. 再读取 `docs://guide`，感受 Resource 和 Tool 的区别
-
-更多 MCP 相关练习参见 [练习 - MCP 相关练习](./../exercises.md#-mcp-相关练习)：
-
-1. 在 `src/mcp-server.mjs` 里新增一个 `list_users` 工具
-2. 给 `query_user` 增加更多字段
-3. 新增一个资源，比如 `docs://users`
-4. 把内存数据库拆到单独文件里
-5. 对照 `src/tool-runner.mjs`，思考 Agent 与 MCP 的本质差异
+- 新增 `list_users` 工具，返回所有用户列表
+- 把内存 mock 数据替换为真实数据库或外部 API
+- 新增更多 Resource 类型，理解 Tool 和 Resource 在协议层面的差异
 
 ---
-
-## 🧭 章节导航
-
-| ⬅️ 上一章 | 🏠 返回 | ➡️ 下一章 |
-| --------- | ------- | --------- |
-| [第 1 章 Agent 基础](./01-agent-basic.md) | [章节目录](./../../README.md#-章节目录) | [第 3 章 多 MCP Server 集成](./03-multi-mcp.md) |
+⬅️ [ReAct 循环](./01-agent-basic.md) ｜ [📚 目录](../../README.md#目录) ｜ [多 MCP Server ➡️](./03-multi-mcp.md)

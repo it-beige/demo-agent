@@ -1,37 +1,23 @@
-# 第 6 章：兼容性加载方案
+# [RAG·Pipeline] 渐进式加载降级：Cheerio → Puppeteer
 
-> Cheerio + Puppeteer 渐进式降级策略，在性能与稳定性之间取得平衡。
+> Cheerio + Puppeteer 两级降级策略：静态解析优先，失败时自动回退到浏览器渲染。
+> **关键词**：Cheerio、Puppeteer、降级策略、渐进式加载
 
----
+## 核心设计
 
-## 📖 章节简介
+不是所有网页都需要启动浏览器。这个 demo 的核心决策是"先用轻量的试试，不行再上重的"：
 
-- **文件**：`src/demo/loader-and-spliter2.mjs`
-- **内容**：Cheerio + Puppeteer 渐进式降级策略
-- **重点**：性能与稳定性的平衡设计
+1. 尝试用 Cheerio 解析 HTML（毫秒级，零资源开销）
+2. 如果拿不到有效内容（SPA 页面），自动切换到 Puppeteer 无头浏览器渲染
 
----
+这套降级策略在生产环境中很实用——大部分文档站、博客、新闻页面用 Cheerio 就够了，只有少数重度 SPA 才需要 Puppeteer，整体性能和稳定性都更好。
 
-## 📁 涉及文件
+该 demo 与第 4 章 RAG 共享入口文件 `loader-and-spliter2.mjs`，降级逻辑在 loader 选择阶段完成。
 
-- `src/demo/loader-and-spliter2.mjs`：网页加载 + 文本切分 + RAG 完整流程（也是 [第 4 章](./04-rag.md) 用到的文件）
+## 扩展方向
 
----
-
-## 🚀 如何运行
-
-> 💡 本章与 [第 4 章 RAG 检索增强生成](./04-rag.md) 共享同一个入口文件 `src/loader-and-spliter2.mjs`，运行方式相同。本章重点关注**加载器降级策略**部分：先用 Cheerio 轻量加载，失败时再回退到 Puppeteer。
+- 增加第三级降级：缓存上次成功加载的 HTML
+- 给 Puppeteer 增加页面加载超时，避免卡死
 
 ---
-
-## ✏️ 动手练习
-
-> 💡 源 README 未为本章单独列出动手练习。
-
----
-
-## 🧭 章节导航
-
-| ⬅️ 上一章 | 🏠 返回 | ➡️ 下一章 |
-| --------- | ------- | --------- |
-| [第 5 章 动态网站内容提取](./05-dynamic-content.md) | [章节目录](./../../README.md#-章节目录) | [第 7 章 文本分割器详解](./07-text-splitter.md) |
+⬅️ [Puppeteer 动态抓取](./05-dynamic-content.md) ｜ [📚 目录](../../README.md#目录) ｜ [文本分割器 ➡️](./07-text-splitter.md)

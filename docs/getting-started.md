@@ -1,109 +1,65 @@
-# 🚀 快速开始
+# 快速开始
 
-> 本文档说明如何准备运行环境、安装依赖、配置环境变量。完成本节后，再去 [章节目录](./../README.md#-章节目录) 选择感兴趣的示例运行。
+> 环境准备 + 依赖安装 + 环境变量。搞完这些就能跑任意章节的 demo 了。
 
----
+## 环境要求
 
-## 📦 环境要求
+- Node.js 18+（第 3 章 chrome-devtools-mcp 需要 `^20.19.0 || ^22.12.0 || >=23`）
+- pnpm latest
+- 一个可用的 OpenAI 兼容模型服务
 
-| 依赖    | 版本要求 | 说明                              |
-| ------- | -------- | --------------------------------- |
-| Node.js | 18+      | 部分 MCP 服务要求更高版本，见下方 |
-| pnpm    | latest   | 包管理器                          |
-| 模型服务 | -        | 一个可用的 OpenAI 兼容模型服务    |
-
-> ⚠️ 第 3 章的 `chrome-devtools-mcp` 需要 Node `^20.19.0 || ^22.12.0 || >=23`，详见 [踩坑记录](./troubleshooting.md#3-chrome-devtools-mcp-对-node-版本有要求)。
-
----
-
-## ⬇️ 安装依赖
-
-在仓库根目录执行：
+## 安装依赖
 
 ```bash
+# 根目录
 pnpm install
+
+# 前端产物
+cd react-todo-app && pnpm install
 ```
 
-如果你也想单独运行前端示例，再进入子项目安装一次：
+`src/asr-and-tts-nest-service`、`src/cron-job-tool`、`src/agui-backend`、`src/agui-frontend`、`src/tts-stt-nest` 等子项目需要单独 `cd` 进去 `pnpm install`。
+
+## 环境变量
+
+### 必填
 
 ```bash
-cd react-todo-app
-pnpm install
+MODEL=deepseek-chat
+API_KEY=sk-xxx
+BASE_URL=https://api.deepseek.com/v1
 ```
 
-> 💡 `src/asr-and-tts-nest-service`、`src/cron-job-tool`、`src/agui-backend`、`src/agui-frontend` 等子项目需要单独 `cd` 进去再 `pnpm install`，参见对应章节文档。
+| 变量 | 说明 |
+|------|------|
+| `MODEL` | 模型名称 |
+| `API_KEY` | 接口密钥 |
+| `BASE_URL` | OpenAI 兼容接口地址 |
 
----
-
-## 🔧 环境变量
-
-### 基础配置（必填）
-
-根目录 `.env` 需要提供：
+### 向量检索（可选）
 
 ```bash
-MODEL=your-model-name
-API_KEY=your-api-key
-BASE_URL=https://your-openai-compatible-endpoint
+EMBEDDINGS_BASE_URL=https://your-embeddings-endpoint
+EMBEDDINGS_API_KEY=sk-xxx
+EMBEDDINGS_MODEL=text-embedding-3-small
 ```
 
-| 变量       | 说明                       |
-| ---------- | -------------------------- |
-| `MODEL`    | 模型名称                   |
-| `API_KEY`  | 接口密钥                   |
-| `BASE_URL` | OpenAI 兼容接口地址        |
-
----
+不提供则回退到 `API_KEY/BASE_URL`，再不行降级为关键词检索。
 
 ### 高德地图 + filesystem MCP（可选）
-
-如果你要运行高德地图 MCP 示例（第 3 章），还需要：
 
 ```bash
 AMAP_MAPS_API_KEY=your-amap-key
 ALLOWED_PATHS=/absolute/path/one,/absolute/path/two
 ```
 
-| 变量                | 说明                                                       |
-| ------------------- | ---------------------------------------------------------- |
-| `AMAP_MAPS_API_KEY` | 高德地图 MCP 服务使用的 Key                                |
-| `ALLOWED_PATHS`     | filesystem MCP 可访问的绝对路径列表，多个路径用英文逗号分隔 |
-
----
-
-### 向量检索（可选）
-
-如果你要运行向量检索示例（第 4/8 章等），还可以额外提供：
-
-```bash
-EMBEDDINGS_BASE_URL=https://your-embeddings-endpoint
-EMBEDDINGS_API_KEY=your-embeddings-key
-EMBEDDINGS_MODEL=text-embedding-3-small
-```
-
-> 💡 如果不提供 `EMBEDDINGS_*`，当前示例会优先回退到 `API_KEY / BASE_URL`，再不行就自动降级为关键词检索。
-
----
-
 ### 互联网搜索（可选）
-
-如果你要运行 Nest + Tool Calling AI 智能助手示例（第 14 章）的互联网搜索功能，还需要配置 Bocha API Key：
 
 ```bash
 BOCHA_API_KEY=your-bocha-api-key
 ```
 
-| 变量            | 说明                                                  |
-| --------------- | ----------------------------------------------------- |
-| `BOCHA_API_KEY` | Bocha Web Search API 密钥（用于互联网搜索工具）       |
-
-> 💡 如果不提供 `BOCHA_API_KEY`，AI 会在调用搜索工具时返回"API Key 未配置"的提示。
-
----
-
 ### 邮件发送（可选）
-
-如果你要运行 Nest + Tool Calling AI 智能助手示例（第 14 章）的邮件发送功能，还需要配置 SMTP 信息：
 
 ```bash
 MAIL_HOST=smtp.example.com
@@ -114,47 +70,33 @@ MAIL_PASS=your-password
 MAIL_FROM=your-email@example.com
 ```
 
-| 变量          | 说明                              |
-| ------------- | --------------------------------- |
-| `MAIL_HOST`   | SMTP 服务器地址                   |
-| `MAIL_PORT`   | SMTP 端口（465=SSL, 587=TLS）     |
-| `MAIL_SECURE` | 是否使用 SSL（`true`/`false`）    |
-| `MAIL_USER`   | SMTP 用户名                       |
-| `MAIL_PASS`   | SMTP 密码                         |
-| `MAIL_FROM`   | 发件人邮箱地址                    |
-
----
-
-项目内置示例 `.env` 文件（`src/output-parse-demo/.env`），**敏感信息请在本地修改为强密码，切勿提交到代码库**：
+### MySQL 数据库（可选）
 
 ```bash
-# src/output-parse-demo/.env（仅本地使用，请替换为强密码）
 DB_HOST=localhost
 DB_PORT=3306
 DB_USER=demo_user
-DB_PASSWORD=<在此填入你的强密码，例如 Ch@nge_Me_Str0ng_P@ss_2026!>
+DB_PASSWORD=<强密码>
 DB_NAME=demo_db
 ```
 
-| 变量          | 说明                                                  | 示例值        |
-| ------------- | ----------------------------------------------------- | ------------- |
-| `DB_HOST`     | MySQL 服务器地址                                      | `localhost`   |
-| `DB_PORT`     | MySQL 端口                                            | `3306`        |
-| `DB_USER`     | 数据库用户名                                          | `demo_user`   |
-| `DB_PASSWORD` | 数据库密码（**必填，请使用强密码，禁止使用弱密码**） | —             |
-| `DB_NAME`     | 数据库名称                                            | `demo_db`     |
+启动 Docker MySQL：
 
-> ⚠️ **安全提示**：`DB_PASSWORD` 是唯一的密码来源，会被 `docker-compose-mysql.yml` 同时用作 `MYSQL_ROOT_PASSWORD` 与 `MYSQL_PASSWORD`。请勿在源码或 compose 文件里硬编码密码，更不要使用 `root123456`、`demo_pass123` 等弱密码。
->
-> 💡 启动 Docker MySQL 时，请确保 compose 能读取到 `.env`：
-> `docker-compose --env-file .env -f src/output-parse-demo/docker-compose-mysql.yml up -d`
+```bash
+docker-compose --env-file .env -f src/output-parse-demo/docker-compose-mysql.yml up -d
+```
 
----
+### 腾讯云 TTS/ASR（可选）
+
+```bash
+TENCENT_SECRET_ID=your_secret_id
+TENCENT_SECRET_KEY=your_secret_key
+```
 
 ## ➡️ 下一步
 
 环境就绪后，前往：
 
-- 📚 [章节目录](./../README.md#-章节目录) 按章节学习
+- 📚 [目录](./../README.md#目录) 按章节学习
 - 🗺️ [推荐学习顺序](./learning-path.md) 查看建议的学习路径
 - 📁 [项目结构总览](./project-structure.md) 了解整个仓库的组织方式

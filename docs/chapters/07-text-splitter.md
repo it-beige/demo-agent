@@ -1,56 +1,36 @@
-# 第 7 章：文本分割器详解
+# [RAG·Pipeline] 文本分割器：多策略切分与调优
 
-> 系统学习 LangChain 提供的多种文本分割器，理解不同分割策略的适用场景与调优方式。
+> 对比 LangChain 提供的多种文本分割器，理解不同分割策略对 RAG 检索质量的影响。
+> **关键词**：RecursiveCharacterTextSplitter、TokenTextSplitter、chunk 调优
 
----
+## 核心设计
 
-## 📖 章节简介
+文本切分是 RAG 管线中最容易被低估的环节——切太碎丢失上下文，切太长检索不准。这个 demo 对比了 6 种分割器：
 
-- **文件**：`src/splitters/` 目录下的示例代码
-- **内容**：`CharacterTextSplitter`、`RecursiveCharacterTextSplitter`、`TokenTextSplitter` 以及面向特定格式的代码/Markdown/LaTeX 分割器
-- **重点**：不同分割策略的适用场景、`chunkSize`/`chunkOverlap` 调优、Token 计数控制
-- **补充**：语言特定的分割器配置（`fromLanguage`）
+- **CharacterTextSplitter**：按单个字符切分，简单但容易切断语义单元
+- **RecursiveCharacterTextSplitter**：按分隔符优先级递归切分（`\n\n` → `\n` → ` ` → 字符），大部分场景的默认选择
+- **TokenTextSplitter**：按 token 计数切分，精确控制上下文窗口预算
+- **代码/Markdown/LaTeX 专用分割器**：通过 `fromLanguage()` 适配特定语法的分隔符，避免切断函数体、表格、公式
 
----
+核心调优参数：`chunkSize` 控制每块大小，`chunkOverlap` 控制相邻块的重叠量——重叠保证关键信息不会恰好落在 chunk 边界上被切断。
 
-## 📁 涉及文件
+## 运行方式
 
-### 文本分割器示例
+```bash
+pnpm dev src/splitters/CharacterTextSplitter-test.mjs
+pnpm dev src/splitters/RecursiveCharacterTextSplitter-test.mjs
+pnpm dev src/splitters/TokenTextSplitter-test.mjs
+pnpm dev src/splitters/recursive-splitter-code.mjs
+pnpm dev src/splitters/recursive-splitter-markdown.mjs
+pnpm dev src/splitters/recursive-splitter-latex.mjs
+```
 
-| 文件                                                | 作用                                  |
-| --------------------------------------------------- | ------------------------------------- |
-| `src/splitters/CharacterTextSplitter-test.mjs`      | 基于字符的分割器示例                  |
-| `src/splitters/RecursiveCharacterTextSplitter-test.mjs` | 递归字符分割器（支持自定义分隔符）   |
-| `src/splitters/TokenTextSplitter-test.mjs`          | 基于 Token 计数的分割器               |
-| `src/splitters/recursive-splitter-code.mjs`         | 代码专用分割器（支持 JS 等语言）      |
-| `src/splitters/recursive-splitter-markdown.mjs`     | Markdown 文档专用分割器               |
-| `src/splitters/recursive-splitter-latex.mjs`        | LaTeX 数学公式专用分割器              |
+每个脚本会打印切分结果，对比不同策略的分割效果。
 
----
+## 扩展方向
 
-## 🚀 如何运行
-
-> 💡 源 README 未为本章单独提供运行说明。各示例文件可直接通过 `node` 运行：
->
-> ```bash
-> node src/splitters/CharacterTextSplitter-test.mjs
-> node src/splitters/RecursiveCharacterTextSplitter-test.mjs
-> node src/splitters/TokenTextSplitter-test.mjs
-> node src/splitters/recursive-splitter-code.mjs
-> node src/splitters/recursive-splitter-markdown.mjs
-> node src/splitters/recursive-splitter-latex.mjs
-> ```
+- 调整 `chunkSize`/`chunkOverlap`，观察对检索召回率和回答完整性的影响
+- 结合实际 RAG 管线，对比不同分割器下的检索质量差异
 
 ---
-
-## ✏️ 动手练习
-
-> 💡 源 README 未为本章单独列出动手练习。
-
----
-
-## 🧭 章节导航
-
-| ⬅️ 上一章 | 🏠 返回 | ➡️ 下一章 |
-| --------- | ------- | --------- |
-| [第 6 章 兼容性加载方案](./06-compatibility-loader.md) | [章节目录](./../../README.md#-章节目录) | [第 8 章 对话记忆管理](./08-conversation-memory.md) |
+⬅️ [渐进式降级](./06-compatibility-loader.md) ｜ [📚 目录](../../README.md#目录) ｜ [对话记忆管理 ➡️](./08-conversation-memory.md)

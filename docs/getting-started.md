@@ -125,28 +125,29 @@ MAIL_FROM=your-email@example.com
 
 ---
 
-### 数据库（可选）
-
-如果你要运行智能录入与 Mini Cursor Agent 示例（第 10 章），还需要配置数据库环境变量：
+项目内置示例 `.env` 文件（`src/output-parse-demo/.env`），**敏感信息请在本地修改为强密码，切勿提交到代码库**：
 
 ```bash
-# 在 src/output-parse-demo/.env 中配置
+# src/output-parse-demo/.env（仅本地使用，请替换为强密码）
 DB_HOST=localhost
 DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=root123456
-DB_NAME=hello
+DB_USER=demo_user
+DB_PASSWORD=<在此填入你的强密码，例如 Ch@nge_Me_Str0ng_P@ss_2026!>
+DB_NAME=demo_db
 ```
 
-| 变量          | 说明                              |
-| ------------- | --------------------------------- |
-| `DB_HOST`     | MySQL 服务器地址（默认 localhost） |
-| `DB_PORT`     | MySQL 端口（默认 3306）           |
-| `DB_USER`     | 数据库用户名                      |
-| `DB_PASSWORD` | 数据库密码                        |
-| `DB_NAME`     | 数据库名称                        |
+| 变量          | 说明                                                  | 示例值        |
+| ------------- | ----------------------------------------------------- | ------------- |
+| `DB_HOST`     | MySQL 服务器地址                                      | `localhost`   |
+| `DB_PORT`     | MySQL 端口                                            | `3306`        |
+| `DB_USER`     | 数据库用户名                                          | `demo_user`   |
+| `DB_PASSWORD` | 数据库密码（**必填，请使用强密码，禁止使用弱密码**） | —             |
+| `DB_NAME`     | 数据库名称                                            | `demo_db`     |
 
-> 💡 如果使用 Docker Compose 启动 MySQL，密码应与 `docker-compose-mysql.yml` 中的 `MYSQL_ROOT_PASSWORD` 一致。
+> ⚠️ **安全提示**：`DB_PASSWORD` 是唯一的密码来源，会被 `docker-compose-mysql.yml` 同时用作 `MYSQL_ROOT_PASSWORD` 与 `MYSQL_PASSWORD`。请勿在源码或 compose 文件里硬编码密码，更不要使用 `root123456`、`demo_pass123` 等弱密码。
+>
+> 💡 启动 Docker MySQL 时，请确保 compose 能读取到 `.env`：
+> `docker-compose --env-file .env -f src/output-parse-demo/docker-compose-mysql.yml up -d`
 
 ---
 

@@ -10,7 +10,7 @@ import { embeddings } from '@/index.mjs'
 import { EPubLoader } from '@langchain/community/document_loaders/fs/epub'
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters'
 
-const COLLECTION_NAME = 'ebook_collection'
+const COLLECTION_NAME = process.env.EBOOK_COLLECTION_NAME
 const VECTOR_DIM = parseInt(process.env.EMBEDDING_DIM)
 const CHUNK_SIZE = 500 // 拆分到 500 个字符
 const EPUB_FILE = './src/mivlus/book-test/天龙八部.epub'
@@ -127,9 +127,42 @@ async function insertChunksBatch(chunks, bookId, chapterNum) {
 }
 
 /**
- * 加载 EPUB 文件并进行流式处理（边处理边插入）
+ * 获取已插入的章节号
  */
-async function loadAndProcessEPubStreaming(bookId) {
+async function getInsertedChapters(bookId) {
+  try {
+    const stats = await client.getCollectionStatistics({
+      collection_name: COLLECTION_NAME,
+    })
+    
+    if (stats.data?.row_count === 0) {
+      return []
+    }
+    
+    // 查询所有已插入的章节号
+    const queryResult = await client.query({
+      collection_name: COLLECTION_NAME,
+      filter: `book_id == '${bookId}'`,
+      output_fields: ['chapter_num'],
+    })
+    
+    if (!queryResult.data || queryResult.data.length === 0) {
+      return []
+    }
+    
+    // 提取所有章节号并去重
+    const chapterNums = [...new Set(queryResult.data.map(item => item.chapter_num))]
+    return chapterNums.sort((a, b) => a - b)
+  } catch (error) {
+    console.error('获取已插入章节时出错:', error.message)
+    return []
+  }
+}
+
+/**
+ * 加载 EPUB 文件并进行流式处理（边处理边插入，支持断点续传）
+ */
+async function loadAndProcessEPubStreaming(bookId, startChapter = 1) {
   try {
     console.log(`\n开始加载 EPUB 文件: ${EPUB_FILE}`)
 
@@ -141,6 +174,13 @@ async function loadAndProcessEPubStreaming(bookId) {
     const documents = await loader.load()
     console.log(`✓ 加载完成，共 ${documents.length} 个章节\n`)
 
+    // 获取已插入的章节
+    const insertedChapters = await getInsertedChapters(bookId)
+    if (insertedChapters.length > 0) {
+      console.log(`已插入的章节: ${insertedChapters.join(', ')}`)
+      console.log(`将从第 ${startChapter} 章继续插入...\n`)
+    }
+
     // 创建文本拆分器，拆分到 500 个字符
     const textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize: CHUNK_SIZE,
@@ -148,17 +188,27 @@ async function loadAndProcessEPubStreaming(bookId) {
     })
 
     let totalInserted = 0
+    let skippedCount = 0
 
     // 遍历每个章节，进行二次拆分并立即插入
     for (
-      let chapterIndex = 0;
+      let chapterIndex = startChapter - 1;
       chapterIndex < documents.length;
       chapterIndex++
     ) {
+      const chapterNum = chapterIndex + 1
+      
+      // 检查该章节是否已经插入
+      if (insertedChapters.includes(chapterNum)) {
+        console.log(`跳过第 ${chapterNum}/${documents.length} 章（已插入）`)
+        skippedCount++
+        continue
+      }
+      
       const chapter = documents[chapterIndex]
       const chapterContent = chapter.pageContent
 
-      console.log(`处理第 ${chapterIndex + 1}/${documents.length} 章...`)
+      console.log(`处理第 ${chapterNum}/${documents.length} 章...`)
 
       // 使用 splitter 进行二次拆分
       const chunks = await textSplitter.splitText(chapterContent)
@@ -176,7 +226,7 @@ async function loadAndProcessEPubStreaming(bookId) {
       const insertedCount = await insertChunksBatch(
         chunks,
         bookId,
-        chapterIndex + 1,
+        chapterNum,
       )
       totalInserted += insertedCount
 
@@ -185,7 +235,7 @@ async function loadAndProcessEPubStreaming(bookId) {
       )
     }
 
-    console.log(`\n总共插入 ${totalInserted} 条记录\n`)
+    console.log(`\n总共插入 ${totalInserted} 条记录，跳过 ${skippedCount} 个已插入章节\n`)
     return totalInserted
   } catch (error) {
     console.error('加载 EPUB 文件时出错:', error.message)
@@ -199,7 +249,7 @@ async function loadAndProcessEPubStreaming(bookId) {
 async function main() {
   try {
     console.log('='.repeat(80))
-    console.log('电子书处理程序')
+    console.log('电子书处理程序（支持断点续传）')
     console.log('='.repeat(80))
 
     // 连接 Milvus
@@ -207,14 +257,18 @@ async function main() {
     await client.connectPromise
     console.log('✓ 已连接\n')
 
-    // 设置 book_id（
+    // 设置 book_id
     const bookId = 1
 
     // 确保集合存在
     await ensureCollection(bookId)
 
-    // 加载和处理 EPUB 文件（流式处理，边处理边插入）
-    await loadAndProcessEPubStreaming(bookId)
+    // 获取命令行参数，支持指定起始章节
+    const startChapter = process.argv[2] ? parseInt(process.argv[2]) : 1
+    console.log(`起始章节: ${startChapter}\n`)
+
+    // 加载和处理 EPUB 文件（流式处理，边处理边插入，支持断点续传）
+    await loadAndProcessEPubStreaming(bookId, startChapter)
 
     console.log('='.repeat(80))
     console.log('处理完成！')

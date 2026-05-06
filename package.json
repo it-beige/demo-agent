@@ -36,6 +36,7 @@
     "cron": "^4.4.0",
     "dotenv": "^17.3.1",
     "epub2": "^3.0.2",
+    "formdata-node": "^6.0.3",
     "html-to-text": "^9.0.5",
     "js-tiktoken": "^1.0.21",
     "langchain": "^1.2.39",

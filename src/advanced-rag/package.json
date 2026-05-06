@@ -1,0 +1,12 @@
+{
+  "name": "rag",
+  "version": "0.0.1",
+  "private": true,
+  "description": "rag 学习示例（依赖来自根 workspace）",
+  "scripts": {
+    "dev": "pnpm -w dev"
+  },
+  "dependencies": {
+    "mathjs": "^15.2.0"
+  }
+}

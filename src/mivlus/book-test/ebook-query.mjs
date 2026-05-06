@@ -2,7 +2,7 @@ import "dotenv/config";
 import { MilvusClient, MetricType } from '@zilliz/milvus2-sdk-node';
 import { embeddings } from "@/index.mjs";
 
-const COLLECTION_NAME = 'ebook_collection';
+const COLLECTION_NAME = process.env.EBOOK_COLLECTION_NAME;
 
 
 const client = new MilvusClient({

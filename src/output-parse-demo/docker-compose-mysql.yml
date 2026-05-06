@@ -1,15 +1,20 @@
 version: '3.8'
 
+# 所有敏感信息均通过 .env 注入，禁止在本文件中硬编码密码
+# 需要在同目录或项目根目录的 .env 中提供：DB_PASSWORD / DB_USER / DB_NAME
+# 启动方式：docker-compose --env-file ../../.env -f docker-compose-mysql.yml up -d
+
 services:
   mysql:
     image: mysql:8.0
     container_name: demo-mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root123456
-      MYSQL_DATABASE: demo_db
-      MYSQL_USER: demo_user
-      MYSQL_PASSWORD: demo_pass123
+      # root 密码与业务用户密码共用 DB_PASSWORD，保持单一可信来源
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required, please set it in .env}
+      MYSQL_DATABASE: ${DB_NAME:?DB_NAME is required, please set it in .env}
+      MYSQL_USER: ${DB_USER:?DB_USER is required, please set it in .env}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required, please set it in .env}
     ports:
       - '3306:3306'
     volumes:

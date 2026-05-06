@@ -88,6 +88,9 @@ importers:
       epub2:
         specifier: ^3.0.2
         version: 3.0.2(ts-toolbelt@9.6.0)
+      formdata-node:
+        specifier: ^6.0.3
+        version: 6.0.3
       html-to-text:
         specifier: ^9.0.5
         version: 9.0.5
@@ -200,6 +203,12 @@ importers:
       typescript-eslint:
         specifier: ^8.20.0
         version: 8.59.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
+
+  src/advanced-rag:
+    dependencies:
+      mathjs:
+        specifier: ^15.2.0
+        version: 15.2.0
 
   src/agui-backend:
     dependencies:
@@ -4873,6 +4882,10 @@ packages:
   formdata-node@4.4.1:
     resolution: {integrity: sha512-0iirZp3uVDjVGt9p49aTaqjk84TrglENEDuqfdlZQ1roC9CWlPk6Avf8EEnZNcAqPonwkG35x4n3ww/1THYAeQ==}
     engines: {node: '>= 12.20'}
+
+  formdata-node@6.0.3:
+    resolution: {integrity: sha512-8e1++BCiTzUno9v5IZ2J6bv4RU+3UKDmqWUQD0MIMVCd9AdhWkO1gw57oo1mNEX1dMq2EGI+FbWz4B92pscSQg==}
+    engines: {node: '>= 18'}
 
   formidable@3.5.4:
     resolution: {integrity: sha512-YikH+7CUTOtP44ZTnUhR7Ic2UASBPOqmaRkRKxRbywPTe5VxF7RRCck4af9wutiZ/QKM5nME9Bie2fFaPz5Gug==}
@@ -13370,6 +13383,8 @@ snapshots:
       web-streams-polyfill: 4.0.0-beta.3
     transitivePeerDependencies:
       - supports-color
+
+  formdata-node@6.0.3: {}
 
   formidable@3.5.4:
     dependencies:

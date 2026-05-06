@@ -5,7 +5,7 @@ import { MilvusClient, MetricType } from '@zilliz/milvus2-sdk-node'
 import { PromptTemplate } from '@langchain/core/prompts'
 import { StringOutputParser } from '@langchain/core/output_parsers'
 
-const COLLECTION_NAME = 'ebook_collection'
+const COLLECTION_NAME = process.env.EBOOK_COLLECTION_NAME
 
 // 初始化原生 Milvus 客户端
 const milvusClient = new MilvusClient({

@@ -51,7 +51,7 @@ const model = {
   },
 };
 
-const COLLECTION_NAME = 'ebook_collection';
+const COLLECTION_NAME = process.env.EBOOK_COLLECTION_NAME;
 
 // 初始化 Milvus 客户端
 const client = new MilvusClient({

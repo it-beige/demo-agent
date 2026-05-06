@@ -44,6 +44,7 @@
 | 16  | [AGUI 协议：Vercel AI SDK + LangChain 实现流式组件渲染](./docs/chapters/16-agui-protocol.md)  | UIMessage、ToolPanel、全栈              |
 | 17  | [Nest + 腾讯云 TTS/ASR 实现实时语音助手](./docs/chapters/17-nest-tts-asr.md)                  | WebSocket 中继、MediaSource、事件驱动   |
 | 18  | [图形编排引擎：LangGraph 和多 Agent 架构](./docs/chapters/18-langgraph-multi-agent.md)        | StateGraph、条件路由、HITL、Supervisor  |
+| 19  | [Agentic RAG：基于 LangGraph 实现大模型自主决策的 RAG 闭环系统](./docs/chapters/19-agentic-rag.md) | 查询路由、子问题拆解、多跳检索、联网兜底 |
 
 ---
 
@@ -109,6 +110,12 @@
 
 - [第 17 章 Nest + 实时语音助手](./docs/chapters/17-nest-tts-asr.md)
 
+### Agentic RAG
+
+从朴素 RAG 到让大模型自主决策的智能检索闭环：查询路由、子问题拆解、多跳检索、评估规划、联网兜底，逐步提升检索系统的自主决策能力。
+
+- [第 19 章 Agentic RAG：大模型自主决策的 RAG 闭环系统](./docs/chapters/19-agentic-rag.md)
+
 ### 工作流编排 & 多 Agent
 
 用图（Graph）声明式编排 AI 工作流：节点、边、状态、条件分支、循环、人工干预、多 Agent 协作。
@@ -149,6 +156,7 @@
 | `src/cron-job-tool/`                       | Nest + Tool Calling AI 智能助手            | 第 14-15 章 |
 | `src/agui-backend/` + `src/agui-frontend/` | AGUI 协议全栈项目                          | 第 16 章    |
 | `src/tts-stt-nest/`                        | Nest + 腾讯云 TTS/ASR 实时语音助手         | 第 17 章    |
+| `src/advanced-rag/`                        | Agentic RAG 递进式示例（路由/多跳/联网兜底） | 第 19 章    |
 
 ### NestJS 项目结构
 
@@ -194,6 +202,6 @@ tts-stt-nest/
 
 ## 🤝 一句话使用建议
 
-- **第一次接触？** 先按 [📚 章节目录](#-章节目录) 顺序看 1 → 4 → 8 → 14 这条主线，再回头补其他章节。
+- **第一次接触？** 先按 [📚 章节目录](#-章节目录) 顺序看 1 → 4 → 8 → 14 → 19 这条主线，再回头补其他章节。
 - **想找某个具体能力？** 直接在 [🎯 按主题学](#-按主题学) 里点进去。
 - **遇到问题？** 先翻 [🐛 踩坑记录](./docs/troubleshooting.md)，常见坑都在里面。

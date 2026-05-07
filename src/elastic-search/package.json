@@ -5,5 +5,8 @@
   "description": "Elasticsearch demo示例（依赖来自根 workspace）",
   "scripts": {
     "dev": "pnpm -w dev"
+  },
+  "dependencies": {
+    "@elastic/elasticsearch": "~8.17.1"
   }
 }

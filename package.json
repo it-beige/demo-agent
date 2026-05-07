@@ -12,6 +12,7 @@
   "description": "",
   "dependencies": {
     "@ai-sdk/langchain": "^2.0.174",
+    "@elastic/elasticsearch": "~8.17.1",
     "@langchain/classic": "^1.0.27",
     "@langchain/community": "^1.1.27",
     "@langchain/core": "^1.1.41",
@@ -81,7 +82,8 @@
     "overrides": {
       "ws": "^8.18.0",
       "inflight": "npm:lru-cache@^10.4.3",
-      "node-domexception": "npm:@stdlib/error@^0.3.0"
+      "node-domexception": "npm:@stdlib/error@^0.3.0",
+      "@elastic/transport": "~8.9.1"
     },
     "peerDependencyRules": {
       "allowedVersions": {

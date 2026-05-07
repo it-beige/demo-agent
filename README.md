@@ -47,13 +47,15 @@ node agent-react-todo.mjs
 | 19  | [RAG·Agentic]      | [Agentic RAG 闭环](./docs/chapters/19-agentic-rag.md)                    | 查询路由→子问题拆解→多跳→联网兜底         |
 | 20  | [Deploy]           | [基于 Docker Compose 的本地开发环境和生产环境部署](./docs/chapters/20-docker-compose-deploy.md) | 一键拉起开发 + 生产部署方案               |
 | 21  | [Retrieval]        | [ElasticSearch 全文检索：倒排索引 + IK 分词器 + BM25 算法](./docs/chapters/21-elasticsearch-fulltext.md) | 倒排索引+IK分词器+BM25算法 |
+| 22  | [RAG·Hybrid]       | 混合检索 RAG：多路召回 + 重排模型                                      | ES + Milvus 双路 → 去重 → Rerank → 生成 |
+| 23  | [Rerank]           | DashScope Rerank 重排模型                                             | 阿里云重排 API 封装 + LangChain 集成     |
 
 ## 推荐主线
 
 第一次接触建议走这条路径，5 个章节覆盖核心能力：
 
 ```
-[Agent] 01 → [RAG] 04 → [Memory] 08 → [NestJS·Agent] 14 → [RAG·Agentic] 19
+[Agent] 01 → [RAG] 04 → [Memory] 08 → [NestJS·Agent] 14 → [RAG·Agentic] 19 → [RAG·Hybrid] 22
 ```
 
 ## 核心模块速览
@@ -74,6 +76,8 @@ node agent-react-todo.mjs
 | `src/langgraph/`                           | [LangGraph] 18                      | 图形编排                |
 | `src/advanced-rag/`                        | [RAG·Agentic] 19                    | Agentic RAG             |
 | `src/elastic-search/`                     | [Retrieval] 21                      | ElasticSearch 全文检索   |
+| `src/elastic-search/src/rag/`              | [RAG·Hybrid] 22                     | 混合检索 RAG             |
+| `src/elastic-search/src/rerank/`           | [Rerank] 23                         | DashScope 重排模型       |
 
 ## 进一步阅读
 

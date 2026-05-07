@@ -2,7 +2,7 @@
   "name": "langgraph",
   "version": "0.0.1",
   "private": true,
-  "description": "LangGraph 学习示例（依赖来自根 workspace）",
+  "description": "LangGraph demo示例（依赖来自根 workspace）",
   "scripts": {
     "dev": "pnpm -w dev"
   },

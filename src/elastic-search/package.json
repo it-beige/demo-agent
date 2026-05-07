@@ -1,0 +1,9 @@
+{
+  "name": "elastic-search",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Elasticsearch demo示例（依赖来自根 workspace）",
+  "scripts": {
+    "dev": "pnpm -w dev"
+  }
+}

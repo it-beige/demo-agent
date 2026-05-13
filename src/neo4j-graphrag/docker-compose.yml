@@ -1,0 +1,19 @@
+# 需要在项目根目录的 .env 中提供：NEO4J_USER / NEO4J_PASSWORD
+# 启动方式：docker compose --env-file ../../.env up -d
+
+services:
+  neo4j:
+    image: neo4j:latest
+    container_name: neo4j-container
+    ports:
+      - '7474:7474' # Web 管理界面
+      - '7687:7687' # Bolt 协议（代码连接）
+    environment:
+      NEO4J_AUTH: ${NEO4J_USER:?NEO4J_USER is required, please set it in .env}/${NEO4J_PASSWORD:?NEO4J_PASSWORD is required, please set it in .env}
+      NEO4J_PLUGINS: '["apoc"]'
+      NEO4J_dbms_security_procedures_unrestricted: apoc.*
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/neo4j/data:/data
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/neo4j/logs:/logs
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/neo4j/conf:/conf
+    restart: unless-stopped

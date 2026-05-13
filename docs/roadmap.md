@@ -29,6 +29,14 @@
 - 构建多书籍知识图谱（角色关系、事件时间线）
 - 引用精确到段落和页码
 
+## Neo4j GraphRAG
+
+- 扩展图谱规模（更多产品、配料、关系类型）
+- Schema 自动发现（`graph.getSchema()`）替代手写 prompt
+- Hybrid RAG：图检索 + 向量检索双路召回
+- Cypher 验证与纠错（执行失败后自动修正重试）
+- 图谱可视化前端（D3.js / Neo4j Bloom）
+
 ## 下一步
 
 - [目录](./../README.md#目录)

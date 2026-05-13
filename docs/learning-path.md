@@ -18,6 +18,7 @@
 | 8 | [Memory] 08 | 对话记忆：截断/总结/检索 |
 | 14 | [NestJS·Agent] 14 | NestJS 中的 Tool Calling |
 | 19 | [RAG·Agentic] 19 | Agentic RAG 自主决策 |
+| 20 | [GraphRAG] 20 | Neo4j 知识图谱 + Graph RAG |
 
 ## 各主题路径
 
@@ -48,6 +49,10 @@
 ### [LangGraph] 18
 
 `basic-graph.mjs` → `conditional-routing.mjs` → `loop-retry.mjs` → `checkpointer-memory.mjs` → `graph-interrupt.mjs` → `prebuilt-tool-node.mjs` → `prebuilt-agent.mjs` → `multi-agent-supervisor.mjs`
+
+### [GraphRAG] 20
+
+`docker-compose.yml` 启动 Neo4j → `cypher.md` 理解图谱 Schema → `seed-neo4j.mjs` 导入数据 → `graphrag.mjs` Cypher 生成 + 图查询 + 答案生成
 
 ## ➡️ 下一步
 

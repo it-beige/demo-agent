@@ -1,0 +1,15 @@
+{
+  "name": "rag",
+  "version": "0.0.1",
+  "private": true,
+  "description": "rag demo示例（依赖来自根 workspace）",
+  "scripts": {
+    "dev": "pnpm -w dev",
+    "docker:up": "docker compose --env-file ../../.env up -d",
+    "docker:down": "docker compose --env-file ../../.env down",
+    "docker:logs": "docker compose --env-file ../../.env logs -f"
+  },
+  "dependencies": {
+    "neo4j-driver": "^6.0.1"
+  }
+}

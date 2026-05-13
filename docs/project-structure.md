@@ -22,6 +22,7 @@
 | `src/tts-stt-nest/` | [语音·TTS/ASR] 17 | 腾讯云实时语音助手 |
 | `src/langgraph/` | [LangGraph] 18 | StateGraph 编排 + 多 Agent |
 | `src/advanced-rag/` | [RAG·Agentic] 19 | Agentic RAG 闭环 |
+| `src/neo4j-graphrag/` | [GraphRAG] 20 | Neo4j 知识图谱 + Graph RAG |
 
 ## 工具模块
 

@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { Annotation, END, START, StateGraph } from '@langchain/langgraph'
 import { Milvus } from '@langchain/community/vectorstores/milvus'
 import { TavilySearch } from '@langchain/tavily'
-import { model, embeddings } from '../utils/model.mjs'
+import { model, embeddings } from '@/shared/model.mjs'
 
 const COLLECTION_NAME = process.env.EBOOK_COLLECTION_NAME
 const MILVUS_ADDRESS = process.env.MILVUS_ADDRESS || 'localhost:19530'

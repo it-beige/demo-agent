@@ -1,6 +1,6 @@
 import tencentcloud from 'tencentcloud-sdk-nodejs-tts'
 import fs from 'node:fs'
-import { loadEnvFromNearest } from './utils/config.util.mjs'
+import { loadEnvFromNearest } from '@/shared/config.util.mjs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 

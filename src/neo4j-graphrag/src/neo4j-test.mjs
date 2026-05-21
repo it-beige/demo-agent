@@ -1,5 +1,5 @@
 import neo4j from 'neo4j-driver'
-import { loadEnvFromNearest } from '../utils/config.util.mjs'
+import { loadEnvFromNearest } from '@/shared/config.util.mjs'
 
 // 加载环境变量（从调用方所在目录向上查找 .env 文件）
 export const envFilePath = loadEnvFromNearest(import.meta.url)

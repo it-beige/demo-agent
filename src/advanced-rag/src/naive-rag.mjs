@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import { Annotation, END, START, StateGraph } from '@langchain/langgraph'
 import { Milvus } from '@langchain/community/vectorstores/milvus'
-import { model, embeddings } from '../utils/model.mjs'
+import { model, embeddings } from '@/shared/model.mjs'
 
 const COLLECTION_NAME = process.env.EBOOK_COLLECTION_NAME
 const TOP_K = 5

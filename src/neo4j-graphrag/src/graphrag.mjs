@@ -1,7 +1,7 @@
 import { Neo4jGraph } from '@langchain/community/graphs/neo4j_graph'
 import { StateGraph, END, START } from '@langchain/langgraph'
 import { HumanMessage } from '@langchain/core/messages'
-import { model as llm } from '../utils/model.mjs'
+import { model as llm } from '@/shared/model.mjs'
 
 // ----------------------
 // 连接 Neo4j 知识图谱

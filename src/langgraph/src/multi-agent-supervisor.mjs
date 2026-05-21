@@ -4,7 +4,7 @@ import { createAgent, tool } from "langchain";
 import { z } from "zod";
 
 import { lookupCityTrivia, lookupWeather } from "./simple-mock.mjs";
-import { model } from "../utils/model.mjs";
+import { model } from "@/shared/model.mjs";
 
 const lookupWeatherTool = tool(
   async ({ city }) => lookupWeather(city),

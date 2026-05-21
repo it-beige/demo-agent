@@ -11,7 +11,7 @@ import {
 import { ToolNode, toolsCondition } from '@langchain/langgraph/prebuilt'
 import { z } from 'zod'
 import { getProductBySku } from './inventory-mock.mjs'
-import { model } from '../utils/model.mjs'
+import { model } from '@/shared/model.mjs'
 const getProductStock = tool(async ({ sku }) => getProductBySku(sku), {
   name: 'get_product_stock',
   description: '按 SKU 查商品名与库存，SKU 如 SKU-001。',

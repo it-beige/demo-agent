@@ -11,14 +11,15 @@
 
 ## 推荐主线：4 个最关键的章节
 
-| 顺序 | 章节 | 学什么 |
-|------|------|--------|
-| 1 | [Agent] 01 | ReAct 循环，Agent 核心闭环 |
-| 4 | [RAG·Pipeline] 04-06 | RAG 完整管线 |
-| 8 | [Memory] 08 | 对话记忆：截断/总结/检索 |
-| 14 | [NestJS·Agent] 14 | NestJS 中的 Tool Calling |
-| 19 | [RAG·Agentic] 19 | Agentic RAG 自主决策 |
-| 20 | [GraphRAG] 20 | Neo4j 知识图谱 + Graph RAG |
+| 顺序 | 章节                 | 学什么                            |
+| ---- | -------------------- | --------------------------------- |
+| 1    | [Agent] 01           | ReAct 循环，Agent 核心闭环        |
+| 4    | [RAG·Pipeline] 04-06 | RAG 完整管线                      |
+| 8    | [Memory] 08          | 对话记忆：截断/总结/检索          |
+| 14   | [NestJS·Agent] 14    | NestJS 中的 Tool Calling          |
+| 19   | [RAG·Agentic] 19     | Agentic RAG 自主决策              |
+| 20   | [GraphRAG] 20        | Neo4j 知识图谱 + Graph RAG        |
+| 24   | [Observability] 24   | LangSmith 链路追踪 + RAG 量化评测 |
 
 ## 各主题路径
 
@@ -54,7 +55,11 @@
 
 `docker-compose.yml` 启动 Neo4j → `cypher.md` 理解图谱 Schema → `seed-neo4j.mjs` 导入数据 → `graphrag.mjs` Cypher 生成 + 图查询 + 答案生成
 
+### [Observability] 24
+
+环境变量开启 Tracing → LangSmith Run 树查看 → `build_dataset.mjs` 构建评测集 → `evaluators.mjs` 三大 OpenEvals 指标 → `run_eval.mjs` 跑实验 → LangSmith UI 查看报告
+
 ## ➡️ 下一步
 
 - 📚 回到 [目录](./../README.md#目录)
-- ✏️ 查看 [建议动手练习](./exercises.md)
+- 📈 查看 [进阶方向](./exercises.md)

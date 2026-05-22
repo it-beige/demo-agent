@@ -29,4 +29,4 @@ pnpm dev src/elastic-search/es-test3-runner.mjs   # 跑全量测试
 
 ---
 
-⬅️ [Docker Compose 部署](./20-docker-compose-deploy.md) ｜ [📚 目录](../../README.md#目录) ｜ ➡️
+⬅️ [Docker Compose 部署](./20-docker-compose-deploy.md) ｜ [📚 目录](../../README.md#目录) ｜ ➡️ [LangSmith 全链路观测](./24-langsmith-observability.md)

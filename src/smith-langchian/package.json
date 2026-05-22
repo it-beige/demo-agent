@@ -1,0 +1,13 @@
+{
+  "name": "rag",
+  "version": "0.0.1",
+  "private": true,
+  "description": "rag demo示例（依赖来自根 workspace）",
+  "scripts": {
+    "dev": "pnpm -w dev"
+  },
+  "dependencies": {
+    "langsmith": "^0.7.1",
+    "openevals": "^0.2.0"
+  }
+}

@@ -1,15 +1,15 @@
-import { loadEnvFromNearest } from './config.util.mjs'
+import { loadEnvFromNearest } from '@/shared/config.util.mjs'
 import { ChatOpenAI, OpenAIEmbeddings } from '@langchain/openai'
-import { DashScopeRerank } from '../../rerank/dashscope-rerank.mjs'
 
 // 加载环境变量（从调用方所在目录向上查找 .env 文件）
 export const envFilePath = loadEnvFromNearest(import.meta.url)
 console.log(`加载环境变量文件：${envFilePath}`)
 
+// LLM 模型
 export const model = new ChatOpenAI({
   model: process.env.MODEL,
   apiKey: process.env.API_KEY,
-  temperature: 0.2,
+  temperature: 0.7,
   configuration: {
     baseURL: process.env.BASE_URL,
   },
@@ -24,5 +24,3 @@ export const embeddings = new OpenAIEmbeddings({
     baseURL: process.env.EMBEDDING_BASE_URL,
   },
 })
-
-export const reranker = new DashScopeRerank()

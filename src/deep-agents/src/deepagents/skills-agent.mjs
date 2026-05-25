@@ -1,5 +1,14 @@
+import 'dotenv/config'
+import { existsSync, mkdirSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { model } from '@/shared/model.mjs'
+import { createAgent, HumanMessage } from 'langchain'
+import {
+  LocalShellBackend,
+  createFilesystemMiddleware,
+  createSkillsMiddleware,
+} from 'deepagents'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)

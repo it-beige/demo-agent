@@ -20,6 +20,7 @@
 | 19   | [RAG·Agentic] 19     | Agentic RAG 自主决策              |
 | 20   | [GraphRAG] 20        | Neo4j 知识图谱 + Graph RAG        |
 | 24   | [Observability] 24   | LangSmith 链路追踪 + RAG 量化评测 |
+| 25   | [DeepAgents] 25      | Skills/Memory/SubAgent Middleware |
 
 ## 各主题路径
 
@@ -58,6 +59,10 @@
 ### [Observability] 24
 
 环境变量开启 Tracing → LangSmith Run 树查看 → `build_dataset.mjs` 构建评测集 → `evaluators.mjs` 三大 OpenEvals 指标 → `run_eval.mjs` 跑实验 → LangSmith UI 查看报告
+
+### [DeepAgents] 25
+
+`filesystem-agent.mjs` 沙箱权限 → `memory-agent.mjs` 持久记忆 → `summarization-agent.mjs` 上下文压缩 → `skills-agent.mjs` 技能注入 → `subagent-agent.mjs` 多代理委派 → `middleware-test.mjs` 自定义扩展
 
 ## ➡️ 下一步
 

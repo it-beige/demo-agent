@@ -24,32 +24,33 @@ node agent-react-todo.mjs
 
 ## 目录
 
-| #   | 标签               | 章节                                                                                                     | 一句话                                     |
-| --- | ------------------ | -------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| 1   | [Agent]            | [ReAct 循环与本地工具调用](./docs/chapters/01-agent-basic.md)                                            | Agent 核心闭环：思考→行动→观察             |
-| 2   | [MCP]              | [MCP Server 基础](./docs/chapters/02-mcp-server-basic.md)                                                | Tool/Resource 定义、stdio 通信             |
-| 3   | [MCP·Client]       | [多 MCP Server 集成](./docs/chapters/03-multi-mcp.md)                                                    | 高德地图 + filesystem 双 MCP               |
-| 4   | [RAG]              | [RAG 检索增强生成](./docs/chapters/04-rag.md)                                                            | Embeddings 降级、关键词兜底                |
-| 5   | [RAG·Pipeline]     | [动态网站内容提取](./docs/chapters/05-dynamic-content.md)                                                | Puppeteer 动态渲染                         |
-| 6   | [RAG·Pipeline]     | [兼容性加载方案](./docs/chapters/06-compatibility-loader.md)                                             | Cheerio → Puppeteer 渐进降级               |
-| 7   | [RAG·Pipeline]     | [文本分割器多策略调优](./docs/chapters/07-text-splitter.md)                                              | 按字符/递归/Token/代码语言切分             |
-| 8   | [Memory]           | [对话记忆管理](./docs/chapters/08-conversation-memory.md)                                                | 截断、总结、检索三大策略                   |
-| 9   | [StructuredOutput] | [结构化大模型输出](./docs/chapters/09-structured-output.md)                                              | JSON.parse → Zod → withStructuredOutput    |
-| 10  | [Agent·实战]       | [智能录入 + Mini Cursor](./docs/chapters/10-smart-import-mini-cursor.md)                                 | MySQL 实战、流式 ReAct                     |
-| 11  | [PromptTemplate]   | [提示词组件化](./docs/chapters/11-prompt-template.md)                                                    | Pipeline、Few-Shot、动态示例选择           |
-| 12  | [Runnable]         | [声明式 Chain 组装](./docs/chapters/12-runnable-chain.md)                                                | Sequence/Map/Branch/重试/降级              |
-| 13  | [NestJS·SSE]       | [Nest + LangChain SSE 流式](./docs/chapters/13-nest-langchain-sse.md)                                    | 后端逐字输出→前端打字机渲染                |
-| 14  | [NestJS·Agent]     | [Nest + Tool Calling](./docs/chapters/14-nest-tool-calling.md)                                           | ReAct 循环 + 三工具 + 流式混合             |
-| 15  | [NestJS·Cron]      | [AI 定时任务](./docs/chapters/15-nest-cron-job.md)                                                       | 自然语言描述→自动调度执行                  |
-| 16  | [AGUI·全栈]        | [AGUI 流式组件渲染](./docs/chapters/16-agui-protocol.md)                                                 | ChatGPT 风格工具调用面板                   |
-| 17  | [语音·TTS/ASR]     | [实时语音助手](./docs/chapters/17-nest-tts-asr.md)                                                       | 双 WebSocket 中继 + MediaSource 流式播放   |
-| 18  | [LangGraph]        | [图形编排与多 Agent](./docs/chapters/18-langgraph-multi-agent.md)                                        | StateGraph → 条件路由 → HITL → Supervisor  |
-| 19  | [RAG·Agentic]      | [Agentic RAG 闭环](./docs/chapters/19-agentic-rag.md)                                                    | 查询路由→子问题拆解→多跳→联网兜底          |
-| 20  | [Deploy]           | [基于 Docker Compose 的本地开发环境和生产环境部署](./docs/chapters/20-docker-compose-deploy.md)          | 一键拉起开发 + 生产部署方案                |
-| 21  | [Retrieval]        | [ElasticSearch 全文检索：倒排索引 + IK 分词器 + BM25 算法](./docs/chapters/21-elasticsearch-fulltext.md) | 倒排索引+IK分词器+BM25算法                 |
-| 22  | [RAG·Hybrid]       | 混合检索 RAG：多路召回 + 重排模型                                                                        | ES + Milvus 双路 → 去重 → Rerank → 生成    |
-| 23  | [Rerank]           | DashScope Rerank 重排模型                                                                                | 阿里云重排 API 封装 + LangChain 集成       |
-| 24  | [Observability]    | [LangSmith 全链路观测：从 Agent 调试到 RAG 量化评估](./docs/chapters/24-langsmith-observability.md)      | Tracing 零侵入 + OpenEvals 三维度 RAG 评测 |
+| #   | 标签               | 章节                                                                                                     | 一句话                                                     |
+| --- | ------------------ | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| 1   | [Agent]            | [ReAct 循环与本地工具调用](./docs/chapters/01-agent-basic.md)                                            | Agent 核心闭环：思考→行动→观察                             |
+| 2   | [MCP]              | [MCP Server 基础](./docs/chapters/02-mcp-server-basic.md)                                                | Tool/Resource 定义、stdio 通信                             |
+| 3   | [MCP·Client]       | [多 MCP Server 集成](./docs/chapters/03-multi-mcp.md)                                                    | 高德地图 + filesystem 双 MCP                               |
+| 4   | [RAG]              | [RAG 检索增强生成](./docs/chapters/04-rag.md)                                                            | Embeddings 降级、关键词兜底                                |
+| 5   | [RAG·Pipeline]     | [动态网站内容提取](./docs/chapters/05-dynamic-content.md)                                                | Puppeteer 动态渲染                                         |
+| 6   | [RAG·Pipeline]     | [兼容性加载方案](./docs/chapters/06-compatibility-loader.md)                                             | Cheerio → Puppeteer 渐进降级                               |
+| 7   | [RAG·Pipeline]     | [文本分割器多策略调优](./docs/chapters/07-text-splitter.md)                                              | 按字符/递归/Token/代码语言切分                             |
+| 8   | [Memory]           | [对话记忆管理](./docs/chapters/08-conversation-memory.md)                                                | 截断、总结、检索三大策略                                   |
+| 9   | [StructuredOutput] | [结构化大模型输出](./docs/chapters/09-structured-output.md)                                              | JSON.parse → Zod → withStructuredOutput                    |
+| 10  | [Agent·实战]       | [智能录入 + Mini Cursor](./docs/chapters/10-smart-import-mini-cursor.md)                                 | MySQL 实战、流式 ReAct                                     |
+| 11  | [PromptTemplate]   | [提示词组件化](./docs/chapters/11-prompt-template.md)                                                    | Pipeline、Few-Shot、动态示例选择                           |
+| 12  | [Runnable]         | [声明式 Chain 组装](./docs/chapters/12-runnable-chain.md)                                                | Sequence/Map/Branch/重试/降级                              |
+| 13  | [NestJS·SSE]       | [Nest + LangChain SSE 流式](./docs/chapters/13-nest-langchain-sse.md)                                    | 后端逐字输出→前端打字机渲染                                |
+| 14  | [NestJS·Agent]     | [Nest + Tool Calling](./docs/chapters/14-nest-tool-calling.md)                                           | ReAct 循环 + 三工具 + 流式混合                             |
+| 15  | [NestJS·Cron]      | [AI 定时任务](./docs/chapters/15-nest-cron-job.md)                                                       | 自然语言描述→自动调度执行                                  |
+| 16  | [AGUI·全栈]        | [AGUI 流式组件渲染](./docs/chapters/16-agui-protocol.md)                                                 | ChatGPT 风格工具调用面板                                   |
+| 17  | [语音·TTS/ASR]     | [实时语音助手](./docs/chapters/17-nest-tts-asr.md)                                                       | 双 WebSocket 中继 + MediaSource 流式播放                   |
+| 18  | [LangGraph]        | [图形编排与多 Agent](./docs/chapters/18-langgraph-multi-agent.md)                                        | StateGraph → 条件路由 → HITL → Supervisor                  |
+| 19  | [RAG·Agentic]      | [Agentic RAG 闭环](./docs/chapters/19-agentic-rag.md)                                                    | 查询路由→子问题拆解→多跳→联网兜底                          |
+| 20  | [Deploy]           | [基于 Docker Compose 的本地开发环境和生产环境部署](./docs/chapters/20-docker-compose-deploy.md)          | 一键拉起开发 + 生产部署方案                                |
+| 21  | [Retrieval]        | [ElasticSearch 全文检索：倒排索引 + IK 分词器 + BM25 算法](./docs/chapters/21-elasticsearch-fulltext.md) | 倒排索引+IK分词器+BM25算法                                 |
+| 22  | [RAG·Hybrid]       | 混合检索 RAG：多路召回 + 重排模型                                                                        | ES + Milvus 双路 → 去重 → Rerank → 生成                    |
+| 23  | [Rerank]           | DashScope Rerank 重排模型                                                                                | 阿里云重排 API 封装 + LangChain 集成                       |
+| 24  | [Observability]    | [LangSmith 全链路观测：从 Agent 调试到 RAG 量化评估](./docs/chapters/24-langsmith-observability.md)      | Tracing 零侵入 + OpenEvals 三维度 RAG 评测                 |
+| 25  | [DeepAgents]       | [开箱即用的 Skill、上下文压缩等 Middleware](./docs/chapters/25-deepagents-middleware.md)                 | Skills/Memory/Summarization/SubAgent/Filesystem Middleware |
 
 ## 推荐主线
 
@@ -80,6 +81,7 @@ node agent-react-todo.mjs
 | `src/elastic-search/src/rag/`              | [RAG·Hybrid] 22                     | 混合检索 RAG            |
 | `src/elastic-search/src/rerank/`           | [Rerank] 23                         | DashScope 重排模型      |
 | `src/smith-langchian/`                     | [Observability] 24                  | LangSmith 全链路观测    |
+| `src/deep-agents/`                         | [DeepAgents] 25                     | Middleware 可插拔体系   |
 
 ## 进一步阅读
 

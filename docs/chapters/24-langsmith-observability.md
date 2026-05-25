@@ -147,4 +147,4 @@ pnpm dev src/smith-langchian/src/eval/run_eval.mjs
 
 ---
 
-⬅️ [ElasticSearch 全文检索](./21-elasticsearch-fulltext.md) ｜ [📚 目录](../../README.md#目录) ｜ ➡️
+⬅️ [ElasticSearch 全文检索](./21-elasticsearch-fulltext.md) ｜ [📚 目录](../../README.md#目录) ｜ [DeepAgents Middleware ➡️](./25-deepagents-middleware.md)

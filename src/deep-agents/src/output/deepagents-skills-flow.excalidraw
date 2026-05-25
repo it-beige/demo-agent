@@ -1,0 +1,22 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {"id": "userPrompt", "type": "rectangle", "x": 100, "y": 100, "width": 200, "height": 50, "text": "用户 Prompt\n接收用户输入", "fontSize": 20, "fontFamily": 5},
+    {"id": "createAgent", "type": "rectangle", "x": 400, "y": 100, "width": 200, "height": 50, "text": "createAgent\n初始化代理", "fontSize": 20, "fontFamily": 5},
+    {"id": "skillsMiddleware", "type": "rectangle", "x": 700, "y": 100, "width": 200, "height": 50, "text": "createSkillsMiddleware\n加载技能中间件", "fontSize": 20, "fontFamily": 5},
+    {"id": "filesystemMiddleware", "type": "rectangle", "x": 1000, "y": 100, "width": 200, "height": 50, "text": "createFilesystemMiddleware\n加载文件系统中间件", "fontSize": 20, "fontFamily": 5},
+    {"id": "modelResponse", "type": "rectangle", "x": 1300, "y": 100, "width": 200, "height": 50, "text": "模型回复\n生成最终响应", "fontSize": 20, "fontFamily": 5},
+    {"id": "arrow1", "type": "arrow", "x": 100, "y": 125, "points": [[100, 125], [400, 125]], "label": "invoke", "fontSize": 16, "fontFamily": 5},
+    {"id": "arrow2", "type": "arrow", "x": 400, "y": 125, "points": [[400, 125], [700, 125]], "label": "wrapModelCall", "fontSize": 16, "fontFamily": 5},
+    {"id": "arrow3", "type": "arrow", "x": 700, "y": 125, "points": [[700, 125], [1000, 125]], "label": "wrapModelCall", "fontSize": 16, "fontFamily": 5},
+    {"id": "arrow4", "type": "arrow", "x": 1000, "y": 125, "points": [[1000, 125], [1300, 125]], "label": "wrapModelCall", "fontSize": 16, "fontFamily": 5},
+    {"id": "legend", "type": "text", "x": 100, "y": 200, "text": "说明：\n- 流程从左至右依次进行。\n- 每个节点代表工作流中的一个关键步骤。\n- 箭头表示处理阶段及其名称。\n- 图例位于底部。\n颜色含义：\n- 默认颜色用于主要流程。\n如何运行 demo：\n1. 访问 https://excalidraw.com/\n2. 导入此 .excalidraw 文件。", "fontSize": 16, "fontFamily": 5}
+  ],
+  "appState": {
+    "viewBackgroundColor": "#ffffff",
+    "gridSize": 20
+  },
+  "files": {}
+}

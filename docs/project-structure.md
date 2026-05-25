@@ -25,6 +25,7 @@
 | `src/neo4j-graphrag/`                      | [GraphRAG] 20                       | Neo4j 知识图谱 + Graph RAG      |
 | `src/elastic-search/`                      | [Retrieval] 21                      | ElasticSearch 全文检索          |
 | `src/smith-langchian/`                     | [Observability] 24                  | LangSmith 链路追踪 + RAG 评测   |
+| `src/deep-agents/`                         | [DeepAgents] 25                     | Middleware 可插拔体系           |
 
 ## 工具模块
 

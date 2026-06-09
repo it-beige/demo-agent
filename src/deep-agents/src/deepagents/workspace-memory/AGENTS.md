@@ -11,7 +11,7 @@ demo-agent 仓库中专门演示 deepagents 库内置 Middleware 的模块。通
 - deepagents `^1.10.2`（Middleware 库）
 - Zod（自定义 Middleware state schema）
 - 共享模型配置：`@/shared/model.mjs`
-- 本仓库主入口脚本是 src/deepagents/memory-agent.mjs
+- 主入口脚本：`src/deepagents/memory-agent.mjs`
 
 ## 目录结构
 
@@ -22,7 +22,7 @@ src/deep-agents/
 │   │   ├── filesystem-agent.mjs      # FilesystemMiddleware 演示
 │   │   ├── memory-agent.mjs          # MemoryMiddleware + FilesystemMiddleware 演示
 │   │   ├── skills-agent.mjs          # SkillsMiddleware + FilesystemMiddleware + LocalShellBackend 演示
-│   │   ├── subagent-agent.mjs        # SubAgentMiddleware 演示（四则运算/天气/搜索子 Agent）
+│   │   ├── subagent-agent.mjs        # SubAgentMiddleware 演示（解题/讲解/出题/评分四步子 Agent 流水线）
 │   │   ├── summarization-agent.mjs   # SummarizationMiddleware 演示（对话摘要）
 │   │   ├── workspace/                # filesystem-agent 的工作区
 │   │   ├── workspace-memory/         # memory-agent 的工作区（含 AGENTS.md + memory/）

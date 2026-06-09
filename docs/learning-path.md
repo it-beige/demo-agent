@@ -62,7 +62,7 @@
 
 ### [DeepAgents] 25
 
-`filesystem-agent.mjs` 沙箱权限 → `memory-agent.mjs` 持久记忆 → `summarization-agent.mjs` 上下文压缩 → `skills-agent.mjs` 技能注入 → `subagent-agent.mjs` 多代理委派 → `middleware-test.mjs` 自定义扩展
+`filesystem-agent.mjs` 沙箱权限 → `memory-agent.mjs` 持久记忆 → `summarization-agent.mjs` 上下文压缩 → `skills-agent.mjs` 技能注入 → `subagent-agent.mjs` 四步子 Agent 流水线（解题→讲解→出题→评分）→ `middleware-test.mjs` 自定义扩展
 
 ## ➡️ 下一步
 

@@ -13,7 +13,7 @@ DeepAgents 的核心理念：**Agent = 模型 + Middleware 组合**。每个 Mid
 | `filesystem-agent.mjs`    | Filesystem    | 沙箱文件操作 + 细粒度权限控制（allow/deny 读写路径）                | `createFilesystemMiddleware({ backend, permissions })`             |
 | `memory-agent.mjs`        | Memory        | 持久化项目记忆和用户偏好，跨会话保持上下文                          | `createMemoryMiddleware({ backend, sources })`                     |
 | `summarization-agent.mjs` | Summarization | 消息数超阈值时自动压缩历史对话，防止上下文溢出                      | `createSummarizationMiddleware({ model, backend, trigger, keep })` |
-| `subagent-agent.mjs`      | SubAgent      | 主 Agent 委派子 Agent（解题/讲解/出题），各司其职                   | `createSubAgentMiddleware({ defaultModel, subagents })`            |
+| `subagent-agent.mjs`      | SubAgent      | 主 Agent 按四步流水线委派子 Agent（解题→讲解→出题→评分）            | `createSubAgentMiddleware({ defaultModel, subagents })`            |
 | `middleware-test.mjs`     | 自定义        | 日志统计、上下文注入、敏感词拦截（`jumpTo: 'end'` 短路）            | `createMiddleware({ beforeModel, afterModel, wrapModelCall })`     |
 | `middleware-test2.mjs`    | 自定义工具    | 通过 Middleware 注册工具 + `wrapToolCall` 包装执行结果              | `createMiddleware({ tools, wrapToolCall, stateSchema })`           |
 
@@ -23,10 +23,16 @@ DeepAgents 的核心理念：**Agent = 模型 + Middleware 组合**。每个 Mid
 
 将项目根目录 `.agents/skills/` 下的 SKILL.md 注入 Agent 上下文。Agent 收到任务时自动匹配相关技能，按需 `read_file` 技能说明后执行。
 
+`LocalShellBackend` 与 `FilesystemBackend` 的区别：前者在真实文件系统中执行（`virtualMode: false`），适合需要真实 shell 命令的技能（如 excalidraw-diagram-generator）；后者为内存沙箱，适合隔离测试。
+
 ```js
 import { createSkillsMiddleware, LocalShellBackend } from 'deepagents'
 
-const backend = await LocalShellBackend.create({ rootDir: projectRoot })
+const backend = await LocalShellBackend.create({
+  rootDir: projectRoot,
+  virtualMode: false, // 真实文件系统，技能可执行 shell 命令
+  inheritEnv: true, // 继承父进程环境变量
+})
 const agent = createAgent({
   model,
   middleware: [
@@ -79,23 +85,47 @@ createSummarizationMiddleware({
 
 ### 5. SubAgent Middleware — 多代理委派
 
-主 Agent 不直接执行任务，而是通过 `task` 工具委派给专职子 Agent：
+主 Agent 不直接执行任务，而是通过 `task` 工具按顺序委派给专职子 Agent。本 demo 实现四步流水线：**解题 → 讲解 → 出题 → 评分**，主 Agent 每步只调用一个 `task`，等结果返回后再调用下一个。
 
 ```js
 createSubAgentMiddleware({
   defaultModel: model,
   subagents: [
-    { name: 'math-solver', description: '解题', tools: [calc, divideEvenly] },
-    { name: 'kid-tutor', description: '讲解', tools: [] },
+    {
+      name: 'math-solver',
+      description: '解小学应用题：用 calc、divide_evenly 列式计算',
+      tools: [calc, divideEvenly],
+    },
+    {
+      name: 'kid-tutor',
+      description: '把 solver 的解法讲给家长听',
+      tools: [], // 纯讲解，不用工具
+    },
     {
       name: 'practice-maker',
-      description: '出练习题',
+      description: '出不低于 10 道同类练习题',
       tools: [makeSimilarProblem],
+    },
+    {
+      name: 'scoring-expert',
+      description: '对解题过程和练习题进行专业评分（满分 100）',
+      tools: [], // 纯评分，不用工具
     },
   ],
   generalPurposeAgent: false,
 })
 ```
+
+**流水线执行顺序**（在主 Agent 的 `systemPrompt` 中约束）：
+
+1. `math-solver`：用工具列式计算，输出分步算式与答案
+2. `kid-tutor`：把 solver 的完整解题过程写进 `description`，用通俗语言讲解
+3. `practice-maker`：调用 `make_similar_problem` 生成多样化练习题
+4. `scoring-expert`：把解题过程 + 练习题列表写进 `description`，四维度评分
+
+终端输出使用 `streamEvents` 配合 ANSI 颜色，按子 Agent 分段显示，并附执行统计（工具调用次数、总耗时）。
+
+> **注意**：子 Agent 并发会触发 Node.js listener 警告，需在入口加 `setMaxListeners(50)`。
 
 ### 6. 自定义 Middleware — createMiddleware
 
@@ -139,12 +169,35 @@ pnpm dev src/deep-agents/src/middleware-test2.mjs
 
 需在根目录 `.env` 配置 `MODEL`、`API_KEY`、`BASE_URL`。
 
+## 共享模型配置
+
+除 `summarization-agent.mjs`（摘要模型需独立配置 `temperature: 0`）外，其余 Agent 统一从 `@/shared/model.mjs` 导入模型实例，避免各文件重复读取环境变量：
+
+```js
+// @/shared/model.mjs
+import { ChatOpenAI } from '@langchain/openai'
+export const model = new ChatOpenAI({
+  model: process.env.MODEL_NAME,
+  apiKey: process.env.OPENAI_API_KEY,
+  configuration: { baseURL: process.env.OPENAI_BASE_URL },
+})
+```
+
+各 Agent 只需一行引入：
+
+```js
+import { model } from '@/shared/model.mjs'
+```
+
+> 运行脚本须通过 `pnpm dev`（内部使用 `tsx`），才能解析 `@/` 路径别名。
+
 ## 扩展方向
 
 - 组合多个 Middleware：Skills + Memory + Summarization，构建带持久记忆的长对话技能 Agent
 - 用 `wrapModelCall` 实现自动重试 + 降级策略，替代手写 try-catch
 - 在 SubAgent 模式中引入 checkpointer，实现子 Agent 跨会话状态恢复
 - 用 `stateSchema` 声明业务状态（如 `costTracking`），实现 Token 成本监控 Middleware
+- 将 `summarization-agent.mjs` 也迁移到共享模型，统一配置入口
 
 ---
 

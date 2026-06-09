@@ -2,8 +2,10 @@
   "name": "demo-agent",
   "version": "1.0.0",
   "main": "index.js",
-  "dev": "node scripts/dev.mjs",
-  "history": "tsx --tsconfig tsconfig.json src/memory/history-demo.mjs",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "history": "tsx --tsconfig tsconfig.json src/memory/history-demo.mjs"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

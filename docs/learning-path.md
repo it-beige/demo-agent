@@ -21,6 +21,7 @@
 | 20   | [GraphRAG] 20        | Neo4j 知识图谱 + Graph RAG        |
 | 24   | [Observability] 24   | LangSmith 链路追踪 + RAG 量化评测 |
 | 25   | [DeepAgents] 25      | Skills/Memory/SubAgent Middleware |
+| 26   | [DeepAgents·实战] 26 | 多 Agent 深度调研助手实战         |
 
 ## 各主题路径
 
@@ -63,6 +64,10 @@
 ### [DeepAgents] 25
 
 `filesystem-agent.mjs` 沙箱权限 → `memory-agent.mjs` 持久记忆 → `summarization-agent.mjs` 上下文压缩 → `skills-agent.mjs` 技能注入 → `subagent-agent.mjs` 四步子 Agent 流水线（解题→讲解→出题→评分）→ `middleware-test.mjs` 自定义扩展
+
+### [DeepAgents·实战] 26
+
+`agent.mjs` createDeepAgent 高层封装 → researcher/editor/analyst 三类子 Agent → `tools/search.mjs` Tavily 联网搜索 → `cli.mjs` 流式输出 + 子图监听 → Skills 技能注入（web-research / report-writer）→ 完整调研报告交付
 
 ## ➡️ 下一步
 

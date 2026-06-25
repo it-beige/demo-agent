@@ -52,3 +52,6 @@ uploads
 # deep-agents runtime workspaces (regenerated on each run)
 src/deep-agents/src/deepagents/workspace/
 src/deep-agents/src/deepagents/workspace-summarization/
+
+
+workspace

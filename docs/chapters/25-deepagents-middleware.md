@@ -201,4 +201,4 @@ import { model } from '@/shared/model.mjs'
 
 ---
 
-⬅️ [LangSmith 观测](./24-langsmith-observability.md) ｜ [📚 目录](../../README.md#目录) ｜ ➡️
+⬅️ [LangSmith 观测](./24-langsmith-observability.md) ｜ [📚 目录](../../README.md#目录) ｜ [深度调研助手 ➡️](./26-deep-research-assistant.md)

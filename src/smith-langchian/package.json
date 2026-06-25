@@ -7,7 +7,11 @@
     "dev": "pnpm -w dev"
   },
   "dependencies": {
+    "@langchain/quickjs": "^0.4.0",
     "langsmith": "^0.7.1",
     "openevals": "^0.2.0"
+  },
+  "devDependencies": {
+    "dedent": "^1.7.2"
   }
 }

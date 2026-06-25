@@ -51,6 +51,7 @@ node agent-react-todo.mjs
 | 23  | [Rerank]           | DashScope Rerank 重排模型                                                                                | 阿里云重排 API 封装 + LangChain 集成                       |
 | 24  | [Observability]    | [LangSmith 全链路观测：从 Agent 调试到 RAG 量化评估](./docs/chapters/24-langsmith-observability.md)      | Tracing 零侵入 + OpenEvals 三维度 RAG 评测                 |
 | 25  | [DeepAgents]       | [开箱即用的 Skill、上下文压缩等 Middleware](./docs/chapters/25-deepagents-middleware.md)                 | Skills/Memory/Summarization/SubAgent/Filesystem Middleware |
+| 26  | [DeepAgents·实战]  | [DeepAgents 实战：多 Agent 架构的深度调研助手](./docs/chapters/26-deep-research-assistant.md)            | createDeepAgent + 多子 Agent 协作 + Tavily 联网搜索        |
 
 ## 推荐主线
 
@@ -82,6 +83,7 @@ node agent-react-todo.mjs
 | `src/elastic-search/src/rerank/`           | [Rerank] 23                         | DashScope 重排模型      |
 | `src/smith-langchian/`                     | [Observability] 24                  | LangSmith 全链路观测    |
 | `src/deep-agents/`                         | [DeepAgents] 25                     | Middleware 可插拔体系   |
+| `src/deep-research-assistant/`             | [DeepAgents·实战] 26                | 多 Agent 深度调研助手   |
 
 ## 进一步阅读
 

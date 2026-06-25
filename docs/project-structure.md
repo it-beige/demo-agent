@@ -26,6 +26,7 @@
 | `src/elastic-search/`                      | [Retrieval] 21                      | ElasticSearch 全文检索          |
 | `src/smith-langchian/`                     | [Observability] 24                  | LangSmith 链路追踪 + RAG 评测   |
 | `src/deep-agents/`                         | [DeepAgents] 25                     | Middleware 可插拔体系           |
+| `src/deep-research-assistant/`             | [DeepAgents·实战] 26                | 多 Agent 深度调研助手           |
 
 ## 工具模块
 

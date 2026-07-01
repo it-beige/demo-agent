@@ -23,6 +23,7 @@
 | 25   | [DeepAgents] 25      | Skills/Memory/SubAgent Middleware |
 | 26   | [DeepAgents·实战] 26 | 多 Agent 深度调研助手实战         |
 | 27   | [Database] 27        | PostgreSQL + pgvector 向量检索    |
+| 28   | [Memory·Redis] 28    | Redis Agent 短期记忆 + TTL 过期   |
 
 ## 各主题路径
 
@@ -73,6 +74,10 @@
 ### [Database] 27
 
 `docker-compose.yml` 启动 PostgreSQL + pgvector → `create_tables.sql` 建表 + HNSW 索引 → `pgsql-test` 原生 SQL CRUD + 语义检索 → `typeorm-pg-crud` TypeORM 实体映射 + NestJS RESTful API
+
+### [Memory·Redis] 28
+
+`docker-compose.yml` 启动 Redis 7 + RedisInsight → `redis-test.mjs` 六大数据类型 + 分布式锁 → `agent-with-redis-memory.mjs` RedisMessageStore + invokeWithMemory 读-调-写闭环 + summarizationMiddleware 自动压缩
 
 ## ➡️ 下一步
 

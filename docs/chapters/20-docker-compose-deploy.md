@@ -488,5 +488,5 @@ esac
 ## ➡️ 下一步
 
 - 📦 环境准备完毕？回到 [目录](./../README.md#目录) 按章节实战
-- 🔧 MongoDB / Redis 等更多服务编排见 [项目结构](./project-structure.md)
+- 🔧 MongoDB / Redis 等更多服务编排见 [项目结构](./project-structure.md)，Redis Agent 短期记忆实战见 [章节 28](./28-redis-agent-memory.md)
 - 📁 `.env.docker` 完整变量说明见 [快速开始](./getting-started.md)

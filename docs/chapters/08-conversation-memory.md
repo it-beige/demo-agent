@@ -40,6 +40,7 @@ pnpm dev src/memory/query-conversations.mjs    # 查询所有记录
 - 实现分级总结：旧消息总结多次，每次越来越精简
 - 将三种策略组合使用（截断兜底 + 总结压缩 + 检索召回）
 - 替换 Milvus 为 Redis/Pinecone 等其他向量存储方案
+- 使用 Redis 实现会话级短期记忆，见 [Redis Agent 短期记忆](./28-redis-agent-memory.md)
 
 ---
 ⬅️ [文本分割器](./07-text-splitter.md) ｜ [📚 目录](../../README.md#目录) ｜ [结构化输出 ➡️](./09-structured-output.md)

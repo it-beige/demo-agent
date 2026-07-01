@@ -29,6 +29,7 @@
 | `src/deep-research-assistant/`             | [DeepAgents·实战] 26                | 多 Agent 深度调研助手           |
 | `src/pgsql-test/`                          | [Database] 27                       | PostgreSQL + pgvector 原生 SQL  |
 | `src/typeorm-pg-crud/`                     | [Database] 27                       | TypeORM + NestJS CRUD API       |
+| `src/redis-test/`                          | [Memory·Redis] 28                   | Redis Agent 短期记忆 + TTL 过期 |
 
 ## 工具模块
 

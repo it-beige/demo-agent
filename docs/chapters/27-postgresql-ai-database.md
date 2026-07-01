@@ -205,4 +205,4 @@ curl -s -X POST http://localhost:3005/conversations/3/search \
 
 ---
 
-⬅️ [DeepAgents 实战](./26-deep-research-assistant.md) ｜ [📚 目录](../../README.md#目录)
+⬅️ [DeepAgents 实战](./26-deep-research-assistant.md) ｜ [📚 目录](../../README.md#目录) ｜ [Redis Agent 短期记忆 ➡️](./28-redis-agent-memory.md)

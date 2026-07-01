@@ -44,6 +44,14 @@
 - 多维度 Prompt 版本管理：结合 LangSmith Hub 管理评测版本
 - 更多评测指标：毒性检测、答案简洁性、多语言支持
 
+## PostgreSQL + pgvector
+
+- 结合 Rerank 模型提升语义检索精度
+- 对比 pgvector HNSW 与 IVFFlat 索引的性能差异
+- 将 pgvector 检索封装为 MCP Tool，供 Agent 调用
+- 实现 TypeORM migration 管理 Schema 变更，替代 `synchronize: true`
+- 多租户场景下的向量隔离与权限控制
+
 ## 下一步
 
 - [目录](./../README.md#目录)

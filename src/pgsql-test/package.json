@@ -7,11 +7,6 @@
     "dev": "pnpm -w dev"
   },
   "dependencies": {
-    "@langchain/quickjs": "^0.4.0",
-    "deepagents": "^1.10.2"
-  },
-  "devDependencies": {
-    "agent-browser": "^0.27.0",
-    "dedent": "^1.7.2"
+    "pg": "^8.21.0"
   }
 }

@@ -22,6 +22,7 @@
 | 24   | [Observability] 24   | LangSmith 链路追踪 + RAG 量化评测 |
 | 25   | [DeepAgents] 25      | Skills/Memory/SubAgent Middleware |
 | 26   | [DeepAgents·实战] 26 | 多 Agent 深度调研助手实战         |
+| 27   | [Database] 27        | PostgreSQL + pgvector 向量检索    |
 
 ## 各主题路径
 
@@ -68,6 +69,10 @@
 ### [DeepAgents·实战] 26
 
 `agent.mjs` createDeepAgent 高层封装 → researcher/editor/analyst 三类子 Agent → `tools/search.mjs` Tavily 联网搜索 → `cli.mjs` 流式输出 + 子图监听 → Skills 技能注入（web-research / report-writer）→ 完整调研报告交付
+
+### [Database] 27
+
+`docker-compose.yml` 启动 PostgreSQL + pgvector → `create_tables.sql` 建表 + HNSW 索引 → `pgsql-test` 原生 SQL CRUD + 语义检索 → `typeorm-pg-crud` TypeORM 实体映射 + NestJS RESTful API
 
 ## ➡️ 下一步
 

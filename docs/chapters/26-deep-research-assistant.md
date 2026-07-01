@@ -208,4 +208,4 @@ pnpm dev src/deep-research-assistant/src/max-input-tokens-test.mjs
 
 ---
 
-⬅️ [DeepAgents Middleware](./25-deepagents-middleware.md) ｜ [📚 目录](../../README.md#目录) ｜ ➡️
+⬅️ [DeepAgents Middleware](./25-deepagents-middleware.md) ｜ [📚 目录](../../README.md#目录) ｜ ➡️ [PostgreSQL：AI 时代最适合的数据库](./27-postgresql-ai-database.md)

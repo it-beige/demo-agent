@@ -52,6 +52,7 @@ node agent-react-todo.mjs
 | 24  | [Observability]    | [LangSmith 全链路观测：从 Agent 调试到 RAG 量化评估](./docs/chapters/24-langsmith-observability.md)      | Tracing 零侵入 + OpenEvals 三维度 RAG 评测                 |
 | 25  | [DeepAgents]       | [开箱即用的 Skill、上下文压缩等 Middleware](./docs/chapters/25-deepagents-middleware.md)                 | Skills/Memory/Summarization/SubAgent/Filesystem Middleware |
 | 26  | [DeepAgents·实战]  | [DeepAgents 实战：多 Agent 架构的深度调研助手](./docs/chapters/26-deep-research-assistant.md)            | createDeepAgent + 多子 Agent 协作 + Tavily 联网搜索        |
+| 27  | [Database]         | [PostgreSQL：AI 时代最适合的数据库](./docs/chapters/27-postgresql-ai-database.md)                        | pgvector 向量检索 + 原生 SQL / TypeORM 双方案              |
 
 ## 推荐主线
 
@@ -63,27 +64,29 @@ node agent-react-todo.mjs
 
 ## 核心模块速览
 
-| 模块                                       | 章节                                | 说明                    |
-| ------------------------------------------ | ----------------------------------- | ----------------------- |
-| `agent-react-todo.mjs`                     | [Agent] 01                          | ReAct 循环入口          |
-| `src/mcp-server.mjs`                       | [MCP] 02                            | MCP Server 实现         |
-| `src/mcp-amap.mjs`                         | [MCP·Client] 03                     | 多 MCP Client           |
-| `src/memory/`                              | [Memory] 08                         | 对话记忆管理            |
-| `src/output-parse/`                        | [StructuredOutput] 09               | 结构化输出              |
-| `src/prompt-template/`                     | [PromptTemplate] 11                 | 提示词组件化            |
-| `src/runnable/`                            | [Runnable] 12                       | Chain 组装              |
-| `src/asr-and-tts-nest-service/`            | [NestJS·SSE] 13                     | SSE 流式                |
-| `src/cron-job-tool/`                       | [NestJS·Agent] 14, [NestJS·Cron] 15 | Tool Calling + 定时任务 |
-| `src/agui-backend/` + `src/agui-frontend/` | [AGUI·全栈] 16                      | AGUI 全栈               |
-| `src/tts-stt-nest/`                        | [语音·TTS/ASR] 17                   | 语音助手                |
-| `src/langgraph/`                           | [LangGraph] 18                      | 图形编排                |
-| `src/advanced-rag/`                        | [RAG·Agentic] 19                    | Agentic RAG             |
-| `src/elastic-search/`                      | [Retrieval] 21                      | ElasticSearch 全文检索  |
-| `src/elastic-search/src/rag/`              | [RAG·Hybrid] 22                     | 混合检索 RAG            |
-| `src/elastic-search/src/rerank/`           | [Rerank] 23                         | DashScope 重排模型      |
-| `src/smith-langchian/`                     | [Observability] 24                  | LangSmith 全链路观测    |
-| `src/deep-agents/`                         | [DeepAgents] 25                     | Middleware 可插拔体系   |
-| `src/deep-research-assistant/`             | [DeepAgents·实战] 26                | 多 Agent 深度调研助手   |
+| 模块                                       | 章节                                | 说明                           |
+| ------------------------------------------ | ----------------------------------- | ------------------------------ |
+| `agent-react-todo.mjs`                     | [Agent] 01                          | ReAct 循环入口                 |
+| `src/mcp-server.mjs`                       | [MCP] 02                            | MCP Server 实现                |
+| `src/mcp-amap.mjs`                         | [MCP·Client] 03                     | 多 MCP Client                  |
+| `src/memory/`                              | [Memory] 08                         | 对话记忆管理                   |
+| `src/output-parse/`                        | [StructuredOutput] 09               | 结构化输出                     |
+| `src/prompt-template/`                     | [PromptTemplate] 11                 | 提示词组件化                   |
+| `src/runnable/`                            | [Runnable] 12                       | Chain 组装                     |
+| `src/asr-and-tts-nest-service/`            | [NestJS·SSE] 13                     | SSE 流式                       |
+| `src/cron-job-tool/`                       | [NestJS·Agent] 14, [NestJS·Cron] 15 | Tool Calling + 定时任务        |
+| `src/agui-backend/` + `src/agui-frontend/` | [AGUI·全栈] 16                      | AGUI 全栈                      |
+| `src/tts-stt-nest/`                        | [语音·TTS/ASR] 17                   | 语音助手                       |
+| `src/langgraph/`                           | [LangGraph] 18                      | 图形编排                       |
+| `src/advanced-rag/`                        | [RAG·Agentic] 19                    | Agentic RAG                    |
+| `src/elastic-search/`                      | [Retrieval] 21                      | ElasticSearch 全文检索         |
+| `src/elastic-search/src/rag/`              | [RAG·Hybrid] 22                     | 混合检索 RAG                   |
+| `src/elastic-search/src/rerank/`           | [Rerank] 23                         | DashScope 重排模型             |
+| `src/smith-langchian/`                     | [Observability] 24                  | LangSmith 全链路观测           |
+| `src/deep-agents/`                         | [DeepAgents] 25                     | Middleware 可插拔体系          |
+| `src/deep-research-assistant/`             | [DeepAgents·实战] 26                | 多 Agent 深度调研助手          |
+| `src/pgsql-test/`                          | [Database] 27                       | PostgreSQL + pgvector 向量检索 |
+| `src/typeorm-pg-crud/`                     | [Database] 27                       | TypeORM + NestJS CRUD API      |
 
 ## 进一步阅读
 

@@ -24,6 +24,7 @@
 | 26   | [DeepAgents·实战] 26 | 多 Agent 深度调研助手实战         |
 | 27   | [Database] 27        | PostgreSQL + pgvector 向量检索    |
 | 28   | [Memory·Redis] 28    | Redis Agent 短期记忆 + TTL 过期   |
+| 29   | [Memory·Mem0] 29     | Mem0 长期记忆 + Redis 双层架构    |
 
 ## 各主题路径
 
@@ -78,6 +79,10 @@
 ### [Memory·Redis] 28
 
 `docker-compose.yml` 启动 Redis 7 + RedisInsight → `redis-test.mjs` 六大数据类型 + 分布式锁 → `agent-with-redis-memory.mjs` RedisMessageStore + invokeWithMemory 读-调-写闭环 + summarizationMiddleware 自动压缩
+
+### [Memory·Mem0] 29
+
+`mem0-test.mjs` Cloud API 基础 CRUD → `mem0-scoped-memory-test.mjs` user/session/agent 三种 Scope → `mem0-hybrid-search-test.mjs` rerank/threshold 混合搜索 → `server.py` + `mem0-local-api-demo.mjs` 自建 REST API（Qdrant + 自定义 LLM）→ `mem0-redis-mem0-agent.mjs` Redis 短期 + Mem0 长期双层记忆 + LLM 分类器自动分层
 
 ## ➡️ 下一步
 

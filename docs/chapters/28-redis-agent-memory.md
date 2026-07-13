@@ -242,4 +242,4 @@ import {
 
 ---
 
-⬅️ [PostgreSQL AI 数据库](./27-postgresql-ai-database.md) ｜ [📚 目录](../../README.md#目录)
+⬅️ [PostgreSQL AI 数据库](./27-postgresql-ai-database.md) ｜ [📚 目录](../../README.md#目录) ｜ [Mem0 记忆方案 ➡️](./29-mem0-memory.md)

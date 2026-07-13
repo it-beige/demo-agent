@@ -54,6 +54,7 @@ node agent-react-todo.mjs
 | 26  | [DeepAgents·实战]  | [DeepAgents 实战：多 Agent 架构的深度调研助手](./docs/chapters/26-deep-research-assistant.md)            | createDeepAgent + 多子 Agent 协作 + Tavily 联网搜索        |
 | 27  | [Database]         | [PostgreSQL：AI 时代最适合的数据库](./docs/chapters/27-postgresql-ai-database.md)                        | pgvector 向量检索 + 原生 SQL / TypeORM 双方案              |
 | 28  | [Memory·Redis]     | [Redis：实现 Agent 短期记忆存储的最佳方案](./docs/chapters/28-redis-agent-memory.md)                     | ioredis + TTL 过期 + summarizationMiddleware 压缩          |
+| 29  | [Memory·Mem0]      | [Mem0 记忆方案：从云端 API 到双层记忆架构](./docs/chapters/29-mem0-memory.md)                            | Cloud API + 自建 REST + Redis 双层记忆 + LLM 分类          |
 
 ## 推荐主线
 
@@ -89,6 +90,7 @@ node agent-react-todo.mjs
 | `src/pgsql-test/`                          | [Database] 27                       | PostgreSQL + pgvector 向量检索 |
 | `src/typeorm-pg-crud/`                     | [Database] 27                       | TypeORM + NestJS CRUD API      |
 | `src/redis-test/`                          | [Memory·Redis] 28                   | Redis Agent 短期记忆           |
+| `src/mem0-test/`                           | [Memory·Mem0] 29                    | Mem0 长期记忆 + 双层架构       |
 
 ## 进一步阅读
 

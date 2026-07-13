@@ -1,0 +1,31 @@
+{
+  "name": "rag",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/mem0-test.mjs add",
+    "start:search": "node src/mem0-test.mjs search",
+    "start:list": "node src/mem0-test.mjs list",
+    "start:update": "node src/mem0-test.mjs update",
+    "cleanup": "node src/mem0-test.mjs --cleanup",
+    "agent": "node src/mem0-redis-mem0-agent.mjs",
+    "scoped-memory": "node src/mem0-scoped-memory-test.mjs add",
+    "scoped-memory:search": "node src/mem0-scoped-memory-test.mjs search",
+    "scoped-memory:cleanup": "node src/mem0-scoped-memory-test.mjs --cleanup",
+    "local-api": "node src/mem0-local-api-demo.mjs",
+    "local-api:search": "node src/mem0-local-api-demo.mjs search",
+    "local-api:list": "node src/mem0-local-api-demo.mjs list",
+    "local-api:cleanup": "node src/mem0-local-api-demo.mjs --cleanup",
+    "hybrid-search": "node src/mem0-hybrid-search-test.mjs add",
+    "hybrid-search:run": "node src/mem0-hybrid-search-test.mjs search",
+    "hybrid-search:cleanup": "node src/mem0-hybrid-search-test.mjs --cleanup"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "mem0ai": "^3.0.6"
+  }
+}

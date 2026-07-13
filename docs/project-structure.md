@@ -30,6 +30,7 @@
 | `src/pgsql-test/`                          | [Database] 27                       | PostgreSQL + pgvector 原生 SQL  |
 | `src/typeorm-pg-crud/`                     | [Database] 27                       | TypeORM + NestJS CRUD API       |
 | `src/redis-test/`                          | [Memory·Redis] 28                   | Redis Agent 短期记忆 + TTL 过期 |
+| `src/mem0-test/`                           | [Memory·Mem0] 29                    | Mem0 长期记忆 + 双层架构        |
 
 ## 工具模块
 

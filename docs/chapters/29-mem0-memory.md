@@ -1,6 +1,6 @@
 # [Memory·Mem0] Mem0 记忆方案：从云端 API 到双层记忆架构
 
-> Mem0 是专为 AI Agent 设计的长期语义记忆层，能从对话中自动提取事实、向量化存储、语义检索。本章用五个模块演示从 Mem0 Cloud API 基础操作到 Redis + Mem0 双层记忆架构的完整方案：基础 CRUD、三种 Scope 隔离、混合搜索调优、自建 REST API、LLM 驱动的记忆分层分类。
+> Mem0 是专为 AI Agent 设计的长期语义记忆层，能从w对话中自动提取事实、向量化存储、语义检索。本章用五个模块演示从 Mem0 Cloud API 基础操作到 Redis + Mem0 双层记忆架构的完整方案：基础 CRUD、三种 Scope 隔离、混合搜索调优、自建 REST API、LLM 驱动的记忆分层分类。
 > **关键词**：mem0ai、Qdrant、语义记忆、记忆分层、rerank、MemoryClient、FastAPI
 
 ## 为什么需要 Mem0

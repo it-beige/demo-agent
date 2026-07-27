@@ -4,36 +4,28 @@
 
 ## 环境要求
 
-- Node.js 18+（第 3 章 chrome-devtools-mcp 需要 `^20.19.0 || ^22.12.0 || >=23`）
+- Node.js 20+
 - pnpm latest
 - 一个可用的 OpenAI 兼容模型服务
 
 ## 安装依赖
 
-```bash
+````bash
 # 根目录
 pnpm install
 
-# 前端产物
-cd react-todo-app && pnpm install
-```
-
-`src/asr-and-tts-nest-service`、`src/cron-job-tool`、`src/agui-backend`、`src/agui-frontend`、`src/tts-stt-nest` 等子项目需要单独 `cd` 进去 `pnpm install`。
-
-## 环境变量
-
-### 必填
+### 环境变量
 
 ```bash
 MODEL=deepseek-chat
 API_KEY=sk-xxx
 BASE_URL=https://api.deepseek.com/v1
-```
+````
 
-| 变量 | 说明 |
-|------|------|
-| `MODEL` | 模型名称 |
-| `API_KEY` | 接口密钥 |
+| 变量       | 说明                |
+| ---------- | ------------------- |
+| `MODEL`    | 模型名称            |
+| `API_KEY`  | 接口密钥            |
 | `BASE_URL` | OpenAI 兼容接口地址 |
 
 ### 向量检索（可选）
@@ -97,6 +89,6 @@ TENCENT_SECRET_KEY=your_secret_key
 
 环境就绪后，前往：
 
-- 📚 [目录](./../README.md#目录) 按章节学习
-- 🗺️ [推荐学习顺序](./learning-path.md) 查看建议的学习路径
+- 📚 [目录](./../README.md#目录) 按章节阅读
+- 🗺️ [推荐实践顺序](./learning-path.md) 查看建议的阅读路径
 - 📁 [项目结构总览](./project-structure.md) 了解整个仓库的组织方式

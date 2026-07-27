@@ -2,7 +2,7 @@
 
 > 项目中涉及到的最小demo示例仓库，用来理解两类常见 AI 应用形态：
 >
-> 1. **Agent**：让模型结合本地工具完成一个实际任务
+> 1. **Agent**：让模型结合本地工具(Memory、Tool、RAG、Search)完成AI应用开发
 > 2. **MCP Server**：把本地能力封装成标准化工具，供 Cursor 等 MCP Client 调用
 
 ## 快速开始

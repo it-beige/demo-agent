@@ -1,5 +1,13 @@
 {
   "version": "0.2.0",
+  "inputs": [
+    {
+      "id": "scriptArgs",
+      "type": "promptString",
+      "description": "传给脚本的参数（留空表示不传，多个参数用空格分隔）",
+      "default": ""
+    }
+  ],
   "configurations": [
     {
       "type": "node",
@@ -8,6 +16,7 @@
       "runtimeExecutable": "/Users/beige/.nvm/versions/node/v24.14.0/bin/node",
       "runtimeArgs": ["scripts/dev.mjs", "${file}"],
       "console": "internalConsole",
+      "autoAttachChildProcesses": true,
       "skipFiles": ["<node_internals>/**"]
     },
     {
@@ -17,7 +26,30 @@
       "runtimeExecutable": "/Users/beige/.nvm/versions/node/v24.14.0/bin/node",
       "runtimeArgs": ["scripts/dev.mjs", "${relativeFile}"],
       "console": "internalConsole",
+      "autoAttachChildProcesses": true,
       "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Dev: Run Current File (自定义参数)",
+      "runtimeExecutable": "/Users/beige/.nvm/versions/node/v24.14.0/bin/node",
+      "runtimeArgs": ["scripts/dev.mjs", "${file}", "${input:scriptArgs}"],
+      "console": "internalConsole",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug: Current File (tsx 直跑, 可断点)",
+      "runtimeExecutable": "/Users/beige/.nvm/versions/node/v24.14.0/bin/node",
+      "runtimeArgs": ["--import", "tsx"],
+      "program": "${file}",
+      "args": "${input:scriptArgs}",
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole",
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"]
     }
   ]
 }

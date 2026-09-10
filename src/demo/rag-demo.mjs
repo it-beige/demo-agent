@@ -4,22 +4,17 @@ import { Document } from '@langchain/core/documents'
 import { MemoryVectorStore } from '@langchain/classic/vectorstores/memory'
 
 const RETRIEVE_TOP_K = 3
-const EMBEDDING_MODEL_ALIASES = {
-  'text-embedding-v3': 'text-embedding-3-small',
-}
 
-const embeddingsModel =
-  EMBEDDING_MODEL_ALIASES[process.env.EMBEDDINGS_MODEL] ??
-  process.env.EMBEDDINGS_MODEL ??
-  'text-embedding-3-small'
-const embeddingsBaseURL =
-  process.env.EMBEDDINGS_BASE_URL ?? process.env.BASE_URL
-const embeddingsApiKey =
-  process.env.EMBEDDINGS_API_KEY ?? process.env.API_KEY
+const embeddingsModel = process.env.EMBEDDING_MODEL
+const embeddingsBaseURL = process.env.EMBEDDING_BASE_URL
+const embeddingsApiKey = process.env.EMBEDDING_API_KEY
+const embeddingsDimensions = process.env.EMBEDDING_DIM
+  ? Number(process.env.EMBEDDING_DIM)
+  : undefined
 
 const model = {
   async invoke(prompt) {
-    const response = await fetch(`${process.env.BASE_URL}/v1/chat/completions`, {
+    const response = await fetch(`${process.env.BASE_URL}/chat/completions`, {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${process.env.API_KEY}`,
@@ -52,28 +47,20 @@ const embeddings = new OpenAIEmbeddings({
   configuration: {
     baseURL: embeddingsBaseURL,
   },
+  dimensions: embeddingsDimensions,
 })
 
 async function ensureEmbeddingsReady() {
   if (!embeddingsBaseURL) {
-    throw new Error(
-      '缺少 EMBEDDINGS_BASE_URL 或 BASE_URL，无法连接 embeddings 服务。',
-    )
+    throw new Error('缺少 EMBEDDING_BASE_URL，无法连接 embeddings 服务。')
   }
 
   if (!embeddingsApiKey) {
-    throw new Error(
-      '缺少 EMBEDDINGS_API_KEY 或 API_KEY，无法调用 embeddings 服务。',
-    )
+    throw new Error('缺少 EMBEDDING_API_KEY，无法调用 embeddings 服务。')
   }
 
-  if (
-    process.env.EMBEDDINGS_MODEL &&
-    EMBEDDING_MODEL_ALIASES[process.env.EMBEDDINGS_MODEL]
-  ) {
-    console.warn(
-      `[配置提示] 已将 EMBEDDINGS_MODEL=${process.env.EMBEDDINGS_MODEL} 映射为 ${embeddingsModel}`,
-    )
+  if (!embeddingsModel) {
+    throw new Error('缺少 EMBEDDING_MODEL，无法确定 embeddings 模型。')
   }
 
   try {
@@ -84,8 +71,8 @@ async function ensureEmbeddingsReady() {
         'Embeddings 链路不可用。',
         `当前 embeddings base URL: ${embeddingsBaseURL}`,
         `当前 embeddings model: ${embeddingsModel}`,
-        '这个服务需要是 OpenAI 兼容且支持 POST /v1/embeddings 的接口。',
-        '如果聊天模型和 embeddings 不在同一个服务，请单独设置 EMBEDDINGS_BASE_URL、EMBEDDINGS_API_KEY、EMBEDDINGS_MODEL。',
+        '这个服务需要是 OpenAI 兼容且支持 POST /embeddings 的接口。',
+        'embeddings 走的是独立配置，请检查 .env 里的 EMBEDDING_BASE_URL、EMBEDDING_API_KEY、EMBEDDING_MODEL、EMBEDDING_DIM。',
         `原始错误: ${error.message}`,
       ].join('\n'),
     )
@@ -99,12 +86,32 @@ function getResponseText(content) {
 
   if (Array.isArray(content)) {
     return content
-      .filter((item) => item.type === 'text' && item.text)
-      .map((item) => item.text)
+      .filter(item => item.type === 'text' && item.text)
+      .map(item => item.text)
       .join('\n')
   }
 
   return String(content)
+}
+
+// 从回答里解析出【片段N】标注，区分有效引用和越界（模型编造）的编号
+function collectCitations(answer, total) {
+  const cited = []
+  const invalid = []
+
+  for (const match of answer.matchAll(/【片段(\d+)】/g)) {
+    const index = Number(match[1])
+
+    if (index >= 1 && index <= total) {
+      if (!cited.includes(index)) {
+        cited.push(index)
+      }
+    } else if (!invalid.includes(index)) {
+      invalid.push(index)
+    }
+  }
+
+  return { cited: cited.sort((a, b) => a - b), invalid }
 }
 
 const documents = [
@@ -198,9 +205,8 @@ for (const question of questions) {
     const scoredResult = scoredResults.find(
       ([scoredDoc]) => scoredDoc.pageContent === doc.pageContent,
     )
-    const distance = scoredResult ? scoredResult[1] : null
-    const similarity =
-      distance !== null ? Number((1 - distance).toFixed(4)) : null
+    // MemoryVectorStore 默认返回余弦相似度，直接使用即可
+    const similarity = scoredResult ? Number(scoredResult[1].toFixed(4)) : null
     console.log(`\n[文档 ${i + 1}] 相似度: ${similarity ?? 'N/A'}`)
     console.log(`内容: ${doc.pageContent}`)
     console.log(
@@ -208,12 +214,21 @@ for (const question of questions) {
     )
   })
 
-  // 构建 prompt
+  // 构建 prompt：片段编号带上章节，方便人工核对引用是否合理
   const context = retrievedDocs
-    .map((doc, i) => `[片段${i + 1}]\n${doc.pageContent}`)
+    .map(
+      (doc, i) =>
+        `[片段${i + 1}]（第${doc.metadata.chapter}章）\n${doc.pageContent}`,
+    )
     .join('\n\n━━━━━\n\n')
 
   const prompt = `你是一个讲友情故事的老师。基于以下故事片段回答问题，用温暖生动的语言。如果故事中没有提到，就说"这个故事里还没有提到这个细节"。
+
+引用要求:
+1. 每一句基于故事片段的话，都要在句末用【片段N】标注来源，N 是下面片段的编号。
+2. 一句话同时用到多个片段时，把编号都标出来，例如【片段1】【片段3】。
+3. 只能使用 1 到 ${retrievedDocs.length} 之间的编号，不要编造不存在的片段。
+4. 片段里没有依据的内容不要写，也不要给它加标注。
 
 故事片段:
 ${context}
@@ -224,6 +239,37 @@ ${context}
 
   console.log('\n【AI 回答】')
   const response = await model.invoke(prompt)
-  console.log(getResponseText(response.content))
+  const answer = getResponseText(response.content)
+  console.log(answer)
+
+  // 引用溯源：把回答里的【片段N】映射回原始文档，便于核查答案是否有据可依
+  const { cited, invalid } = collectCitations(answer, retrievedDocs.length)
+
+  console.log('\n【引用溯源】')
+  if (cited.length === 0) {
+    console.log('回答中没有出现【片段N】标注，无法溯源。')
+  } else {
+    cited.forEach(index => {
+      const doc = retrievedDocs[index - 1]
+      console.log(
+        `片段${index} -> 第${doc.metadata.chapter}章 | 角色=${doc.metadata.character} | 类型=${doc.metadata.type}`,
+      )
+      console.log(`  原文: ${doc.pageContent}`)
+    })
+
+    const unused = retrievedDocs
+      .map((_, i) => i + 1)
+      .filter(index => !cited.includes(index))
+    if (unused.length > 0) {
+      console.log(`未被引用的片段: ${unused.map(i => `片段${i}`).join('、')}`)
+    }
+  }
+
+  if (invalid.length > 0) {
+    console.log(
+      `⚠️ 回答中出现了不存在的片段编号: ${invalid.join('、')}（有效范围 1-${retrievedDocs.length}）`,
+    )
+  }
+
   console.log('\n')
 }

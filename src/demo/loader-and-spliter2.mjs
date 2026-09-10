@@ -12,17 +12,12 @@ import { Document } from '@langchain/core/documents'
 
 import { runToolAgent } from '../tool-runner.mjs'
 
-const EMBEDDING_MODEL_ALIASES = {
-  'text-embedding-v3': 'text-embedding-3-small',
-}
-
-const embeddingsModel =
-  EMBEDDING_MODEL_ALIASES[process.env.EMBEDDINGS_MODEL] ??
-  process.env.EMBEDDINGS_MODEL ??
-  'text-embedding-3-small'
-const embeddingsApiKey = process.env.EMBEDDINGS_API_KEY ?? process.env.API_KEY
-const embeddingsBaseURL =
-  process.env.EMBEDDINGS_BASE_URL ?? process.env.BASE_URL
+const embeddingsModel = process.env.EMBEDDING_MODEL
+const embeddingsApiKey = process.env.EMBEDDING_API_KEY
+const embeddingsBaseURL = process.env.EMBEDDING_BASE_URL
+const embeddingsDimensions = process.env.EMBEDDING_DIM
+  ? Number(process.env.EMBEDDING_DIM)
+  : undefined
 
 const model = new ChatOpenAI({
   temperature: 0,
@@ -39,6 +34,7 @@ const embeddings = new OpenAIEmbeddings({
   configuration: {
     baseURL: embeddingsBaseURL,
   },
+  dimensions: embeddingsDimensions,
 })
 
 function normalizeSearchText(text) {
@@ -100,8 +96,9 @@ async function createRetrievalBackend(documentsToRetrieve) {
           const scoredResult = scoredResults.find(
             ([scoredDoc]) => scoredDoc.pageContent === doc.pageContent,
           )
+          // MemoryVectorStore 默认返回余弦相似度，直接使用即可
           const score = scoredResult ? scoredResult[1] : null
-          const similarity = score !== null ? (1 - score).toFixed(4) : 'N/A'
+          const similarity = score !== null ? score.toFixed(4) : 'N/A'
 
           return {
             doc,

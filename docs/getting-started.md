@@ -31,12 +31,13 @@ BASE_URL=https://api.deepseek.com/v1
 ### 向量检索（可选）
 
 ```bash
-EMBEDDINGS_BASE_URL=https://your-embeddings-endpoint
-EMBEDDINGS_API_KEY=sk-xxx
-EMBEDDINGS_MODEL=text-embedding-3-small
+EMBEDDING_BASE_URL=https://your-embeddings-endpoint
+EMBEDDING_API_KEY=sk-xxx
+EMBEDDING_MODEL=text-embedding-v3
+EMBEDDING_DIM=1024
 ```
 
-不提供则回退到 `API_KEY/BASE_URL`，再不行降级为关键词检索。
+embeddings 走独立配置，不会回退到 `API_KEY/BASE_URL`（聊天网关通常不提供 `/embeddings`）。未配置时，`rag-demo.mjs` 会直接报错提示缺少哪个变量，`loader-and-spliter2.mjs` 会降级为关键词检索。
 
 ### 高德地图 + filesystem MCP（可选）
 

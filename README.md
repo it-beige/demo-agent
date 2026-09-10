@@ -29,7 +29,7 @@ node agent-react-todo.mjs
 | 1   | [Agent]            | [ReAct 循环与本地工具调用](./docs/chapters/01-agent-basic.md)                                            | Agent 核心闭环：思考→行动→观察                             |
 | 2   | [MCP]              | [MCP Server 基础](./docs/chapters/02-mcp-server-basic.md)                                                | Tool/Resource 定义、stdio 通信                             |
 | 3   | [MCP·Client]       | [多 MCP Server 集成](./docs/chapters/03-multi-mcp.md)                                                    | 高德地图 + filesystem 双 MCP                               |
-| 4   | [RAG]              | [RAG 检索增强生成](./docs/chapters/04-rag.md)                                                            | Embeddings 降级、关键词兜底                                |
+| 4   | [RAG]              | [RAG 检索增强生成](./docs/chapters/04-rag.md)                                                            | Embeddings 降级 + 引用溯源标注                             |
 | 5   | [RAG·Pipeline]     | [动态网站内容提取](./docs/chapters/05-dynamic-content.md)                                                | Puppeteer 动态渲染                                         |
 | 6   | [RAG·Pipeline]     | [兼容性加载方案](./docs/chapters/06-compatibility-loader.md)                                             | Cheerio → Puppeteer 渐进降级                               |
 | 7   | [RAG·Pipeline]     | [文本分割器多策略调优](./docs/chapters/07-text-splitter.md)                                              | 按字符/递归/Token/代码语言切分                             |

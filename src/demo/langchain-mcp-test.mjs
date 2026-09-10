@@ -24,8 +24,15 @@ const res = await mcpClient.listResources()
 let resourceContent = ''
 for (const [serverName, resources] of Object.entries(res)) {
   for (const resource of resources) {
-    const content = await mcpClient.readResource(serverName, resource.uri)
-    resourceContent += content[0].text
+    // 只注入文档类资源：把 data://users 也塞进上下文的话，模型拿到数据就不再调工具了
+    if (!resource.uri.startsWith('docs://')) continue
+
+    const contents = await mcpClient.readResource(serverName, resource.uri)
+    for (const item of contents) {
+      // 二进制资源只有 blob 没有 text，无法拼进提示词
+      if (typeof item.text !== 'string') continue
+      resourceContent += item.text
+    }
   }
 }
 const messages = [

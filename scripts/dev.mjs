@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-import { execSync } from 'child_process'
-import { existsSync, readdirSync } from 'fs'
-import { resolve, join, dirname } from 'path'
+import { spawnSync } from 'child_process'
+import { existsSync } from 'fs'
+import { resolve } from 'path'
 
 const args = process.argv.slice(2)
 
 if (args.length === 0) {
-  console.log('用法: pnpm dev <脚本路径>')
+  console.log('用法: pnpm dev <脚本路径> [脚本参数...]')
   console.log('示例:')
   console.log('  pnpm dev normal.mjs')
   console.log('  pnpm dev ./normal.mjs')
@@ -15,10 +15,15 @@ if (args.length === 0) {
   console.log('  pnpm dev ./src/output-parse/normal.mjs')
   console.log('  pnpm dev output-parse/normal.mjs')
   console.log('  pnpm dev memory/insert-conversations.mjs')
+  console.log('  pnpm dev demo/mcp-amap.mjs "杭州西湖附近的景点"')
   process.exit(1)
 }
 
 let scriptPath = args[0]
+
+// 首个参数之后的内容原样透传给目标脚本（对应脚本里的 process.argv.slice(2)）
+// 过滤空串：VS Code 的 ${input:...} 在留空时会传入一个空参数
+const scriptArgs = args.slice(1).filter(arg => arg !== '')
 
 // 规范化路径:移除开头的 ./
 scriptPath = scriptPath.replace(/^\.\//, '')
@@ -75,12 +80,20 @@ if (!scriptPath.startsWith('/')) {
 
 console.log(`运行: ${scriptPath}\n`)
 
-try {
-  execSync(`pnpm exec tsx --tsconfig tsconfig.json ${scriptPath}`, {
+// 用数组形式传参，避免走 shell 时参数里的空格、引号、中文标点被二次解析
+const result = spawnSync(
+  'pnpm',
+  ['exec', 'tsx', '--tsconfig', 'tsconfig.json', scriptPath, ...scriptArgs],
+  {
     stdio: 'inherit',
     cwd: resolve(process.cwd()),
     env: { ...process.env, FORCE_COLOR: '0' },
-  })
-} catch (error) {
-  process.exit(error.status || 1)
+  },
+)
+
+if (result.error) {
+  console.error(`✗ 启动失败: ${result.error.message}`)
+  process.exit(1)
 }
+
+process.exit(result.status ?? 1)

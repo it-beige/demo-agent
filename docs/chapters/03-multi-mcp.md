@@ -16,8 +16,8 @@ filesystem MCP 通过 `ALLOWED_PATHS` 环境变量限制可访问目录，这是
 先在 `.env` 中配置 `AMAP_MAPS_API_KEY` 和 `ALLOWED_PATHS`，然后：
 
 ```bash
-pnpm dev src/demo/mcp-amap.mjs "查一下北京南站三公里附近的酒店"
-pnpm dev src/demo/mcp-amap.mjs "列出 /Users/chenkun/Desktop 下的文件"
+pnpm dev src/demo/mcp-amap.mjs "查一下「IP」三公里附近的酒店"
+pnpm dev src/demo/mcp-amap.mjs "列出 「ALLOWED_PATHS」 下的文件"
 ```
 
 观察重点：模型能否先选中正确的工具；filesystem 是否只能访问允许的目录；工具结果不足时模型是否明确说"不确定"而非瞎编。
@@ -36,4 +36,5 @@ pnpm dev src/demo/mcp-amap.mjs "列出 /Users/chenkun/Desktop 下的文件"
 - 为工具调用增加超时和降级策略
 
 ---
+
 ⬅️ [MCP Server 基础](./02-mcp-server-basic.md) ｜ [📚 目录](../../README.md#目录) ｜ [RAG 检索增强 ➡️](./04-rag.md)

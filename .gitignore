@@ -55,3 +55,6 @@ src/deep-agents/src/deepagents/workspace-summarization/
 
 
 workspace
+
+# 临时文件目录：调试脚本、探测代码、AI 生成的临时测试文件统一放这里，不入版本库
+tmp/

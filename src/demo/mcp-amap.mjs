@@ -53,11 +53,8 @@ function createAmapClient() {
         : {}),
 
       'chrome-devtools': {
-        command: '/Users/chenkun/.nvm/versions/node/v22.22.1/bin/npx',
+        command: process.env.NPX_BIN ?? 'npx',
         args: ['-y', 'chrome-devtools-mcp@latest'],
-        env: {
-          PATH: '/Users/chenkun/.nvm/versions/node/v22.22.1/bin:/usr/bin:/bin:/usr/sbin:/sbin',
-        },
       },
     },
   })

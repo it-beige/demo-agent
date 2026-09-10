@@ -1,5 +1,21 @@
 import { ToolMessage } from '@langchain/core/messages'
 
+// MCP 工具的返回值形态不统一：可能是字符串（如高德系工具）、content block 数组，
+// 也可能是单个 { type: 'text', text } 对象（如 filesystem 系工具）。
+// ToolMessage.content 必须是字符串或合法 content 数组，否则 @langchain/openai
+// 在转换消息时会报 message.content.flatMap is not a function。
+function normalizeToolContent(result) {
+  if (typeof result === 'string') return result
+  if (Array.isArray(result)) {
+    return result.map(item => normalizeToolContent(item)).join('\n')
+  }
+  if (result && typeof result === 'object') {
+    if (typeof result.text === 'string') return result.text
+    return JSON.stringify(result)
+  }
+  return String(result ?? '')
+}
+
 export async function runToolAgent({
   model,
   tools,
@@ -44,7 +60,7 @@ export async function runToolAgent({
     response.tool_calls.forEach((toolCall, index) => {
       messages.push(
         new ToolMessage({
-          content: toolResults[index],
+          content: normalizeToolContent(toolResults[index]),
           tool_call_id: toolCall.id,
         }),
       )

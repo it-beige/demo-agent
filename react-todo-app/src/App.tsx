@@ -1,203 +1,249 @@
-import { FormEvent, useEffect, useMemo, useState } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import './App.css'
-
-type FilterType = 'all' | 'active' | 'completed'
 
 interface Todo {
   id: number
   text: string
   completed: boolean
-  createdAt: number
 }
 
-const STORAGE_KEY = 'react-ts-todos'
+type Filter = 'all' | 'active' | 'completed'
 
-function App() {
-  const [todos, setTodos] = useState<Todo[]>([])
-  const [input, setInput] = useState('')
-  const [filter, setFilter] = useState<FilterType>('all')
-  const [editingId, setEditingId] = useState<number | null>(null)
-  const [editingText, setEditingText] = useState('')
-  const [isAdding, setIsAdding] = useState(false)
-  const [removingIds, setRemovingIds] = useState<Set<number>>(new Set())
+const STORAGE_KEY = 'react-todo-app-data'
 
-  useEffect(() => {
+function loadTodos(): Todo[] {
+  try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (raw) {
-      try {
-        const parsed: Todo[] = JSON.parse(raw)
-        setTodos(parsed)
-      } catch (error) {
-        console.error('Failed to parse todos from localStorage', error)
-      }
-    }
-  }, [])
+    return raw ? JSON.parse(raw) : []
+  } catch {
+    return []
+  }
+}
 
+function saveTodos(todos: Todo[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(todos))
+}
+
+export default function App() {
+  const [todos, setTodos] = useState<Todo[]>(loadTodos)
+  const [input, setInput] = useState('')
+  const [filter, setFilter] = useState<Filter>('all')
+  const [editingId, setEditingId] = useState<number | null>(null)
+  const [editText, setEditText] = useState('')
+  const [removingIds, setRemovingIds] = useState<Set<number>>(new Set())
+  const editInputRef = useRef<HTMLInputElement>(null)
+
+  // Persist to localStorage
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(todos))
+    saveTodos(todos)
   }, [todos])
 
-  const handleAddTodo = (e: FormEvent) => {
-    e.preventDefault()
+  // Focus edit input when editing starts
+  useEffect(() => {
+    if (editingId !== null && editInputRef.current) {
+      editInputRef.current.focus()
+    }
+  }, [editingId])
+
+  // Add todo
+  const addTodo = useCallback(() => {
     const text = input.trim()
     if (!text) return
-
-    setIsAdding(true)
-    const newTodo: Todo = {
-      id: Date.now(),
-      text,
-      completed: false,
-      createdAt: Date.now(),
-    }
-
-    setTodos((prev) => [newTodo, ...prev])
+    setTodos(prev => [{ id: Date.now(), text, completed: false }, ...prev])
     setInput('')
-    
-    // Reset adding animation after transition
-    setTimeout(() => setIsAdding(false), 400)
-  }
+  }, [input])
 
-  const handleDeleteTodo = (id: number) => {
+  // Delete todo with animation
+  const deleteTodo = useCallback((id: number) => {
     setRemovingIds(prev => new Set(prev).add(id))
-    
-    // Remove after animation completes
     setTimeout(() => {
-      setTodos((prev) => prev.filter((todo) => todo.id !== id))
+      setTodos(prev => prev.filter(t => t.id !== id))
       setRemovingIds(prev => {
-        const newSet = new Set(prev)
-        newSet.delete(id)
-        return newSet
+        const next = new Set(prev)
+        next.delete(id)
+        return next
       })
-    }, 400)
-  }
+    }, 350)
+  }, [])
 
-  const handleToggleTodo = (id: number) => {
-    setTodos((prev) =>
-      prev.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)),
+  // Toggle complete
+  const toggleTodo = useCallback((id: number) => {
+    setTodos(prev =>
+      prev.map(t => (t.id === id ? { ...t, completed: !t.completed } : t))
     )
-  }
+  }, [])
 
-  const startEditing = (todo: Todo) => {
+  // Start editing
+  const startEdit = useCallback((todo: Todo) => {
     setEditingId(todo.id)
-    setEditingText(todo.text)
-  }
+    setEditText(todo.text)
+  }, [])
 
-  const saveEditing = () => {
-    const text = editingText.trim()
-    if (!text || editingId === null) {
-      setEditingId(null)
-      setEditingText('')
-      return
+  // Save edit
+  const saveEdit = useCallback(() => {
+    if (editingId === null) return
+    const text = editText.trim()
+    if (!text) {
+      deleteTodo(editingId)
+    } else {
+      setTodos(prev =>
+        prev.map(t => (t.id === editingId ? { ...t, text } : t))
+      )
     }
-
-    setTodos((prev) => prev.map((todo) => (todo.id === editingId ? { ...todo, text } : todo)))
     setEditingId(null)
-    setEditingText('')
-  }
+    setEditText('')
+  }, [editingId, editText, deleteTodo])
 
-  const cancelEditing = () => {
+  // Cancel edit
+  const cancelEdit = useCallback(() => {
     setEditingId(null)
-    setEditingText('')
-  }
+    setEditText('')
+  }, [])
 
-  const filteredTodos = useMemo(() => {
-    switch (filter) {
-      case 'active':
-        return todos.filter((todo) => !todo.completed)
-      case 'completed':
-        return todos.filter((todo) => todo.completed)
-      default:
-        return todos
-    }
-  }, [todos, filter])
+  // Handle key down in edit input
+  const handleEditKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Enter') saveEdit()
+      if (e.key === 'Escape') cancelEdit()
+    },
+    [saveEdit, cancelEdit]
+  )
 
-  const stats = useMemo(() => {
-    const total = todos.length
-    const completed = todos.filter((todo) => todo.completed).length
-    const active = total - completed
-    return { total, completed, active }
-  }, [todos])
+  // Filtered todos
+  const filtered = todos.filter(t => {
+    if (filter === 'active') return !t.completed
+    if (filter === 'completed') return t.completed
+    return true
+  })
+
+  // Stats
+  const total = todos.length
+  const active = todos.filter(t => !t.completed).length
+  const completed = total - active
 
   return (
-    <div className="app-bg">
-      <div className="todo-card">
-        <h1>✨ Todo List</h1>
+    <div className="app-container">
+      <div className="app-header">
+        <h1>📝 Todo List</h1>
+        <p>管理你的待办事项</p>
+      </div>
 
-        <form className="todo-form" onSubmit={handleAddTodo}>
-          <input
-            type="text"
-            placeholder="添加你的任务..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-          />
-          <button type="submit">添加</button>
-        </form>
-
-        <div className="filters">
-          <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>
-            全部
-          </button>
-          <button className={filter === 'active' ? 'active' : ''} onClick={() => setFilter('active')}>
-            进行中
-          </button>
-          <button className={filter === 'completed' ? 'active' : ''} onClick={() => setFilter('completed')}>
-            已完成
-          </button>
+      {/* Stats */}
+      <div className="stats-bar">
+        <div className="stat-item">
+          <span className="stat-number">{total}</span>全部
         </div>
-
-        <div className="stats">
-          <span>总计: {stats.total}</span>
-          <span>进行中: {stats.active}</span>
-          <span>已完成: {stats.completed}</span>
+        <div className="stat-item">
+          <span className="stat-number">{active}</span>进行中
         </div>
+        <div className="stat-item">
+          <span className="stat-number">{completed}</span>已完成
+        </div>
+      </div>
 
+      {/* Input */}
+      <div className="input-area">
+        <input
+          type="text"
+          placeholder="添加新的待办事项..."
+          value={input}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={e => {
+            if (e.key === 'Enter') addTodo()
+          }}
+        />
+        <button className="btn-add" onClick={addTodo}>
+          添加
+        </button>
+      </div>
+
+      {/* Filters */}
+      <div className="filter-tabs">
+        {(['all', 'active', 'completed'] as Filter[]).map(f => (
+          <button
+            key={f}
+            className={`filter-tab ${filter === f ? 'active' : ''}`}
+            onClick={() => setFilter(f)}
+          >
+            {f === 'all' ? '全部' : f === 'active' ? '进行中' : '已完成'}
+          </button>
+        ))}
+      </div>
+
+      {/* Todo List */}
+      {filtered.length === 0 ? (
+        <div className="empty-state">
+          <div className="emoji">
+            {filter === 'completed' ? '🎯' : filter === 'active' ? '🎉' : '📋'}
+          </div>
+          <p>
+            {filter === 'completed'
+              ? '还没有已完成的事项'
+              : filter === 'active'
+                ? '所有事项都已完成！'
+                : '暂无待办事项，添加一个吧！'}
+          </p>
+        </div>
+      ) : (
         <ul className="todo-list">
-          {filteredTodos.map((todo) => (
+          {filtered.map(todo => (
             <li
               key={todo.id}
-              className={`todo-item ${todo.completed ? 'done' : ''} ${
-                isAdding && todos[0]?.id === todo.id ? 'adding' : ''
-              } ${removingIds.has(todo.id) ? 'removing' : ''}`}
+              className={`todo-item ${removingIds.has(todo.id) ? 'removing' : ''}`}
             >
-              <label className="todo-main">
-                <input
-                  type="checkbox"
-                  checked={todo.completed}
-                  onChange={() => handleToggleTodo(todo.id)}
-                />
-                {editingId === todo.id ? (
-                  <input
-                    className="edit-input"
-                    value={editingText}
-                    onChange={(e) => setEditingText(e.target.value)}
-                    onBlur={saveEditing}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter') saveEditing()
-                      if (e.key === 'Escape') cancelEditing()
-                    }}
-                    autoFocus
-                  />
-                ) : (
-                  <span>{todo.text}</span>
-                )}
-              </label>
+              <div
+                className={`todo-checkbox ${todo.completed ? 'checked' : ''}`}
+                onClick={() => toggleTodo(todo.id)}
+              />
 
-              <div className="actions">
+              {editingId === todo.id ? (
+                <input
+                  ref={editInputRef}
+                  className="todo-edit-input"
+                  value={editText}
+                  onChange={e => setEditText(e.target.value)}
+                  onKeyDown={handleEditKeyDown}
+                  onBlur={saveEdit}
+                />
+              ) : (
+                <span className={`todo-text ${todo.completed ? 'completed' : ''}`}>
+                  {todo.text}
+                </span>
+              )}
+
+              <div className="todo-actions">
                 {editingId === todo.id ? (
-                  <button onClick={saveEditing}>保存</button>
+                  <>
+                    <button className="btn-icon btn-save" onClick={saveEdit} title="保存">
+                      ✓
+                    </button>
+                    <button className="btn-icon btn-cancel" onClick={cancelEdit} title="取消">
+                      ✕
+                    </button>
+                  </>
                 ) : (
-                  <button onClick={() => startEditing(todo)}>编辑</button>
+                  <>
+                    <button
+                      className="btn-icon btn-edit"
+                      onClick={() => startEdit(todo)}
+                      title="编辑"
+                    >
+                      ✎
+                    </button>
+                    <button
+                      className="btn-icon btn-delete"
+                      onClick={() => deleteTodo(todo.id)}
+                      title="删除"
+                    >
+                      ✕
+                    </button>
+                  </>
                 )}
-                <button className="danger" onClick={() => handleDeleteTodo(todo.id)}>
-                  删除
-                </button>
               </div>
             </li>
           ))}
         </ul>
-      </div>
+      )}
     </div>
   )
 }
-
-export default App

@@ -52,7 +52,7 @@
 
 ### createDeepAgent — 高层 API
 
-与第 25 章的 `createAgent` + Middleware 手动组装不同，`createDeepAgent` 是 DeepAgents 提供的**高层封装**，一次性声明 model、systemPrompt、backend、memory、skills、subagents：
+与第 26 章的 `createAgent` + Middleware 手动组装不同，`createDeepAgent` 是 DeepAgents 提供的**高层封装**，一次性声明 model、systemPrompt、backend、memory、skills、subagents：
 
 ```js
 import { createDeepAgent, FilesystemBackend } from 'deepagents'
@@ -189,9 +189,9 @@ pnpm dev src/deep-research-assistant/src/max-input-tokens-test.mjs
 
 可通过 `RECURSION_LIMIT` 环境变量调整最大递归步数（默认 300）。
 
-## 与第 25 章的关系
+## 与第 26 章的关系
 
-| 维度       | 第 25 章（Middleware 体系）         | 第 26 章（深度调研助手）      |
+| 维度       | 第 26 章（Middleware 体系）         | 第 27 章（深度调研助手）      |
 | ---------- | ----------------------------------- | ----------------------------- |
 | 定位       | 逐一演示各 Middleware 能力          | 多个 Middleware 组合实战      |
 | API        | `createAgent` + 手动组装 Middleware | `createDeepAgent` 高层封装    |
@@ -208,4 +208,4 @@ pnpm dev src/deep-research-assistant/src/max-input-tokens-test.mjs
 
 ---
 
-⬅️ [DeepAgents Middleware](./25-deepagents-middleware.md) ｜ [📚 目录](../../README.md#目录) ｜ ➡️ [PostgreSQL：AI 时代最适合的数据库](./27-postgresql-ai-database.md)
+⬅️ [DeepAgents Middleware](./26-deepagents-middleware.md) ｜ [📚 目录](../../README.md#目录) ｜ ➡️ [PostgreSQL：AI 时代最适合的数据库](./28-postgresql-ai-database.md)

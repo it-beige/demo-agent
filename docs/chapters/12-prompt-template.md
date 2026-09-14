@@ -41,4 +41,4 @@ pnpm dev src/prompt-template/weekly-report-examples-reader-milvus.mjs
 - 对比静态 Few-Shot 和动态检索 Few-Shot 的生成质量差异
 
 ---
-⬅️ [智能录入 + Mini Cursor](./10-smart-import-mini-cursor.md) ｜ [📚 目录](../../README.md#目录) ｜ [声明式 Chain ➡️](./12-runnable-chain.md)
+⬅️ [智能录入 + Mini Cursor](./11-smart-import-mini-cursor.md) ｜ [📚 目录](../../README.md#目录) ｜ [声明式 Chain ➡️](./13-runnable-chain.md)

@@ -41,4 +41,4 @@ pnpm dev src/advanced-rag/src/rag-webfallback.mjs
 - 结合 Runnable 链，将检索策略做成可插拔的 Strategy 模式
 
 ---
-⬅️ [LangGraph 多 Agent](./18-langgraph-multi-agent.md) ｜ [📚 目录](../../README.md#目录) ｜ ➡️
+⬅️ [LangGraph 多 Agent](./19-langgraph-multi-agent.md) ｜ [📚 目录](../../README.md#目录) ｜ ➡️

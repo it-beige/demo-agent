@@ -1,27 +1,17 @@
-import 'dotenv/config'
 import {
   MilvusClient,
   DataType,
   MetricType,
   IndexType,
 } from '@zilliz/milvus2-sdk-node'
-import { OpenAIEmbeddings } from '@langchain/openai'
+import { embeddings } from '../../shared/model.mjs'
 
 const COLLECTION_NAME = 'ai_diary'
 const VECTOR_DIM = parseInt(process.env.EMBEDDING_DIM)
-
-// 初始化 Embeddings 模型
-const embeddings = new OpenAIEmbeddings({
-  apiKey: process.env.API_KEY,
-  model: process.env.EMBEDDING_MODEL,
-  configuration: {
-    baseURL: process.env.BASE_URL,
-  },
-  dimensions: VECTOR_DIM,
-})
+const MILVUS_ADDRESS = process.env.MILVUS_ADDRESS ?? 'localhost:19530'
 
 const client = new MilvusClient({
-  address: 'localhost:19530',
+  address: MILVUS_ADDRESS,
 })
 
 async function getEmbedding(text) {

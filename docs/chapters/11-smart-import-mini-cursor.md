@@ -40,4 +40,4 @@ pnpm dev src/output-parse-demo/mini-cursor.mjs
 - 将 Agent 循环改造成 LangGraph StateGraph 实现
 
 ---
-⬅️ [结构化输出](./09-structured-output.md) ｜ [📚 目录](../../README.md#目录) ｜ [提示词组件化 ➡️](./11-prompt-template.md)
+⬅️ [结构化输出](./10-structured-output.md) ｜ [📚 目录](../../README.md#目录) ｜ [提示词组件化 ➡️](./12-prompt-template.md)

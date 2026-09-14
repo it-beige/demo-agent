@@ -47,4 +47,4 @@ curl -N "http://localhost:3000/ai/chat/stream?query=查询用户003的信息"
 - 实现并行工具调用：模型可同时调多个不依赖的工具
 
 ---
-⬅️ [Nest SSE 流式](./13-nest-langchain-sse.md) ｜ [📚 目录](../../README.md#目录) ｜ [AI 定时任务 ➡️](./15-nest-cron-job.md)
+⬅️ [Nest SSE 流式](./14-nest-langchain-sse.md) ｜ [📚 目录](../../README.md#目录) ｜ [AI 定时任务 ➡️](./16-nest-cron-job.md)

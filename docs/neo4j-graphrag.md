@@ -1,6 +1,6 @@
 # Neo4j 知识图谱与 Graph RAG
 
-> [GraphRAG] 20 — 用 Neo4j 构建知识图谱，结合 LangGraph 实现基于图的检索增强生成。
+> [GraphRAG] 21 — 用 Neo4j 构建知识图谱，结合 LangGraph 实现基于图的检索增强生成。
 
 ## 核心思路
 

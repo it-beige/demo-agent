@@ -8,9 +8,9 @@
 
 | 依赖类型 | 示例 | 问题 |
 |----------|------|------|
-| 数据库 | MySQL（第 10 章） | 本地装不装？版本对不对？ |
+| 数据库 | MySQL（第 11 章） | 本地装不装？版本对不对？ |
 | 模型服务 | Ollama / vLLM | GPU 驱动、CUDA 版本、显存占用 |
-| 前端构建 | React Todo（第 16 章） | Node 版本、构建产物路径 |
+| 前端构建 | React Todo（第 17 章） | Node 版本、构建产物路径 |
 | Node 服务 | NestJS（13-15 章） | 环境变量、端口冲突 |
 
 Docker Compose 把这些全打包进容器，一套 `docker compose up -d` 解决所有问题。
@@ -181,7 +181,7 @@ CREATE TABLE IF NOT EXISTS todos (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- 第 10 章智能录入用到的表
+-- 第 11 章智能录入用到的表
 CREATE TABLE IF NOT EXISTS smart_imports (
   id INT AUTO_INCREMENT PRIMARY KEY,
   raw_text TEXT NOT NULL,
@@ -200,7 +200,7 @@ cp .env.docker.example .env.docker
 vim .env.docker
 
 # 3. 按需启动服务组合
-# 仅 MySQL（第 10 章）
+# 仅 MySQL（第 11 章）
 docker compose -f docker-compose.dev.yml --profile mysql up -d
 
 # MySQL + NestJS + Nginx（第 13-15 章）
@@ -406,7 +406,7 @@ server {
         proxy_read_timeout 300s;
     }
 
-    # 前端静态资源（第 16 章 AGUI）
+    # 前端静态资源（第 17 章 AGUI）
     location / {
         root /usr/share/nginx/html;
         try_files $uri $uri/ /index.html;
@@ -488,5 +488,5 @@ esac
 ## ➡️ 下一步
 
 - 📦 环境准备完毕？回到 [目录](./../README.md#目录) 按章节实战
-- 🔧 MongoDB / Redis 等更多服务编排见 [项目结构](./project-structure.md)，Redis Agent 短期记忆实战见 [章节 28](./28-redis-agent-memory.md)
+- 🔧 MongoDB / Redis 等更多服务编排见 [项目结构](./project-structure.md)，Redis Agent 短期记忆实战见 [章节 29](./29-redis-agent-memory.md)
 - 📁 `.env.docker` 完整变量说明见 [快速开始](./getting-started.md)

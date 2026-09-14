@@ -46,4 +46,4 @@ wscat -c ws://localhost:3000/tts
 - 将 EventEmitter2 替换为 Redis Pub/Sub，支持多实例部署
 
 ---
-⬅️ [AGUI 流式组件](./16-agui-protocol.md) ｜ [📚 目录](../../README.md#目录) ｜ [LangGraph 多 Agent ➡️](./18-langgraph-multi-agent.md)
+⬅️ [AGUI 流式组件](./17-agui-protocol.md) ｜ [📚 目录](../../README.md#目录) ｜ [LangGraph 多 Agent ➡️](./19-langgraph-multi-agent.md)

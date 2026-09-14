@@ -5,7 +5,7 @@
 
 ## 为什么需要 Mem0
 
-[第 28 章](./28-redis-agent-memory.md)用 Redis 解决了 Agent 短期记忆（会话内消息存储），但 Redis 存的是**原始消息序列**，有三个局限：
+[第 29 章](./29-redis-agent-memory.md)用 Redis 解决了 Agent 短期记忆（会话内消息存储），但 Redis 存的是**原始消息序列**，有三个局限：
 
 | 局限     | Redis 短期记忆      | Mem0 长期记忆                |
 | -------- | ------------------- | ---------------------------- |
@@ -539,4 +539,4 @@ pnpm agent
 
 ---
 
-⬅️ [Redis Agent 短期记忆](./28-redis-agent-memory.md) ｜ [📚 目录](../../README.md#目录)
+⬅️ [Redis Agent 短期记忆](./29-redis-agent-memory.md) ｜ [📚 目录](../../README.md#目录)

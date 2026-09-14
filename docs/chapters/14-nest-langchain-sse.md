@@ -34,4 +34,4 @@ curl -N "http://localhost:3000/ai/chat/stream?query=什么是NestJS"
 - 增加心跳机制，空闲时发 `:keep-alive` 防止反向代理断连
 
 ---
-⬅️ [声明式 Chain](./12-runnable-chain.md) ｜ [📚 目录](../../README.md#目录) ｜ [Nest Tool Calling ➡️](./14-nest-tool-calling.md)
+⬅️ [声明式 Chain](./13-runnable-chain.md) ｜ [📚 目录](../../README.md#目录) ｜ [Nest Tool Calling ➡️](./15-nest-tool-calling.md)

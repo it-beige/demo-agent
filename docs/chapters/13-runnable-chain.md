@@ -46,4 +46,4 @@ pnpm dev src/runnable/api-case/RunnableWithCallbacks.mjs
 - 结合 callbacks 做全链路可观测性（记录每步耗时、token 消耗、错误信息）
 
 ---
-⬅️ [提示词组件化](./11-prompt-template.md) ｜ [📚 目录](../../README.md#目录) ｜ [Nest SSE 流式 ➡️](./13-nest-langchain-sse.md)
+⬅️ [提示词组件化](./12-prompt-template.md) ｜ [📚 目录](../../README.md#目录) ｜ [Nest SSE 流式 ➡️](./14-nest-langchain-sse.md)

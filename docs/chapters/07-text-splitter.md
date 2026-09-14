@@ -44,4 +44,4 @@ pnpm dev src/splitters/RecursiveSplitterLatex.mjs
 
 ---
 
-⬅️ [渐进式降级](./06-compatibility-loader.md) ｜ [📚 目录](../../README.md#目录) ｜ [对话记忆管理 ➡️](./08-conversation-memory.md)
+⬅️ [渐进式降级](./06-compatibility-loader.md) ｜ [📚 目录](../../README.md#目录) ｜ [Milvus 向量数据库 ➡️](./08-milvus-vector-db.md)

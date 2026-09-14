@@ -46,4 +46,4 @@ pnpm dev src/output-parse/xml-output-parser.mjs
 - 实现流式 + 结构化 + Tool Calls 三者组合的复杂场景
 
 ---
-⬅️ [对话记忆管理](./08-conversation-memory.md) ｜ [📚 目录](../../README.md#目录) ｜ [智能录入 + Mini Cursor ➡️](./10-smart-import-mini-cursor.md)
+⬅️ [对话记忆管理](./09-conversation-memory.md) ｜ [📚 目录](../../README.md#目录) ｜ [智能录入 + Mini Cursor ➡️](./11-smart-import-mini-cursor.md)

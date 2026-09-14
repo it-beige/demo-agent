@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import { parse } from 'path'
 import {
   MilvusClient,
@@ -6,20 +5,24 @@ import {
   MetricType,
   IndexType,
 } from '@zilliz/milvus2-sdk-node'
-import { embeddings } from '@/index.mjs'
+import { embeddings } from '../../shared/model.mjs'
 import { EPubLoader } from '@langchain/community/document_loaders/fs/epub'
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters'
 
 const COLLECTION_NAME = process.env.EBOOK_COLLECTION_NAME
 const VECTOR_DIM = parseInt(process.env.EMBEDDING_DIM)
-const CHUNK_SIZE = 500 // 拆分到 500 个字符
-const EPUB_FILE = './src/mivlus/book-test/天龙八部.epub'
+const MILVUS_ADDRESS = process.env.MILVUS_ADDRESS ?? 'localhost:19530'
+const CHUNK_SIZE = parseInt(process.env.EBOOK_CHUNK_SIZE) || 500 // 拆分到 500 个字符
+const CHUNK_OVERLAP = parseInt(process.env.EBOOK_CHUNK_OVERLAP) || 50 // 相邻片段重叠字符数
+const EPUB_FILE =
+  process.env.EBOOK_EPUB_FILE ?? './src/mivlus/book-test/天龙八部.epub'
+const BOOK_ID = process.env.EBOOK_BOOK_ID ?? '1'
 // 从文件名提取书名（去掉扩展名）
 const BOOK_NAME = parse(EPUB_FILE).name
 
 // 初始化 Milvus 客户端
 const client = new MilvusClient({
-  address: 'localhost:19530',
+  address: MILVUS_ADDRESS,
 })
 
 /**
@@ -184,7 +187,7 @@ async function loadAndProcessEPubStreaming(bookId, startChapter = 1) {
     // 创建文本拆分器，拆分到 500 个字符
     const textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize: CHUNK_SIZE,
-      chunkOverlap: 50, // 重叠 50 个字符，保持上下文连贯性
+      chunkOverlap: CHUNK_OVERLAP, // 片段间重叠，保持上下文连贯性
     })
 
     let totalInserted = 0
@@ -257,8 +260,8 @@ async function main() {
     await client.connectPromise
     console.log('✓ 已连接\n')
 
-    // 设置 book_id
-    const bookId = 1
+    // 设置 book_id（schema 中为 VarChar，统一用字符串）
+    const bookId = BOOK_ID
 
     // 确保集合存在
     await ensureCollection(bookId)

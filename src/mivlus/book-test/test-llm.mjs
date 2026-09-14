@@ -1,5 +1,6 @@
-import "dotenv/config";
-import { model } from "@/index.mjs";
+import { model } from "../../shared/model.mjs";
+
+const LLM_TIMEOUT_MS = parseInt(process.env.LLM_TIMEOUT_MS) || 15000;
 
 async function testLLM() {
   console.log('测试 LLM 调用...');
@@ -13,7 +14,7 @@ async function testLLM() {
     console.log('\n发送请求...');
     
     const response = await model.invoke(prompt, {
-      timeout: 15000,
+      timeout: LLM_TIMEOUT_MS,
     });
     
     console.log('\n收到响应!');

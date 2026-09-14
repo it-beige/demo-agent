@@ -21,14 +21,18 @@ async function main() {
 
     // 向量搜索
     console.log('Searching for similar diary entries...')
-    const query = '我做饭或学习的日记'
+    // const query = '我做饭或学习的日记'
+    // const query = '开心的时候'
+    // const query = '和别人一起做的事'
+    // const query = '我的股票赚钱了吗'
+    const query = '悲伤的时候'
     console.log(`Query: "${query}"\n`)
 
     const queryVector = await getEmbedding(query)
     const searchResult = await client.search({
       collection_name: COLLECTION_NAME,
       vector: queryVector,
-      limit: 2,
+      limit: 3,
       metric_type: MetricType.COSINE,
       output_fields: ['id', 'content', 'date', 'mood', 'tags'],
     })

@@ -32,7 +32,7 @@ node agent-react-todo.mjs
 | 4   | [RAG]              | [RAG 检索增强生成](./docs/chapters/04-rag.md)                                                            | Embeddings 降级 + 引用溯源标注                             |
 | 5   | [RAG·Pipeline]     | [动态网站内容提取](./docs/chapters/05-dynamic-content.md)                                                | Puppeteer 动态渲染                                         |
 | 6   | [RAG·Pipeline]     | [兼容性加载方案](./docs/chapters/06-compatibility-loader.md)                                             | Cheerio → Puppeteer 渐进降级                               |
-| 7   | [RAG·Pipeline]     | [文本分割器多策略调优](./docs/chapters/07-text-splitter.md)                                              | 按字符/递归/Token/代码语言切分                             |
+| 7   | [RAG·Pipeline]     | [文本分割器多策略调优](./docs/chapters/07-text-splitter.md)                                              | 递归/Token/代码/Markdown/LaTeX 切分                        |
 | 8   | [Memory]           | [对话记忆管理](./docs/chapters/08-conversation-memory.md)                                                | 截断、总结、检索三大策略                                   |
 | 9   | [StructuredOutput] | [结构化大模型输出](./docs/chapters/09-structured-output.md)                                              | JSON.parse → Zod → withStructuredOutput                    |
 | 10  | [Agent·实战]       | [智能录入 + Mini Cursor](./docs/chapters/10-smart-import-mini-cursor.md)                                 | MySQL 实战、流式 ReAct                                     |

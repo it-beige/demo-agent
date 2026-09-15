@@ -31,10 +31,7 @@ try {
   // 2. 开启流
   const stream = await chain.stream('详细介绍牛顿的生平和成就')
 
-  let lastContent = '' // 记录已打印的完整内容
   let finalResult = null // 存储最终的完整结果
-
-  console.log('📡 实时输出流式内容:\n')
 
   for await (const chunk of stream) {
     // console.log(chunk);
@@ -42,20 +39,18 @@ try {
     if (chunk.length > 0) {
       const toolCall = chunk[0]
 
-      // 获取当前工具调用的完整参数内容
-      const currentContent = JSON.stringify(toolCall.args || {}, null, 2)
+      // 保存当前已拼接出的完整参数对象
+      finalResult = toolCall.args || {}
 
-      if (currentContent.length > lastContent.length) {
-        const newText = currentContent.slice(lastContent.length)
-        process.stdout.write(newText + '\n') // 实时输出到控制台
-        lastContent = currentContent // 更新已读进度
-      }
-
-      finalResult = toolCall.args
+      // 每来一个分片，就把当前完整的 JSON 重新渲染一遍（刷新终端）
+      // 这样能看到 JSON 结构被连贯地、逐步拼接生长出来
+      console.clear()
+      console.log('📡 实时输出流式内容（JSON 正在拼接）:\n')
+      console.log(JSON.stringify(finalResult, null, 2))
     }
   }
 
-  console.log('\n\n✅ 流式输出完成')
+  console.log('\n✅ 流式输出完成')
   console.log('📊 最终结果:', finalResult)
 } catch (error) {
   console.error('\n❌ 错误:', error.message)

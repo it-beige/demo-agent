@@ -1,5 +1,4 @@
 import 'dotenv/config'
-import { ChatOpenAI } from '@langchain/openai'
 import { model } from '@/index.mjs'
 
 // 简单的问题，要求 JSON 格式返回

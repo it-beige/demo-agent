@@ -7,6 +7,8 @@ import path from 'node:path'
 async function fileHistoryDemo() {
   // 指定存储文件的路径
   const filePath = path.join(process.cwd(), 'src/memory', 'chat_history.json')
+  // userId 是存储文件的外层 key，不传默认为空字符串 ""
+  const userId = 'user_001'
   const sessionId = 'user_session_001'
 
   // 系统提示词
@@ -17,6 +19,7 @@ async function fileHistoryDemo() {
   console.log('[第一轮对话]')
   const history = new FileSystemChatMessageHistory({
     filePath: filePath,
+    userId: userId,
     sessionId: sessionId,
   })
 

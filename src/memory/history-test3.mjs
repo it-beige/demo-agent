@@ -11,6 +11,8 @@ import path from 'node:path'
 async function fileHistoryDemo() {
   // 指定存储文件的路径
   const filePath = path.join(process.cwd(), 'src/memory', 'chat_history.json')
+  // userId 需与写入时（history-test2.mjs）保持一致，否则读不到历史
+  const userId = 'user_001'
   const sessionId = 'user_session_001'
 
   // 系统提示词
@@ -20,6 +22,7 @@ async function fileHistoryDemo() {
 
   const restoredHistory = new FileSystemChatMessageHistory({
     filePath: filePath,
+    userId: userId,
     sessionId: sessionId,
   })
 

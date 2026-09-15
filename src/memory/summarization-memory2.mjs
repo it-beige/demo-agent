@@ -28,7 +28,7 @@ async function summarizationMemoryDemo() {
   const maxTokens = 200 // 超过 200 个 token 时触发总结
   const keepRecentTokens = 80 // 保留最近消息的 token 数量（约占总数的 40%）
 
-  const enc = getEncoding('cl100k_base')
+  const enc = getEncoding('o200k_base')
 
   const messages = [
     { type: 'human', content: '我想学做红烧肉，你能教我吗？' },

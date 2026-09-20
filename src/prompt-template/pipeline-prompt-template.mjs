@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import { pathToFileURL } from 'node:url'
 import { model } from '@/index.mjs'
 import { PipelinePromptTemplate, PromptTemplate } from '@langchain/core/prompts'
 
@@ -61,25 +62,31 @@ export const pipelinePrompt = new PipelinePromptTemplate({
   finalPrompt: finalWeeklyPrompt,
 })
 
-const pipelineFormatted = await pipelinePrompt.format({
-  tone: '专业、清晰、略带幽默',
-  company_name: '星航科技',
-  team_name: 'AI 平台组',
-  manager_name: '王总',
-  week_range: '2025-02-03 ~ 2025-02-09',
-  team_goal: '完成智能周报 Agent 的 MVP 版本，并打通 Git / Jira 数据源。',
-  dev_activities:
-    '- Git: 58 次提交，3 个主要分支合并\n' +
-    '- Jira: 完成 12 个 Story，关闭 7 个 Bug\n' +
-    '- 关键任务：完成智能周报 Pipeline 设计、实现 Prompt 拆分、接入 ExampleSelector',
-  company_values: '「极致、开放、靠谱」的价值观',
-})
+// F. 演示代码：仅在「直接运行本文件」时执行
+// 本文件同时作为 persona / context / pipelinePrompt 的公共模块，被 partial.mjs 和
+// pipeline-prompt-template2/3.mjs import。如果把 format / model.stream 写在模块顶层，
+// 那些文件一 import 就会连带跑一遍演示（白花一次模型调用），所以这里加主模块判断。
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  const pipelineFormatted = await pipelinePrompt.format({
+    tone: '专业、清晰、略带幽默',
+    company_name: '星航科技',
+    team_name: 'AI 平台组',
+    manager_name: '王总',
+    week_range: '2025-02-03 ~ 2025-02-09',
+    team_goal: '完成智能周报 Agent 的 MVP 版本，并打通 Git / Jira 数据源。',
+    dev_activities:
+      '- Git: 58 次提交，3 个主要分支合并\n' +
+      '- Jira: 完成 12 个 Story，关闭 7 个 Bug\n' +
+      '- 关键任务：完成智能周报 Pipeline 设计、实现 Prompt 拆分、接入 ExampleSelector',
+    company_values: '「极致、开放、靠谱」的价值观',
+  })
 
-// console.log('PipelinePromptTemplate 组合后的 Prompt：')
-// console.log(pipelineFormatted)
+  console.log('PipelinePromptTemplate 组合后的 Prompt：')
+  console.log(pipelineFormatted)
 
-// const stream = await model.stream(pipelineFormatted)
-// console.log('\nAI 回答:')
-// for await (const chunk of stream) {
-//   process.stdout.write(chunk.content)
-// }
+  const stream = await model.stream(pipelineFormatted)
+  console.log('\nAI 回答:')
+  for await (const chunk of stream) {
+    process.stdout.write(chunk.content)
+  }
+}

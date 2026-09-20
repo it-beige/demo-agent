@@ -55,7 +55,8 @@ async function testSearch() {
     console.error('错误:', error.message);
     console.error(error.stack);
   } finally {
-    client.close();
+    // SDK 没有 close()，正确方法是异步的 closeConnection()
+    await client.closeConnection();
   }
 }
 

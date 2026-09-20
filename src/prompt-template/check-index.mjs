@@ -25,7 +25,8 @@ async function checkAndRebuildIndex() {
     const stats = await client.getCollectionStatistics({
       collection_name: COLLECTION_NAME,
     });
-    console.log('\n集合行数:', stats.row_count);
+    // row_count 在 stats.data 里，不在 stats 顶层
+    console.log('\n集合行数:', stats.data.row_count);
 
     // 删除旧索引
     console.log('\n删除旧索引...');

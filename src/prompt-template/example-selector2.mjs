@@ -11,13 +11,7 @@ import { model, embeddings } from '@/index.mjs';
 
 const COLLECTION_NAME = 'weekly_report_examples'
 
-// 1. 初始化 Chat 模型
-model
-
-// 2. 初始化 embeddings
-embeddings
-
-// 3. 定义单条示例 Prompt 模板
+// 1. 定义单条示例 Prompt 模板
 const examplePrompt = PromptTemplate.fromTemplate(
   `用户场景：{scenario}
 生成的周报片段：
@@ -25,7 +19,7 @@ const examplePrompt = PromptTemplate.fromTemplate(
 ---`
 );
 
-// 4. 连接 Milvus，并基于已存在的集合创建向量库
+// 2. 连接 Milvus，并基于已存在的集合创建向量库
 const milvusAddress = process.env.MILVUS_ADDRESS ?? 'localhost:19530';
 
 const vectorStore = await Milvus.fromExistingCollection(embeddings, {
@@ -49,7 +43,7 @@ const exampleSelector = new SemanticSimilarityExampleSelector({
   k: 2, // 每次只选出语义上最相近的 2 条示例
 });
 
-// 5. 用 selector 构建 FewShotPromptTemplate
+// 3. 用 selector 构建 FewShotPromptTemplate
 const fewShotPrompt = new FewShotPromptTemplate({
   examplePrompt,
   exampleSelector,
@@ -62,7 +56,7 @@ const fewShotPrompt = new FewShotPromptTemplate({
   inputVariables: ['current_scenario'],
 });
 
-// 6. 演示：给定几个不同的场景描述，让 selector 挑出语义上最接近的示例
+// 4. 演示：给定几个不同的场景描述，让 selector 挑出语义上最接近的示例
 const currentScenario1 =
   '我们本周主要是在清理历史技术债：重构老旧的订单模块、补齐核心接口的单测，' +
   '同时也完善了一些文档，方便后面新人接手。整体没有对外大范围发布的新功能。';
@@ -84,9 +78,9 @@ const finalPrompt2 = await fewShotPrompt.format({
 });
 console.log(finalPrompt2);
 
-// 如果需要真正调用模型，可以解开下面注释
-const stream = await model.stream(finalPrompt);
-console.log('\n=== AI 输出 ===');
+// 5. 用场景 1 的 Prompt 真正调用一次模型
+const stream = await model.stream(finalPrompt1);
+console.log('\n=== AI 输出（场景 1）===');
 for await (const chunk of stream) {
   process.stdout.write(chunk.content);
 }

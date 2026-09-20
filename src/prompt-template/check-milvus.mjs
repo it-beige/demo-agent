@@ -24,7 +24,8 @@ async function checkCollection() {
       const stats = await client.getCollectionStatistics({
         collection_name: COLLECTION_NAME,
       });
-      console.log(`集合行数: ${stats.row_count}`);
+      // row_count 在 stats.data 里，不在 stats 顶层
+      console.log(`集合行数: ${stats.data.row_count}`);
 
       // 检查集合加载状态
       const loadState = await client.getLoadState({
@@ -46,7 +47,8 @@ async function checkCollection() {
     console.error('错误:', error.message);
     console.error(error.stack);
   } finally {
-    client.close();
+    // SDK 没有 close()，正确方法是异步的 closeConnection()
+    await client.closeConnection();
   }
 }
 

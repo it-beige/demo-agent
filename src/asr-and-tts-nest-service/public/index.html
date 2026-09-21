@@ -174,6 +174,35 @@
       color: #999;
       font-style: italic;
     }
+
+    /* 思考过程区域：只在有思考内容时显示，样式与正式回答区分 */
+    .reasoning-box {
+      display: none;
+      background: #fffdf5;
+      border: 1px dashed #f5a623;
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+    }
+
+    .reasoning-box.active {
+      display: block;
+    }
+
+    .reasoning-box .reasoning-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #d48806;
+      margin-bottom: 8px;
+    }
+
+    .reasoning-content {
+      font-size: 13px;
+      line-height: 1.7;
+      color: #8c6d1f;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
     
     .info-section {
       background: #f0f4ff;
@@ -249,6 +278,10 @@
         响应内容
       </h2>
       <div class="response-container">
+        <div class="reasoning-box" id="reasoningBox">
+          <div class="reasoning-title">🤔 思考过程</div>
+          <div class="reasoning-content" id="reasoningContent"></div>
+        </div>
         <div class="response-content" id="responseContent"></div>
       </div>
     </div>
@@ -276,11 +309,15 @@
       }
       
       const responseContent = document.getElementById('responseContent');
+      const reasoningBox = document.getElementById('reasoningBox');
+      const reasoningContent = document.getElementById('reasoningContent');
       const statusIndicator = document.getElementById('statusIndicator');
       const startBtn = document.getElementById('startBtn');
       const stopBtn = document.getElementById('stopBtn');
       
       responseContent.textContent = '';
+      reasoningContent.textContent = '';
+      reasoningBox.classList.remove('active');
       statusIndicator.className = 'status-indicator connecting';
       startBtn.disabled = true;
       stopBtn.disabled = false;
@@ -289,10 +326,17 @@
       
       eventSource = new EventSource(url);
       
-      eventSource.onmessage = function(event) {
+      // 后端以 SSE 具名事件推送：reasoning = 思考过程，answer = 正式回答，event.data 均为纯文本
+      eventSource.addEventListener('reasoning', function(event) {
+        reasoningBox.classList.add('active');
+        reasoningContent.textContent += event.data;
+        reasoningContent.scrollTop = reasoningContent.scrollHeight;
+      });
+      
+      eventSource.addEventListener('answer', function(event) {
         responseContent.textContent += event.data;
         responseContent.scrollTop = responseContent.scrollHeight;
-      };
+      });
       
       eventSource.onerror = function(error) {
         console.error('SSE Error:', error);

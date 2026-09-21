@@ -50,6 +50,18 @@
       "cwd": "${workspaceFolder}",
       "console": "internalConsole",
       "skipFiles": ["<node_internals>/**", "**/node_modules/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug: Nest 项目 (当前文件推断, --debug --watch)",
+      "runtimeExecutable": "/Users/beige/.nvm/versions/node/v24.14.0/bin/node",
+      "program": "${workspaceFolder}/scripts/debug-nest.mjs",
+      "args": ["${file}"],
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole",
+      "autoAttachChildProcesses": true,
+      "skipFiles": ["<node_internals>/**", "**/node_modules/**"]
     }
   ]
 }

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cron Job Tool - 智能定时任务测试平台</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cron Job Tool · 智能定时任务测试平台</title>
   <style>
     * {
       margin: 0;
@@ -12,49 +13,49 @@
     }
 
     :root {
-      --primary-color: #6366f1;
+      --primary: #6366f1;
       --primary-dark: #4f46e5;
-      --success-color: #10b981;
-      --warning-color: #f59e0b;
-      --danger-color: #ef4444;
-      --bg-color: #f8fafc;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
       --card-bg: #ffffff;
-      --text-color: #1e293b;
+      --text: #1e293b;
       --text-light: #64748b;
-      --border-color: #e2e8f0;
-      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --border: #e2e8f0;
+      --muted-bg: #f8fafc;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, .1), 0 2px 4px -1px rgba(0, 0, 0, .06);
+      --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, .12), 0 8px 10px -6px rgba(0, 0, 0, .06);
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       min-height: 100vh;
-      padding: 20px;
-      color: var(--text-color);
+      padding: 24px 16px 48px;
+      color: var(--text);
     }
 
     .container {
-      max-width: 1400px;
+      max-width: 1320px;
       margin: 0 auto;
     }
 
     .header {
       text-align: center;
-      color: white;
-      margin-bottom: 30px;
+      color: #fff;
+      margin-bottom: 28px;
     }
 
     .header h1 {
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       font-weight: 700;
-      margin-bottom: 10px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 8px;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, .15);
     }
 
     .header p {
-      font-size: 1.1rem;
-      opacity: 0.9;
+      font-size: 1rem;
+      opacity: .9;
     }
 
     .grid {
@@ -64,7 +65,7 @@
       margin-bottom: 20px;
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width:1024px) {
       .grid {
         grid-template-columns: 1fr;
       }
@@ -72,111 +73,135 @@
 
     .card {
       background: var(--card-bg);
-      border-radius: 12px;
-      padding: 24px;
+      border-radius: 14px;
+      padding: 22px 24px;
       box-shadow: var(--shadow-lg);
-      transition: transform 0.2s;
-    }
-
-    .card:hover {
-      transform: translateY(-2px);
+      margin-bottom: 20px;
     }
 
     .card-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
-      padding-bottom: 15px;
-      border-bottom: 2px solid var(--border-color);
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid var(--border);
     }
 
     .card-title {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
       font-weight: 600;
-      color: var(--primary-color);
+      color: var(--primary);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .card-title .icon {
-      font-size: 1.8rem;
+    .hint {
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #3730a3;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .hint code {
+      background: #e0e7ff;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 12px;
     }
 
     .form-group {
-      margin-bottom: 15px;
+      margin-bottom: 14px;
     }
 
     .form-group label {
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
       font-weight: 500;
-      color: var(--text-color);
+      font-size: 14px;
     }
 
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
+    input,
+    select,
+    textarea {
       width: 100%;
-      padding: 10px 15px;
-      border: 2px solid var(--border-color);
+      padding: 10px 14px;
+      border: 2px solid var(--border);
       border-radius: 8px;
       font-size: 14px;
-      transition: border-color 0.2s;
+      font-family: inherit;
+      transition: border-color .2s;
     }
 
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
+    input:focus,
+    select:focus,
+    textarea:focus {
       outline: none;
-      border-color: var(--primary-color);
+      border-color: var(--primary);
+    }
+
+    textarea {
+      resize: vertical;
     }
 
     .btn {
-      padding: 12px 24px;
+      padding: 10px 18px;
       border: none;
       border-radius: 8px;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: filter .15s, transform .15s;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .btn:hover {
+      filter: brightness(.95);
       transform: translateY(-1px);
-      box-shadow: var(--shadow);
+    }
+
+    .btn:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+      transform: none;
     }
 
     .btn-primary {
-      background: var(--primary-color);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-dark);
+      background: var(--primary);
+      color: #fff;
     }
 
     .btn-success {
-      background: var(--success-color);
-      color: white;
+      background: var(--success);
+      color: #fff;
     }
 
     .btn-danger {
-      background: var(--danger-color);
-      color: white;
+      background: var(--danger);
+      color: #fff;
     }
 
     .btn-warning {
-      background: var(--warning-color);
-      color: white;
+      background: var(--warning);
+      color: #fff;
+    }
+
+    .btn-ghost {
+      background: var(--muted-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
     }
 
     .btn-sm {
-      padding: 6px 12px;
+      padding: 5px 12px;
       font-size: 12px;
     }
 
@@ -187,54 +212,71 @@
     }
 
     .response-box {
-      background: #f1f5f9;
+      background: var(--muted-bg);
+      border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 15px;
-      margin-top: 15px;
-      max-height: 300px;
+      padding: 14px;
+      margin-top: 14px;
+      max-height: 320px;
       overflow-y: auto;
-      font-family: 'Courier New', monospace;
+      font-family: ui-monospace, 'SF Mono', Consolas, monospace;
       font-size: 13px;
+      line-height: 1.6;
       white-space: pre-wrap;
-      word-wrap: break-word;
+      word-break: break-word;
     }
 
     .response-box.error {
-      background: #fee2e2;
+      background: #fef2f2;
+      border-color: #fecaca;
       color: #991b1b;
     }
 
     .response-box.success {
-      background: #d1fae5;
+      background: #f0fdf4;
+      border-color: #bbf7d0;
       color: #065f46;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 15px;
+      font-size: 14px;
     }
 
-    th, td {
-      padding: 12px;
+    th,
+    td {
+      padding: 11px 12px;
       text-align: left;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
     }
 
     th {
-      background: #f8fafc;
+      background: var(--muted-bg);
       font-weight: 600;
-      color: var(--text-color);
+      color: var(--text-light);
+      font-size: 13px;
     }
 
-    tr:hover {
-      background: #f8fafc;
+    tbody tr:hover {
+      background: var(--muted-bg);
+    }
+
+    .mono {
+      font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+      font-size: 12px;
+      color: var(--text-light);
     }
 
     .badge {
       display: inline-block;
-      padding: 4px 12px;
-      border-radius: 12px;
+      padding: 3px 10px;
+      border-radius: 999px;
       font-size: 12px;
       font-weight: 600;
     }
@@ -259,30 +301,56 @@
       color: #1e40af;
     }
 
-    .loading {
+    .badge-muted {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+
+    .dot {
       display: inline-block;
-      width: 20px;
-      height: 20px;
-      border: 3px solid rgba(99, 102, 241, 0.3);
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      border-top-color: var(--primary-color);
-      animation: spin 1s ease-in-out infinite;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+
+    .dot-on {
+      background: var(--success);
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, .2);
+    }
+
+    .dot-off {
+      background: #cbd5e1;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(99, 102, 241, .3);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      vertical-align: middle;
     }
 
     @keyframes spin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     .tabs {
       display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      border-bottom: 2px solid var(--border-color);
-      padding-bottom: 10px;
+      gap: 8px;
+      margin-bottom: 16px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 8px;
     }
 
     .tab {
-      padding: 10px 20px;
+      padding: 8px 16px;
       border: none;
       background: none;
       cursor: pointer;
@@ -290,16 +358,15 @@
       font-weight: 500;
       color: var(--text-light);
       border-radius: 8px;
-      transition: all 0.2s;
     }
 
     .tab:hover {
-      background: #f1f5f9;
+      background: var(--muted-bg);
     }
 
     .tab.active {
-      background: var(--primary-color);
-      color: white;
+      background: var(--primary);
+      color: #fff;
     }
 
     .tab-content {
@@ -312,140 +379,187 @@
 
     .quick-actions {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 10px;
-      margin-top: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
     }
 
     .action-card {
-      background: #f8fafc;
-      border: 2px solid var(--border-color);
-      border-radius: 8px;
-      padding: 15px;
+      background: var(--muted-bg);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: border-color .15s, background .15s;
     }
 
     .action-card:hover {
-      border-color: var(--primary-color);
-      background: white;
+      border-color: var(--primary);
+      background: #fff;
       box-shadow: var(--shadow);
     }
 
     .action-card h4 {
-      margin-bottom: 5px;
-      color: var(--primary-color);
+      margin-bottom: 4px;
+      color: var(--primary);
+      font-size: 15px;
     }
 
     .action-card p {
+      font-size: 12.5px;
+      color: var(--text-light);
+    }
+
+    .empty {
+      padding: 28px;
+      text-align: center;
+      color: var(--text-light);
+      font-size: 14px;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
       font-size: 13px;
       color: var(--text-light);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .switch input {
+      width: auto;
+    }
+
+    /* Toast */
+    #toast-wrap {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .toast {
+      min-width: 220px;
+      max-width: 380px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 14px;
+      box-shadow: var(--shadow-lg);
+      animation: slidein .25s ease;
+    }
+
+    .toast.info {
+      background: #334155;
+    }
+
+    .toast.success {
+      background: var(--success);
+    }
+
+    .toast.error {
+      background: var(--danger);
+    }
+
+    @keyframes slidein {
+      from {
+        transform: translateX(30px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
     }
   </style>
 </head>
+
 <body>
+  <div id="toast-wrap"></div>
   <div class="container">
     <div class="header">
-      <h1>🤖 Cron Job Tool - 智能定时任务测试平台</h1>
+      <h1>🤖 Cron Job Tool</h1>
       <p>基于 NestJS + LangChain 的自然语言定时任务管理系统</p>
     </div>
 
     <!-- 快捷操作 -->
-    <div class="card" style="margin-bottom: 20px;">
+    <div class="card">
       <div class="card-header">
-        <h2 class="card-title"><span class="icon">⚡</span> 快捷操作</h2>
+        <h2 class="card-title"><span>⚡</span> 快捷操作</h2>
       </div>
-      <div class="quick-actions">
-        <div class="action-card" onclick="quickTest('创建一个新用户，姓名张三，邮箱 zhangsan@example.com，角色 admin')">
-          <h4>👤 创建用户</h4>
-          <p>创建测试用户张三</p>
-        </div>
-        <div class="action-card" onclick="quickTest('列出所有用户')">
-          <h4>📋 查看用户列表</h4>
-          <p>查看所有用户数据</p>
-        </div>
-        <div class="action-card" onclick="quickTest('1 分钟后提醒我喝水')">
-          <h4>⏰ 创建定时任务</h4>
-          <p>1 分钟后提醒</p>
-        </div>
-        <div class="action-card" onclick="quickTest('查看所有定时任务')">
-          <h4>📅 查看任务列表</h4>
-          <p>查看所有定时任务</p>
-        </div>
-        <div class="action-card" onclick="quickTest('搜索 2026 年最新的 AI 模型')">
-          <h4>🔍 Web 搜索</h4>
-          <p>搜索最新资讯</p>
-        </div>
-        <div class="action-card" onclick="quickTest('发一封测试邮件到 it_beige@163.com，主题是测试邮件')">
-          <h4>📧 发送邮件</h4>
-          <p>测试邮件功能</p>
-        </div>
+      <div class="hint">
+        💡 定时任务只有<strong>说明了送达方式</strong>才能真正通知到你。系统目前唯一的对外通道是<strong>邮件</strong>，
+        所以「提醒喝水」这类指令必须带上收件人，例如：<code>1 分钟后发邮件到 it_beige@163.com 提醒我喝水</code>。
+        只写「提醒我喝水」时任务会照常触发，但没有收件人可送达，你不会收到任何东西。
       </div>
+      <div class="quick-actions" id="quickActions"></div>
     </div>
 
     <div class="grid">
-      <!-- 左侧：AI 对话测试 -->
+      <!-- AI 对话 -->
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title"><span class="icon">💬</span> AI 对话测试</h2>
+          <h2 class="card-title"><span>💬</span> AI 对话测试</h2>
         </div>
-        
         <div class="form-group">
-          <label for="aiQuery">输入自然语言指令：</label>
-          <textarea id="aiQuery" rows="4" placeholder="例如：创建一个新用户，姓名李四，邮箱 lisi@example.com，角色 user"></textarea>
+          <label for="aiQuery">输入自然语言指令</label>
+          <textarea id="aiQuery" rows="4"
+            placeholder="例如：1 分钟后发邮件到 lisi@example.com 提醒我开会"></textarea>
         </div>
-
         <div class="btn-group">
-          <button class="btn btn-primary" onclick="sendAIRequest()">
-            <span>🚀</span> 发送
-          </button>
-          <button class="btn btn-success" onclick="sendStreamRequest()">
-            <span>📡</span> 流式发送
-          </button>
+          <button class="btn btn-primary" id="btnSend" onclick="sendAI(false)"><span>🚀</span> 发送</button>
+          <button class="btn btn-success" id="btnStream" onclick="sendAI(true)"><span>📡</span> 流式发送</button>
+          <button class="btn btn-ghost" onclick="clearAI()">清空</button>
         </div>
-
-        <div id="aiResponse" class="response-box" style="display: none;"></div>
+        <div id="aiResponse" class="response-box" style="display:none"></div>
       </div>
 
-      <!-- 右侧：用户 CRUD 操作 -->
+      <!-- 用户管理 -->
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title"><span class="icon">👥</span> 用户管理</h2>
+          <h2 class="card-title"><span>👥</span> 用户管理</h2>
         </div>
-
         <div class="tabs">
-          <button class="tab active" onclick="switchTab('userForm')">表单操作</button>
-          <button class="tab" onclick="switchTab('userList')">用户列表</button>
+          <button class="tab active" onclick="switchTab(this,'userForm')">新增用户</button>
+          <button class="tab" onclick="switchTab(this,'userList')">用户列表</button>
         </div>
 
         <div id="userForm" class="tab-content active">
           <div class="form-group">
-            <label>姓名：</label>
-            <input type="text" id="userName" placeholder="输入姓名">
+            <label>姓名</label>
+            <input type="text" id="userName" placeholder="输入姓名" />
           </div>
           <div class="form-group">
-            <label>邮箱：</label>
-            <input type="email" id="userEmail" placeholder="输入邮箱">
+            <label>邮箱</label>
+            <input type="email" id="userEmail" placeholder="输入邮箱" />
           </div>
           <div class="form-group">
-            <label>角色：</label>
+            <label>角色</label>
             <select id="userRole">
               <option value="user">user</option>
               <option value="admin">admin</option>
+              <option value="manager">manager</option>
+              <option value="owner">owner</option>
             </select>
           </div>
           <div class="btn-group">
-            <button class="btn btn-primary" onclick="createUser()">
-              <span>➕</span> 创建用户
-            </button>
-            <button class="btn btn-success" onclick="loadUsers()">
-              <span>🔄</span> 刷新列表
-            </button>
+            <button class="btn btn-primary" onclick="createUser()"><span>➕</span> 创建用户</button>
+            <button class="btn btn-ghost" onclick="loadUsers()"><span>🔄</span> 刷新</button>
           </div>
         </div>
 
         <div id="userList" class="tab-content">
-          <div id="userTableContainer"></div>
+          <div class="table-wrap" id="userTableContainer"></div>
         </div>
       </div>
     </div>
@@ -453,271 +567,344 @@
     <!-- 定时任务管理 -->
     <div class="card">
       <div class="card-header">
-        <h2 class="card-title"><span class="icon">📅</span> 定时任务管理</h2>
-        <button class="btn btn-success" onclick="loadJobs()">
-          <span>🔄</span> 刷新任务列表
-        </button>
+        <h2 class="card-title"><span>📅</span> 定时任务管理</h2>
+        <div class="toolbar">
+          <label class="switch">
+            <input type="checkbox" id="autoRefresh" onchange="toggleAutoRefresh()" />
+            自动刷新(5s)
+          </label>
+          <button class="btn btn-ghost btn-sm" onclick="loadJobs()"><span>🔄</span> 刷新</button>
+        </div>
       </div>
-
-      <div id="jobTableContainer"></div>
+      <div class="table-wrap" id="jobTableContainer"></div>
     </div>
   </div>
 
   <script>
     const API_BASE = window.location.origin;
 
-    // 切换 Tab
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-      
-      event.target.classList.add('active');
-      document.getElementById(tabId).classList.add('active');
+    /* ---------------- 通用工具 ---------------- */
+    function escapeHtml(s) {
+      return String(s ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
     }
 
-    // 快捷测试
-    function quickTest(query) {
-      document.getElementById('aiQuery').value = query;
-      sendAIRequest();
+    function fmtTime(v) {
+      if (!v) return '—';
+      const d = new Date(v);
+      if (isNaN(d.getTime())) return escapeHtml(v);
+      return d.toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai', hour12: false });
     }
 
-    // 发送 AI 请求
-    async function sendAIRequest() {
-      const query = document.getElementById('aiQuery').value.trim();
-      if (!query) {
-        alert('请输入查询内容');
-        return;
+    function toast(msg, type = 'info', timeout = 3000) {
+      const el = document.createElement('div');
+      el.className = `toast ${type}`;
+      el.textContent = msg;
+      document.getElementById('toast-wrap').appendChild(el);
+      setTimeout(() => el.remove(), timeout);
+    }
+
+    async function api(path, options = {}) {
+      const res = await fetch(`${API_BASE}${path}`, {
+        headers: { 'Content-Type': 'application/json' },
+        ...options,
+      });
+      const text = await res.text();
+      let data = null;
+      try { data = text ? JSON.parse(text) : null; } catch { data = text; }
+      if (!res.ok) {
+        const detail = data && data.message ? data.message : res.statusText;
+        throw new Error(`${res.status} ${detail}`);
       }
+      return data;
+    }
 
-      const responseBox = document.getElementById('aiResponse');
-      responseBox.style.display = 'block';
-      responseBox.className = 'response-box';
-      responseBox.innerHTML = '<div class="loading"></div> 正在处理...';
+    function switchTab(btn, id) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(id).classList.add('active');
+    }
+
+    /* ---------------- 快捷操作 ---------------- */
+    const QUICK_ACTIONS = [
+      { icon: '👤', title: '创建用户', desc: '创建测试用户张三', q: '创建一个新用户，姓名张三，邮箱 zhangsan@example.com，角色 admin' },
+      { icon: '📋', title: '查看用户', desc: '让 AI 列出所有用户', q: '列出所有用户' },
+      { icon: '📧', title: '一次性邮件提醒', desc: '1 分钟后发提醒邮件', q: '1 分钟后发邮件到 it_beige@163.com 提醒我喝水' },
+      { icon: '🔁', title: '周期任务', desc: '每 2 分钟发一次', q: '每 2 分钟发邮件到 it_beige@163.com 汇报一句今日励志语' },
+      { icon: '🔍', title: 'Web 搜索', desc: '搜索最新资讯', q: '搜索 2026 年最新的 AI 模型并总结要点' },
+      { icon: '📨', title: '直接发邮件', desc: '测试邮件功能', q: '发一封测试邮件到 it_beige@163.com，主题是测试邮件，内容用 Markdown 写一段问候' },
+    ];
+
+    function renderQuickActions() {
+      document.getElementById('quickActions').innerHTML = QUICK_ACTIONS.map((a, i) => `
+        <div class="action-card" data-idx="${i}">
+          <h4>${a.icon} ${escapeHtml(a.title)}</h4>
+          <p>${escapeHtml(a.desc)}</p>
+        </div>`).join('');
+      document.querySelectorAll('.action-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const a = QUICK_ACTIONS[card.dataset.idx];
+          document.getElementById('aiQuery').value = a.q;
+          sendAI(false);
+        });
+      });
+    }
+
+    /* ---------------- AI 对话 ---------------- */
+    function setBusy(busy) {
+      document.getElementById('btnSend').disabled = busy;
+      document.getElementById('btnStream').disabled = busy;
+    }
+
+    function clearAI() {
+      document.getElementById('aiQuery').value = '';
+      const box = document.getElementById('aiResponse');
+      box.style.display = 'none';
+      box.textContent = '';
+    }
+
+    async function sendAI(stream) {
+      const query = document.getElementById('aiQuery').value.trim();
+      if (!query) { toast('请输入指令', 'error'); return; }
+
+      const box = document.getElementById('aiResponse');
+      box.style.display = 'block';
+      box.className = 'response-box';
+      box.innerHTML = `<span class="spinner"></span> ${stream ? '正在接收流式数据…' : '正在处理…'}`;
+      setBusy(true);
 
       try {
-        const response = await fetch(`${API_BASE}/ai/chat?query=${encodeURIComponent(query)}`);
-        const data = await response.json();
-        
-        responseBox.className = 'response-box success';
-        responseBox.textContent = JSON.stringify(data, null, 2);
-      } catch (error) {
-        responseBox.className = 'response-box error';
-        responseBox.textContent = `请求失败：${error.message}`;
-      }
-    }
-
-    // 发送流式请求
-    async function sendStreamRequest() {
-      const query = document.getElementById('aiQuery').value.trim();
-      if (!query) {
-        alert('请输入查询内容');
-        return;
-      }
-
-      const responseBox = document.getElementById('aiResponse');
-      responseBox.style.display = 'block';
-      responseBox.className = 'response-box';
-      responseBox.innerHTML = '<div class="loading"></div> 正在接收流式数据...';
-
-      try {
-        const response = await fetch(`${API_BASE}/ai/chat/stream?query=${encodeURIComponent(query)}`);
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let fullResponse = '';
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          const chunk = decoder.decode(value);
-          const lines = chunk.split('\n');
-          
-          for (const line of lines) {
-            if (line.startsWith('data: ')) {
-              const data = line.slice(6);
-              fullResponse += data;
-              responseBox.textContent = fullResponse;
-            }
-          }
+        if (stream) {
+          await streamChat(query, box);
+        } else {
+          const data = await api(`/ai/chat?query=${encodeURIComponent(query)}`);
+          box.className = 'response-box success';
+          box.textContent = typeof data === 'string' ? data : (data.answer ?? JSON.stringify(data, null, 2));
         }
-
-        responseBox.className = 'response-box success';
-      } catch (error) {
-        responseBox.className = 'response-box error';
-        responseBox.textContent = `请求失败：${error.message}`;
+        // 指令大多会改动用户/任务，顺手刷新两张表
+        loadUsers();
+        loadJobs();
+      } catch (err) {
+        box.className = 'response-box error';
+        box.textContent = `请求失败：${err.message}`;
+        toast('请求失败：' + err.message, 'error');
+      } finally {
+        setBusy(false);
       }
     }
 
-    // 创建用户
+    // 解析 SSE：按事件(\n\n)分割，合并每个事件里的 data: 行，能正确处理跨 chunk 的半行
+    async function streamChat(query, box) {
+      const res = await fetch(`${API_BASE}/ai/chat/stream?query=${encodeURIComponent(query)}`);
+      if (!res.ok || !res.body) throw new Error(`${res.status} ${res.statusText}`);
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+      let full = '';
+
+      const flushEvent = (raw) => {
+        const dataLines = raw.split('\n')
+          .filter(l => l.startsWith('data:'))
+          .map(l => l.slice(l.startsWith('data: ') ? 6 : 5));
+        if (dataLines.length) {
+          full += dataLines.join('\n');
+          box.textContent = full;
+        }
+      };
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        let idx;
+        while ((idx = buffer.indexOf('\n\n')) !== -1) {
+          flushEvent(buffer.slice(0, idx));
+          buffer = buffer.slice(idx + 2);
+        }
+      }
+      if (buffer.trim()) flushEvent(buffer);
+
+      box.className = 'response-box success';
+      if (!full) box.textContent = '(无文本输出，可能只执行了工具调用)';
+    }
+
+    /* ---------------- 用户管理（走确定性 REST） ---------------- */
+    const ROLE_BADGE = {
+      admin: 'badge-success', owner: 'badge-warning',
+      manager: 'badge-info', user: 'badge-muted',
+    };
+
+    async function loadUsers() {
+      const container = document.getElementById('userTableContainer');
+      try {
+        const users = await api('/api/users');
+        if (!Array.isArray(users) || users.length === 0) {
+          container.innerHTML = '<div class="empty">暂无用户数据</div>';
+          return;
+        }
+        const rows = users.map(u => `
+          <tr>
+            <td>${u.id}</td>
+            <td>${escapeHtml(u.name)}</td>
+            <td>${escapeHtml(u.email)}</td>
+            <td><span class="badge ${ROLE_BADGE[u.role] || 'badge-muted'}">${escapeHtml(u.role)}</span></td>
+            <td class="mono">${fmtTime(u.createdAt)}</td>
+            <td><button class="btn btn-danger btn-sm" onclick="deleteUser(${u.id})">删除</button></td>
+          </tr>`).join('');
+        container.innerHTML = `
+          <table>
+            <thead><tr><th>ID</th><th>姓名</th><th>邮箱</th><th>角色</th><th>创建时间</th><th>操作</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>`;
+      } catch (err) {
+        container.innerHTML = `<div class="empty" style="color:var(--danger)">加载失败：${escapeHtml(err.message)}</div>`;
+      }
+    }
+
     async function createUser() {
       const name = document.getElementById('userName').value.trim();
       const email = document.getElementById('userEmail').value.trim();
       const role = document.getElementById('userRole').value;
+      if (!name || !email) { toast('请填写姓名和邮箱', 'error'); return; }
 
-      if (!name || !email) {
-        alert('请填写姓名和邮箱');
-        return;
-      }
-
-      const query = `创建一个新用户，姓名${name}，邮箱${email}，角色${role}`;
-      document.getElementById('aiQuery').value = query;
-      await sendAIRequest();
-      
-      // 清空表单
-      document.getElementById('userName').value = '';
-      document.getElementById('userEmail').value = '';
-      
-      // 刷新列表
-      await loadUsers();
-    }
-
-    // 加载用户列表
-    async function loadUsers() {
       try {
-        const response = await fetch(`${API_BASE}/ai/chat?query=${encodeURIComponent('列出所有用户')}`);
-        const data = await response.json();
-        
-        // 解析返回的用户数据
-        let users = [];
-        try {
-          const content = data.answer || data.content || '';
-          const jsonMatch = content.match(/\[[\s\S]*\]/);
-          if (jsonMatch) {
-            users = JSON.parse(jsonMatch[0]);
-          }
-        } catch (e) {
-          console.error('解析用户数据失败:', e);
-        }
-
-        const container = document.getElementById('userTableContainer');
-        if (users.length === 0) {
-          container.innerHTML = '<p style="padding: 20px; text-align: center; color: #64748b;">暂无用户数据</p>';
-          return;
-        }
-
-        let html = `
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>姓名</th>
-                <th>邮箱</th>
-                <th>角色</th>
-                <th>创建时间</th>
-                <th>操作</th>
-              </tr>
-            </thead>
-            <tbody>
-        `;
-
-        users.forEach(user => {
-          const roleBadge = user.role === 'admin' 
-            ? '<span class="badge badge-success">admin</span>' 
-            : '<span class="badge badge-info">user</span>';
-          
-          html += `
-            <tr>
-              <td>${user.id}</td>
-              <td>${user.name}</td>
-              <td>${user.email}</td>
-              <td>${roleBadge}</td>
-              <td>${new Date(user.createdAt).toLocaleString('zh-CN')}</td>
-              <td>
-                <button class="btn btn-sm btn-warning" onclick="deleteUser(${user.id})">删除</button>
-              </td>
-            </tr>
-          `;
-        });
-
-        html += '</tbody></table>';
-        container.innerHTML = html;
-      } catch (error) {
-        console.error('加载用户列表失败:', error);
+        await api('/api/users', { method: 'POST', body: JSON.stringify({ name, email, role }) });
+        toast('用户已创建', 'success');
+        document.getElementById('userName').value = '';
+        document.getElementById('userEmail').value = '';
+        switchTab(document.querySelectorAll('.tab')[1], 'userList');
+        loadUsers();
+      } catch (err) {
+        toast('创建失败：' + err.message, 'error');
       }
     }
 
-    // 删除用户
-    async function deleteUser(userId) {
-      if (!confirm(`确定要删除用户 ID ${userId} 吗？`)) {
-        return;
+    async function deleteUser(id) {
+      if (!confirm(`确定删除用户 ID ${id} 吗？`)) return;
+      try {
+        await api(`/api/users/${id}`, { method: 'DELETE' });
+        toast('用户已删除', 'success');
+        loadUsers();
+      } catch (err) {
+        toast('删除失败：' + err.message, 'error');
       }
-
-      const query = `删除用户 ID 为${userId}`;
-      document.getElementById('aiQuery').value = query;
-      await sendAIRequest();
-      await loadUsers();
     }
 
-    // 加载任务列表
+    /* ---------------- 定时任务管理 ---------------- */
+    const TYPE_BADGE = { cron: 'badge-info', every: 'badge-warning', at: 'badge-success' };
+
+    function humanizeEvery(ms) {
+      if (!ms || ms <= 0) return '—';
+      const s = Math.round(ms / 1000);
+      if (s % 86400 === 0) return `每 ${s / 86400} 天`;
+      if (s % 3600 === 0) return `每 ${s / 3600} 小时`;
+      if (s % 60 === 0) return `每 ${s / 60} 分钟`;
+      return `每 ${s} 秒`;
+    }
+
+    function scheduleText(job) {
+      if (job.type === 'cron') return `<span class="mono">${escapeHtml(job.cron || '—')}</span>`;
+      if (job.type === 'every') return humanizeEvery(job.everyMs);
+      if (job.type === 'at') return `<span class="mono">${fmtTime(job.at)}</span>`;
+      return '—';
+    }
+
     async function loadJobs() {
+      const container = document.getElementById('jobTableContainer');
       try {
-        // 直接调用专用 API 端点，获取原始 JSON 数据
-        const response = await fetch(`${API_BASE}/api/jobs`);
-        const data = await response.json();
-        const jobs = data.jobs || [];
-
-        const container = document.getElementById('jobTableContainer');
+        const data = await api('/api/jobs');
+        const jobs = (data && data.jobs) || [];
         if (jobs.length === 0) {
-          container.innerHTML = '<p style="padding: 20px; text-align: center; color: #64748b;">暂无定时任务</p>';
+          container.innerHTML = '<div class="empty">暂无定时任务</div>';
           return;
         }
-
-        let html = `
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>类型</th>
-                <th>任务描述</th>
-                <th>状态</th>
-                <th>上次执行</th>
-                <th>创建时间</th>
-              </tr>
-            </thead>
-            <tbody>
-        `;
-
-        jobs.forEach(job => {
-          const typeBadge = {
-            'cron': '<span class="badge badge-info">cron</span>',
-            'every': '<span class="badge badge-warning">every</span>',
-            'at': '<span class="badge badge-success">at</span>'
-          }[job.type] || job.type;
-
-          const statusBadge = job.isEnabled 
-            ? '<span class="badge badge-success">已启用</span>' 
+        const rows = jobs.map(job => {
+          const typeBadge = `<span class="badge ${TYPE_BADGE[job.type] || 'badge-muted'}">${escapeHtml(job.type)}</span>`;
+          const statusBadge = job.isEnabled
+            ? '<span class="badge badge-success">已启用</span>'
             : '<span class="badge badge-danger">已禁用</span>';
-
-          const lastRun = job.lastRun 
-            ? new Date(job.lastRun).toLocaleString('zh-CN') 
-            : '未执行';
-
-          html += `
+          const running = job.running
+            ? '<span class="dot dot-on"></span>运行中'
+            : '<span class="dot dot-off"></span>未运行';
+          return `
             <tr>
-              <td>${job.id}</td>
+              <td class="mono">${escapeHtml(String(job.id).slice(0, 8))}…</td>
               <td>${typeBadge}</td>
-              <td>${job.instruction}</td>
+              <td>${escapeHtml(job.instruction)}</td>
+              <td>${scheduleText(job)}</td>
               <td>${statusBadge}</td>
-              <td>${lastRun}</td>
-              <td>${new Date(job.createdAt).toLocaleString('zh-CN')}</td>
-            </tr>
-          `;
-        });
-
-        html += '</tbody></table>';
-        container.innerHTML = html;
-      } catch (error) {
-        console.error('加载任务列表失败:', error);
-        const container = document.getElementById('jobTableContainer');
-        container.innerHTML = `<p style="padding: 20px; text-align: center; color: #ef4444;">加载失败：${error.message}</p>`;
+              <td>${running}</td>
+              <td class="mono">${fmtTime(job.lastRun)}</td>
+              <td class="mono">${fmtTime(job.createdAt)}</td>
+              <td>
+                <button class="btn btn-sm ${job.isEnabled ? 'btn-warning' : 'btn-success'}"
+                  onclick="toggleJob('${job.id}', ${job.isEnabled})">
+                  ${job.isEnabled ? '禁用' : '启用'}
+                </button>
+                <button class="btn btn-sm btn-danger" onclick="deleteJob('${job.id}')">删除</button>
+              </td>
+            </tr>`;
+        }).join('');
+        container.innerHTML = `
+          <table>
+            <thead><tr>
+              <th>ID</th><th>类型</th><th>任务描述</th><th>调度</th>
+              <th>状态</th><th>运行</th><th>上次执行</th><th>创建时间</th><th>操作</th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+          </table>`;
+      } catch (err) {
+        container.innerHTML = `<div class="empty" style="color:var(--danger)">加载失败：${escapeHtml(err.message)}</div>`;
       }
     }
 
-    // 页面加载时自动加载数据
+    async function toggleJob(id, currentEnabled) {
+      try {
+        await api(`/api/jobs/${id}/toggle`, {
+          method: 'POST',
+          body: JSON.stringify({ isEnabled: !currentEnabled }),
+        });
+        toast(!currentEnabled ? '任务已启用' : '任务已禁用', 'success');
+        loadJobs();
+      } catch (err) {
+        toast('操作失败：' + err.message, 'error');
+      }
+    }
+
+    async function deleteJob(id) {
+      if (!confirm('确定删除该定时任务吗？（会同时停止其定时器）')) return;
+      try {
+        await api(`/api/jobs/${id}`, { method: 'DELETE' });
+        toast('任务已删除', 'success');
+        loadJobs();
+      } catch (err) {
+        toast('删除失败：' + err.message, 'error');
+      }
+    }
+
+    /* ---------------- 自动刷新 ---------------- */
+    let autoTimer = null;
+    function toggleAutoRefresh() {
+      const on = document.getElementById('autoRefresh').checked;
+      if (on) {
+        autoTimer = setInterval(loadJobs, 5000);
+        toast('已开启自动刷新', 'info', 1500);
+      } else if (autoTimer) {
+        clearInterval(autoTimer);
+        autoTimer = null;
+      }
+    }
+
+    /* ---------------- 初始化 ---------------- */
     window.addEventListener('DOMContentLoaded', () => {
+      renderQuickActions();
       loadUsers();
       loadJobs();
     });
   </script>
 </body>
+
 </html>

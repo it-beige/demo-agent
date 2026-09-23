@@ -125,6 +125,17 @@ export class JobService implements OnApplicationBootstrap {
     return job;
   }
 
+  async deleteJob(jobId: string) {
+    const job = await this.entityManager.findOne(Job, { where: { id: jobId } });
+    if (!job) throw new NotFoundException(`Job not found: ${jobId}`);
+
+    // 先停掉正在运行的定时器，再删除数据库记录，避免留下孤儿定时器
+    this.stopRuntime(job);
+    await this.entityManager.delete(Job, jobId);
+
+    return { id: jobId, deleted: true };
+  }
+
   private async startRuntime(job: Job) {
     if (job.type === 'cron') {
       const cronJobs = this.schedulerRegistry.getCronJobs();

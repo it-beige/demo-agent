@@ -104,7 +104,17 @@ import { ToolModule } from '../tool/tool.module';
           at: z
             .string()
             .optional()
-            .describe('ISO 格式时间点（仅 type=at 时需要），例如："2026-04-27T10:30:00.000Z"'),
+            .describe(
+              'type=at 的绝对时间点（ISO 8601），必须带时区偏移，例如："2026-04-27T10:30:00+08:00"。相对时间（“X 分钟/小时后”）请改用 delayMs，不要用本字段自己算时间，避免时区错误。',
+            ),
+          delayMs: z
+            .number()
+            .int()
+            .positive()
+            .optional()
+            .describe(
+              'type=at 的相对延迟毫秒数（推荐用于“X 分钟/小时/天后”），例如 60000 表示 1 分钟后。与 at 二选一，优先使用本字段由服务端基于当前时间计算，彻底规避时区误差。',
+            ),
           jobId: z.string().optional().describe('任务 ID（仅 toggle 操作需要）'),
           isEnabled: z
             .boolean()
@@ -120,6 +130,7 @@ import { ToolModule } from '../tool/tool.module';
             cron?: string;
             everyMs?: number;
             at?: string;
+            delayMs?: number;
             jobId?: string;
             isEnabled?: boolean;
           }) => {
@@ -142,8 +153,8 @@ import { ToolModule } from '../tool/tool.module';
                   return '错误：type=every 需要提供有效的 everyMs（间隔毫秒数）';
                 }
 
-                if (args.type === 'at' && !args.at) {
-                  return '错误：type=at 需要提供 at（ISO 格式时间点）';
+                if (args.type === 'at' && !args.at && !args.delayMs) {
+                  return '错误：type=at 需要提供 delayMs（相对延迟毫秒数，推荐）或 at（带时区偏移的 ISO 时间点）';
                 }
 
                 const job = await jobService.addJob({
@@ -151,7 +162,12 @@ import { ToolModule } from '../tool/tool.module';
                   instruction: args.instruction,
                   cron: args.type === 'cron' ? args.cron! : undefined,
                   everyMs: args.type === 'every' ? args.everyMs! : undefined,
-                  at: args.type === 'at' ? new Date(args.at!) : undefined,
+                  at:
+                    args.type === 'at'
+                      ? args.delayMs
+                        ? new Date(Date.now() + args.delayMs)
+                        : new Date(args.at!)
+                      : undefined,
                   isEnabled: true,
                 });
 

@@ -11,7 +11,7 @@
 | `src/mcp-amap.mjs`                         | [MCP·Client] 03                     | 多 MCP Server 客户端接入        |
 | `src/demo/`                                | [RAG·Pipeline] 04-06                | 网页加载、文本切分、向量索引    |
 | `src/splitters/`                           | [RAG·Pipeline] 07                   | 多策略文本切分                  |
-| `src/mivlus/`                              | [RAG·Vector] 08                     | Milvus 向量库 CRUD + 电子书 RAG  |
+| `src/mivlus/`                              | [RAG·Vector] 08                     | Milvus 向量库 CRUD + 电子书 RAG |
 | `src/memory/`                              | [Memory] 09                         | 对话记忆：截断、总结、检索      |
 | `src/output-parse/`                        | [StructuredOutput] 10               | 结构化输出：JSON→Zod→流式       |
 | `src/output-parse-demo/`                   | [Agent·实战] 11                     | 智能录入 + Mini Cursor Agent    |
@@ -32,7 +32,7 @@
 | `src/typeorm-pg-crud/`                     | [Database] 28                       | TypeORM + NestJS CRUD API       |
 | `src/redis-test/`                          | [Memory·Redis] 29                   | Redis Agent 短期记忆 + TTL 过期 |
 | `src/mem0-test/`                           | [Memory·Mem0] 30                    | Mem0 长期记忆 + 双层架构        |
-| `src/nest-feature/`                        | [NestJS·核心] 31                    | 请求生命周期 + JWT 鉴权        |
+| `src/nest-feature/`                        | [NestJS·核心] 31                    | 请求生命周期 + JWT 鉴权         |
 
 ## 工具模块
 

@@ -65,13 +65,13 @@ src/nest-feature/
 
 ## 技术栈
 
-| 组件       | 技术                              | 作用                            |
-| ---------- | --------------------------------- | ------------------------------- |
-| 框架       | NestJS 11                         | 依赖注入 + 生命周期切面         |
-| JWT        | `@nestjs/jwt`                     | Token 签发与校验                |
-| DTO 派生   | `@nestjs/mapped-types`            | `PartialType` 生成更新 DTO      |
-| 响应式     | `rxjs`（`map` / `tap`）           | 拦截器改写响应流                |
-| 数据       | 内存数组                          | 免数据库，聚焦生命周期机制      |
+| 组件     | 技术                    | 作用                       |
+| -------- | ----------------------- | -------------------------- |
+| 框架     | NestJS 11               | 依赖注入 + 生命周期切面    |
+| JWT      | `@nestjs/jwt`           | Token 签发与校验           |
+| DTO 派生 | `@nestjs/mapped-types`  | `PartialType` 生成更新 DTO |
+| 响应式   | `rxjs`（`map` / `tap`） | 拦截器改写响应流           |
+| 数据     | 内存数组                | 免数据库，聚焦生命周期机制 |
 
 ---
 
@@ -83,9 +83,9 @@ src/nest-feature/
 
 ```ts
 export class CreateUserDto {
-  username: string;
-  name: string;
-  age: number;
+  username: string
+  name: string
+  age: number
 }
 
 // 更新 DTO 复用创建 DTO，所有字段变可选
@@ -98,15 +98,22 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {}
 
 两个 Pipe 演示 Pipe 的两种典型用途——**类型转换**和**合法性校验**，都在进入控制器方法前完成：
 
-| Pipe                   | 挂载位置                          | 职责                                       |
-| ---------------------- | --------------------------------- | ------------------------------------------ |
-| `ParsePositiveIntPipe` | `@Param('id', ...)`               | 字符串路径参数转正整数，非法直接抛 400     |
-| `ParseAgePipe`         | `@Query('age', ...)`              | 字符串查询参数转数字，并校验 0~150 范围     |
+| Pipe                   | 挂载位置             | 职责                                    |
+| ---------------------- | -------------------- | --------------------------------------- |
+| `ParsePositiveIntPipe` | `@Param('id', ...)`  | 字符串路径参数转正整数，非法直接抛 400  |
+| `ParseAgePipe`         | `@Query('age', ...)` | 字符串查询参数转数字，并校验 0~150 范围 |
 
 ```ts
 // ParsePositiveIntPipe：严格到「字符串形态」也要是纯正整数
-if (Number.isNaN(parsed) || parsed <= 0 || !Number.isInteger(parsed) || String(parsed) !== value) {
-  throw new BadRequestException(`参数 ${metadata.data ?? 'id'} 必须是正整数，当前值: ${value}`);
+if (
+  Number.isNaN(parsed) ||
+  parsed <= 0 ||
+  !Number.isInteger(parsed) ||
+  String(parsed) !== value
+) {
+  throw new BadRequestException(
+    `参数 ${metadata.data ?? 'id'} 必须是正整数，当前值: ${value}`,
+  )
 }
 ```
 
@@ -117,29 +124,29 @@ if (Number.isNaN(parsed) || parsed <= 0 || !Number.isInteger(parsed) || String(p
 `AuthGuard` 做两层判断——先验 Token，再验「这个用户有没有权访问这个 id」：
 
 ```ts
-const token = this.extractToken(request.headers.authorization); // 取 Bearer Token
-if (!token) throw new UnauthorizedException('请先登录，携带合法 Token');
+const token = this.extractToken(request.headers.authorization) // 取 Bearer Token
+if (!token) throw new UnauthorizedException('请先登录，携带合法 Token')
 
-const user = this.authService.validateToken(token);
-if (!user) throw new UnauthorizedException('Token 无效或已过期');
-request.user = user; // 挂到 request，供 @CurrentUser() 读取
+const user = this.authService.validateToken(token)
+if (!user) throw new UnauthorizedException('Token 无效或已过期')
+request.user = user // 挂到 request，供 @CurrentUser() 读取
 
 // 越权控制：非管理员只能访问自己的 id
-const targetId = request.params.id;
+const targetId = request.params.id
 if (targetId !== undefined) {
-  const id = Number.parseInt(targetId, 10);
+  const id = Number.parseInt(targetId, 10)
   if (user.role !== 'admin' && user.id !== id) {
-    throw new ForbiddenException('无权访问其他用户信息');
+    throw new ForbiddenException('无权访问其他用户信息')
   }
 }
 ```
 
 `AuthService` 用一张 `tokenMap` 模拟「Token → 用户」映射（真实项目应换成 JWT 解析 + 数据库）：
 
-| Token             | 用户     | 角色    |
-| ----------------- | -------- | ------- |
-| `admin-token-123` | admin    | admin   |
-| `user-token-456`  | zhangsan | user    |
+| Token             | 用户     | 角色  |
+| ----------------- | -------- | ----- |
+| `admin-token-123` | admin    | admin |
+| `user-token-456`  | zhangsan | user  |
 
 ### 自定义参数装饰器
 
@@ -196,8 +203,8 @@ verify(token: string): JwtTestPayload {
 这两个切面在 `main.ts` 全局注册，是「响应契约统一」的两半：
 
 ```ts
-app.useGlobalFilters(new AllExceptionsFilter());
-app.useGlobalInterceptors(new TransformInterceptor());
+app.useGlobalFilters(new AllExceptionsFilter())
+app.useGlobalInterceptors(new TransformInterceptor())
 ```
 
 - **`TransformInterceptor`（成功路径）**：用 `map` 把控制器返回值包成 `{ code: 200, data, message: '成功' }`，并用 `tap` 打印请求耗时日志。

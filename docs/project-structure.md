@@ -32,6 +32,7 @@
 | `src/typeorm-pg-crud/`                     | [Database] 28                       | TypeORM + NestJS CRUD API       |
 | `src/redis-test/`                          | [Memory·Redis] 29                   | Redis Agent 短期记忆 + TTL 过期 |
 | `src/mem0-test/`                           | [Memory·Mem0] 30                    | Mem0 长期记忆 + 双层架构        |
+| `src/nest-feature/`                        | [NestJS·核心] 31                    | 请求生命周期 + JWT 鉴权        |
 
 ## 工具模块
 

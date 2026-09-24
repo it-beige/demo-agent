@@ -26,6 +26,7 @@
 | 28   | [Database] 28        | PostgreSQL + pgvector 向量检索    |
 | 29   | [Memory·Redis] 29    | Redis Agent 短期记忆 + TTL 过期   |
 | 30   | [Memory·Mem0] 30     | Mem0 长期记忆 + Redis 双层架构    |
+| 31   | [NestJS·核心] 31     | 请求生命周期 + JWT 鉴权           |
 
 ## 各主题路径
 
@@ -88,6 +89,10 @@
 ### [Memory·Mem0] 30
 
 `mem0-test.mjs` Cloud API 基础 CRUD → `mem0-scoped-memory-test.mjs` user/session/agent 三种 Scope → `mem0-hybrid-search-test.mjs` rerank/threshold 混合搜索 → `server.py` + `mem0-local-api-demo.mjs` 自建 REST API（Qdrant + 自定义 LLM）→ `mem0-redis-mem0-agent.mjs` Redis 短期 + Mem0 长期双层记忆 + LLM 分类器自动分层
+
+### [NestJS·核心] 31
+
+`UserController` CRUD → `ParsePositiveIntPipe` / `ParseAgePipe` 参数转换与校验 → `AuthGuard` Token 鉴权和越权控制 → `@CurrentUser()` 注入用户 → `TransformInterceptor` 统一成功响应 → `AllExceptionsFilter` 统一异常响应 → `JwtTestService` JWT 签发与校验
 
 ## ➡️ 下一步
 

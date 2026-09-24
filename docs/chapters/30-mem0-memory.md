@@ -539,4 +539,4 @@ pnpm agent
 
 ---
 
-⬅️ [Redis Agent 短期记忆](./29-redis-agent-memory.md) ｜ [📚 目录](../../README.md#目录)
+⬅️ [Redis Agent 短期记忆](./29-redis-agent-memory.md) ｜ [📚 目录](../../README.md#目录) ｜ [NestJS 核心功能 ➡️](./31-nest-core-features.md)

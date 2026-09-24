@@ -56,6 +56,7 @@ node agent-react-todo.mjs
 | 28  | [Database]         | [PostgreSQL：AI 时代最适合的数据库](./docs/chapters/28-postgresql-ai-database.md)                        | pgvector 向量检索 + 原生 SQL / TypeORM 双方案              |
 | 29  | [Memory·Redis]     | [Redis：实现 Agent 短期记忆存储的最佳方案](./docs/chapters/29-redis-agent-memory.md)                     | ioredis + TTL 过期 + summarizationMiddleware 压缩          |
 | 30  | [Memory·Mem0]      | [Mem0 记忆方案：从云端 API 到双层记忆架构](./docs/chapters/30-mem0-memory.md)                            | Cloud API + 自建 REST + Redis 双层记忆 + LLM 分类          |
+| 31  | [NestJS·核心]      | [NestJS 请求生命周期：Pipe / Guard / Interceptor / 异常过滤器 / JWT](./docs/chapters/31-nest-core-features.md) | CRUD + Pipe + Guard + JWT + 统一响应                       |
 
 ## 推荐主线
 
@@ -93,6 +94,7 @@ node agent-react-todo.mjs
 | `src/typeorm-pg-crud/`                     | [Database] 28                       | TypeORM + NestJS CRUD API      |
 | `src/redis-test/`                          | [Memory·Redis] 29                   | Redis Agent 短期记忆           |
 | `src/mem0-test/`                           | [Memory·Mem0] 30                    | Mem0 长期记忆 + 双层架构       |
+| `src/nest-feature/`                        | [NestJS·核心] 31                    | NestJS 请求生命周期 + JWT      |
 
 ## 进一步阅读
 
